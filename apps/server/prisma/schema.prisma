@@ -1,0 +1,289 @@
+// ------------------------------------------------------------------
+// BountyNex - Prisma schema (PostgreSQL / Neon)
+// Amounts are stored in wei (BigInt) to interoperate with Ethereum.
+// ------------------------------------------------------------------
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================ ENUMS ============================
+
+enum Role {
+  GUEST
+  RESEARCHER
+  ORGANIZATION
+  ADMIN
+}
+
+enum BountyStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  CLOSED
+}
+
+enum ReportStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  NEEDS_INFORMATION
+  ACCEPTED
+  REJECTED
+  REWARDED
+}
+
+enum Severity {
+  INFORMATIONAL
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum EvidenceKind {
+  SCREENSHOT
+  IMAGE
+  VIDEO
+  LOG
+  DOCUMENT
+  POC
+}
+
+enum RewardStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+enum TransactionStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+enum TransactionType {
+  BOUNTY_CREATE
+  BOUNTY_FUND
+  REWARD_RELEASE
+  BOUNTY_STATUS_CHANGE
+}
+
+enum AdminActionType {
+  USER_UPDATE
+  USER_SUSPEND
+  ORG_VERIFY
+  BOUNTY_MODERATE
+  REPORT_MODERATE
+  DISPUTE_RESOLVE
+}
+
+// ============================ MODELS ============================
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String
+  name          String
+  role          Role      @default(GUEST)
+  isVerified    Boolean   @default(false)
+  isSuspended   Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  wallet             Wallet?
+  researcherProfile  ResearcherProfile?
+  organization       Organization?
+  bugReports         BugReport[]         @relation("ReportResearcher")
+  rewards            Reward[]            @relation("RewardResearcher")
+  adminActions       AdminAction[]
+
+  @@index([role])
+  @@map("users")
+}
+
+model Wallet {
+  id          String   @id @default(uuid())
+  address     String   @unique
+  chainId     Int      @default(11155111)
+  isActive    Boolean  @default(true)
+  connectedAt DateTime @default(now())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([address])
+  @@map("wallets")
+}
+
+model ResearcherProfile {
+  id             String   @id @default(uuid())
+  handle         String   @unique
+  bio            String?
+  reputationScore Int     @default(0)
+  totalEarnedWei BigInt   @default(0)
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("researcher_profiles")
+}
+
+model Organization {
+  id             String   @id @default(uuid())
+  name           String
+  website        String?
+  description    String?
+  isVerified     Boolean  @default(false)
+  onChainAddress String?
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bounties       Bounty[]
+  rewards        Reward[]
+
+  @@index([isVerified])
+  @@map("organizations")
+}
+
+model Bounty {
+  id               String      @id @default(uuid())
+  title            String
+  description      String
+  scope            String
+  rules            String
+  rewardAmountWei  BigInt
+  deadline         DateTime
+  status           BountyStatus @default(DRAFT)
+  onChainId        BigInt?
+  isFunded         Boolean     @default(false)
+  fundingTxHash    String?
+  organizationId   String
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  severities       BountySeverity[]
+  bugReports       BugReport[]
+  rewards          Reward[]
+  transactions     BlockchainTransaction[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  @@index([status])
+  @@index([deadline])
+  @@index([organizationId])
+  @@map("bounties")
+}
+
+model BountySeverity {
+  id        String   @id @default(uuid())
+  bountyId  String
+  bounty    Bounty   @relation(fields: [bountyId], references: [id], onDelete: Cascade)
+  level     Severity
+  rewardWei BigInt
+
+  @@unique([bountyId, level])
+  @@map("bounty_severities")
+}
+
+model BugReport {
+  id                  String       @id @default(uuid())
+  title               String
+  description         String
+  severity            Severity
+  affectedComponent   String
+  stepsToReproduce    String
+  proofOfConcept      String?
+  status              ReportStatus @default(SUBMITTED)
+  rewardWei           BigInt?
+  reviewNote          String?
+  reviewedAt          DateTime?
+  submittedAt         DateTime     @default(now())
+  bountyId            String
+  bounty              Bounty       @relation(fields: [bountyId], references: [id], onDelete: Cascade)
+  researcherId        String
+  researcher          User         @relation("ReportResearcher", fields: [researcherId], references: [id])
+  evidence            Evidence[]
+  reward              Reward?
+  transactions        BlockchainTransaction[]
+
+  @@index([bountyId])
+  @@index([researcherId])
+  @@index([status])
+  @@map("bug_reports")
+}
+
+model Evidence {
+  id                  String       @id @default(uuid())
+  reportId            String
+  report              BugReport    @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  cloudinaryPublicId  String
+  url                 String
+  fileName            String
+  mimeType            String
+  sizeBytes           Int
+  kind                EvidenceKind
+  uploadedAt          DateTime     @default(now())
+
+  @@index([reportId])
+  @@map("evidence")
+}
+
+model Reward {
+  id              String       @id @default(uuid())
+  status          RewardStatus @default(PENDING)
+  amountWei       BigInt
+  txHash          String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  reportId        String       @unique
+  report          BugReport    @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  bountyId        String
+  bounty          Bounty       @relation(fields: [bountyId], references: [id])
+  researcherId    String
+  researcher      User         @relation("RewardResearcher", fields: [researcherId], references: [id])
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([researcherId])
+  @@index([status])
+  @@map("rewards")
+}
+
+model BlockchainTransaction {
+  id          String            @id @default(uuid())
+  txHash      String            @unique
+  chainId     Int               @default(11155111)
+  type        TransactionType
+  status      TransactionStatus @default(PENDING)
+  fromAddress String
+  toAddress   String
+  amountWei   BigInt?
+  blockNumber BigInt?
+  gasUsed     BigInt?
+  metadata    Json?
+  bountyId    String?
+  bounty      Bounty?           @relation(fields: [bountyId], references: [id], onDelete: SetNull)
+  reportId    String?
+  report      BugReport?        @relation(fields: [reportId], references: [id], onDelete: SetNull)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([status])
+  @@index([bountyId])
+  @@index([fromAddress])
+  @@map("blockchain_transactions")
+}
+
+model AdminAction {
+  id         String           @id @default(uuid())
+  actionType AdminActionType
+  targetType String
+  targetId   String
+  details    Json?
+  createdAt  DateTime         @default(now())
+  adminId    String
+  admin      User             @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId])
+  @@map("admin_actions")
+}

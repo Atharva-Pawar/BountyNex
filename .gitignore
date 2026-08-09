@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Environment variables - NEVER commit these
+.env
+.env.local
+.env.*.local
+apps/server/.env
+apps/web/.env
+packages/contracts/.env
+packages/contracts/.env.*.local
+
+# Build outputs
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Hardhat / smart contracts
+packages/contracts/artifacts/
+packages/contracts/cache/
+packages/contracts/typechain-types/
+packages/contracts/deployments/
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Prisma
+apps/server/prisma/*.db
+
+# Misc
+.tmp/
