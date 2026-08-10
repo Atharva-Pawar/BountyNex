@@ -35,6 +35,7 @@ export const meHandler = asyncHandler(async (req: Request, res: Response) => {
       role: true,
       isVerified: true,
       isSuspended: true,
+      imageUrl: true,
       createdAt: true,
       wallet: { select: { address: true, chainId: true, isActive: true } },
       researcherProfile: { select: { handle: true, reputationScore: true } },

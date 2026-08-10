@@ -9,7 +9,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // ============================ ENUMS ============================
@@ -92,6 +91,7 @@ model User {
   role          Role      @default(GUEST)
   isVerified    Boolean   @default(false)
   isSuspended   Boolean   @default(false)
+  imageUrl      String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 

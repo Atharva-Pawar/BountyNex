@@ -26,7 +26,7 @@ export default function globalSetup() {
     throw new Error(`Prisma schema not found at ${schemaPath}`);
   }
 
-  execSync(`npx prisma db push --schema "${schemaPath}" --force-reset --skip-generate`, {
+  execSync(`npx prisma db push --force-reset`, {
     cwd: serverRoot,
     env,
     stdio: "inherit",
