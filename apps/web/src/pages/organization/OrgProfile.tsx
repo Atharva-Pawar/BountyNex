@@ -1,6 +1,6 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Building2, Globe, Save, ShieldCheck } from "lucide-react";
+import { Building2, Globe, Save, ShieldCheck, Mail } from "lucide-react";
 import { api } from "../../lib/api";
 import { useAuth } from "../../providers/AuthProvider";
 import { Button } from "../../components/ui/Button";
@@ -47,14 +47,17 @@ export function OrgProfile() {
             <CardHeader title="Organization details" />
             <CardBody>
               <form onSubmit={onSubmit} className="space-y-4">
-                <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface-2 p-4">
+                <div className="flex flex-col gap-4 rounded-xl border border-border bg-surface-2 p-5 sm:flex-row sm:items-center">
                   <AvatarUpload
                     name={user?.organization?.name ?? ""}
                     imageUrl={user?.imageUrl}
                     onUploaded={refresh}
                     rounded="rounded-xl"
                   />
-                  <p className="text-sm text-ink-dim">{user?.email}</p>
+                  <div>
+                    <p className="text-sm font-medium text-ink">{user?.organization?.name}</p>
+                    <p className="text-xs text-ink-faint">{user?.email}</p>
+                  </div>
                 </div>
 
                 <Field label="Contact name">
@@ -62,8 +65,8 @@ export function OrgProfile() {
                 </Field>
                 <Field label="Website">
                   <div className="relative">
-                    <Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
-                    <Input className="pl-9" type="url" value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://acme.com" />
+                    <Globe className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+                    <Input className="pl-10" type="url" value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://acme.com" />
                   </div>
                 </Field>
                 <Field label="Description" hint="What does your program cover?">
@@ -85,7 +88,7 @@ export function OrgProfile() {
         <div className="space-y-6">
           <Card className="p-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent/15 text-accent">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
                 <ShieldCheck className="h-5 w-5" />
               </div>
               <div>
@@ -97,13 +100,18 @@ export function OrgProfile() {
             </div>
           </Card>
 
-          <Card className="p-5 text-sm text-ink-dim">
-            <h3 className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-faint">
-              <Building2 className="h-3.5 w-3.5" /> Account
-            </h3>
-            <p className="text-ink">{user?.name}</p>
-            <p className="truncate">{user?.email}</p>
-            <p className="mt-3 text-xs text-ink-faint">Role: {user?.role}</p>
+          <Card className="p-5 space-y-4">
+            <div className="flex items-center gap-2 text-sm text-ink-dim">
+              <Building2 className="h-4 w-4 text-ink-faint" />
+              <span className="text-ink font-medium">{user?.name}</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-ink-dim">
+              <Mail className="h-4 w-4 text-ink-faint" />
+              <span className="truncate">{user?.email}</span>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-ink-faint">
+              <span>Role: {user?.role}</span>
+            </div>
           </Card>
         </div>
       </div>

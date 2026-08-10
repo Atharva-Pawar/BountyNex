@@ -22,21 +22,21 @@ export function WalletPanel() {
       <CardBody className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="text-sm text-ink-dim">Connected account</p>
+            <p className="text-xs text-ink-dim">Connected account</p>
             <p className="font-mono text-lg text-ink">{shortAddress(address, 6) || "Not connected"}</p>
           </div>
           <ConnectButton showBalance />
         </div>
 
         {bound ? (
-          <div className="flex items-center gap-2 rounded-lg border border-accent/30 bg-accent/10 px-4 py-3 text-sm text-accent">
-            <CheckCircle2 className="h-5 w-5" />
-            Wallet verified and bound to your profile ({shortAddress(serverWallet.address, 5)})
+          <div className="flex items-center gap-2.5 rounded-lg border border-emerald-500/20 bg-emerald-500/5 px-4 py-3 text-sm text-emerald-500">
+            <CheckCircle2 className="h-5 w-5 shrink-0" />
+            <span>Wallet verified and bound to your profile ({shortAddress(serverWallet.address, 5)})</span>
           </div>
         ) : isConnected ? (
-          <div className="flex flex-col gap-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3">
-            <p className="flex items-center gap-2 text-sm text-amber-300">
-              <ShieldAlert className="h-5 w-5" />
+          <div className="flex flex-col gap-3 rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-3">
+            <p className="flex items-center gap-2 text-sm text-amber-500">
+              <ShieldAlert className="h-5 w-5 shrink-0" />
               This wallet is connected but not yet bound to your account.
             </p>
             <Button onClick={() => void bindWallet()} loading={binding}>

@@ -70,7 +70,7 @@ export function AdminOrganizations() {
           ) : isError ? (
             <ErrorState message={(error as Error).message} retry={() => void refetch()} />
           ) : (data?.items.length ?? 0) === 0 ? (
-            <p className="py-10 text-center text-sm text-ink-faint">No organizations found.</p>
+            <div className="py-10 text-center text-sm text-ink-faint">No organizations found.</div>
           ) : (
             <>
               <div className="overflow-x-auto">
@@ -86,7 +86,7 @@ export function AdminOrganizations() {
                   </thead>
                   <tbody className="divide-y divide-border">
                     {data?.items.map((org) => (
-                      <tr key={org.id}>
+                      <tr key={org.id} className="transition-colors hover:bg-surface-2/50">
                         <td className="py-3 pr-4">
                           <p className="flex items-center gap-2 font-medium text-ink">
                             <Building2 className="h-4 w-4 text-accent-2" /> {org.name}

@@ -23,11 +23,11 @@ export function BountyFilters({
   const update = (patch: Partial<BountyFiltersState>) => onChange({ ...filters, ...patch });
 
   return (
-    <div className="grid gap-3 rounded-xl border border-border bg-surface/60 p-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-3 rounded-xl border border-border bg-surface/80 p-4 shadow-card sm:grid-cols-2 lg:grid-cols-4">
       <div className="relative">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+        <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
         <Input
-          className="pl-9"
+          className="pl-10"
           placeholder="Search bounties..."
           value={filters.q}
           onChange={(e) => update({ q: e.target.value })}

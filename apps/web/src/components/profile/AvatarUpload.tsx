@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { Camera } from "lucide-react";
+import { Camera, Loader2 } from "lucide-react";
 import { uploadFile } from "../../lib/api";
 import { Button } from "../ui/Button";
 
@@ -45,12 +45,17 @@ export function AvatarUpload({
   return (
     <div className="flex items-center gap-4">
       <div
-        className={`flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden ${rounded} bg-accent/15 text-2xl font-bold text-accent`}
+        className={`relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden ${rounded} bg-accent/10 text-xl font-bold text-accent ring-2 ring-border transition-all`}
       >
         {imageUrl ? (
           <img src={imageUrl} alt={name} className="h-full w-full object-cover" />
         ) : (
           (name ?? "?").charAt(0).toUpperCase()
+        )}
+        {uploading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-surface/80">
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
+          </div>
         )}
       </div>
       <div>

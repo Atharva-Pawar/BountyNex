@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { Building2, UserRound } from "lucide-react";
+import { Building2, UserRound, ArrowRight } from "lucide-react";
 import { useAuth } from "../../providers/AuthProvider";
 import { Button } from "../../components/ui/Button";
 import { Card, CardBody } from "../../components/ui/Card";
@@ -53,7 +53,7 @@ export function Register() {
   }
 
   return (
-    <div className="mx-auto flex max-w-md flex-col items-center px-4 py-12">
+    <div className="mx-auto flex max-w-md flex-col items-center px-4 py-10 sm:py-12">
       <div className="mb-8">
         <Logo />
       </div>
@@ -67,22 +67,24 @@ export function Register() {
           <div className="grid grid-cols-2 gap-3">
             {(
               [
-                { t: "RESEARCHER", label: "Researcher", icon: <UserRound className="h-5 w-5" /> },
-                { t: "ORGANIZATION", label: "Organization", icon: <Building2 className="h-5 w-5" /> },
+                { t: "RESEARCHER", label: "Researcher", icon: <UserRound className="h-5 w-5" />, desc: "Find vulnerabilities" },
+                { t: "ORGANIZATION", label: "Organization", icon: <Building2 className="h-5 w-5" />, desc: "Launch programs" },
               ] as const
-            ).map(({ t, label, icon }) => (
+            ).map(({ t, label, icon, desc }) => (
               <button
                 key={t}
                 type="button"
                 onClick={() => setType(t)}
                 className={cn(
-                  "flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-colors",
+                  "flex flex-col items-center gap-2 rounded-xl border px-4 py-4 text-sm font-medium transition-all duration-200",
                   type === t
-                    ? "border-accent bg-accent/10 text-accent"
-                    : "border-border bg-surface-2 text-ink-dim hover:border-border-strong",
+                    ? "border-accent bg-accent/10 text-accent shadow-sm"
+                    : "border-border bg-surface-2 text-ink-dim hover:border-border-strong hover:text-ink",
                 )}
               >
-                {icon} {label}
+                {icon}
+                <span>{label}</span>
+                <span className="text-[10px] font-normal opacity-70">{desc}</span>
               </button>
             ))}
           </div>
@@ -116,19 +118,19 @@ export function Register() {
             )}
 
             {error && (
-              <p className="rounded-lg border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
+              <div className="rounded-lg border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">
                 {error}
-              </p>
+              </div>
             )}
 
             <Button type="submit" className="w-full" size="lg" loading={loading}>
-              Create account
+              Create account <ArrowRight className="h-4 w-4" />
             </Button>
           </form>
 
           <p className="text-center text-sm text-ink-dim">
             Already registered?{" "}
-            <Link to="/login" className="text-accent hover:underline">
+            <Link to="/login" className="font-medium text-accent hover:underline">
               Log in
             </Link>
           </p>

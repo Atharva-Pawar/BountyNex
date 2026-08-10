@@ -7,6 +7,7 @@ import { BountyCard } from "../../components/bounty/BountyCard";
 import { BountyFilters, type BountyFiltersState } from "../../components/bounty/BountyFilters";
 import { EmptyState, ErrorState, Spinner } from "../../components/ui/State";
 import { PaginationBar } from "../../components/ui/PaginationBar";
+import { SkeletonBountyGrid } from "../../components/ui/Skeleton";
 
 interface ListResponse {
   items: Bounty[];
@@ -40,15 +41,17 @@ export function BrowseBounties() {
     if (value !== "") query.set(key, value);
   }
 
-  const { data, isLoading, isError, error, refetch, dataUpdatedAt } = useQuery<ListResponse>({
+  const { data, isLoading, isError, error, refetch } = useQuery<ListResponse>({
     queryKey: ["bounties", query.toString()],
     queryFn: async () => (await api.get(`/api/bounties?${query.toString()}`)) as ListResponse,
   });
 
+  const hasFilters = !!(filters.q || filters.severity || filters.status || filters.sort !== "newest");
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-ink">Browse bounties</h1>
+        <h1 className="text-2xl font-bold text-ink sm:text-3xl">Browse bounties</h1>
         <p className="mt-1 text-sm text-ink-dim">
           Public programs funded with testnet ETH. Find a target and start hunting.
         </p>
@@ -58,16 +61,19 @@ export function BrowseBounties() {
 
       <div className="mt-8">
         {isLoading && !data ? (
-          <Spinner label="Loading bounties..." />
+          <SkeletonBountyGrid count={6} />
         ) : isError ? (
-          <ErrorState message={(error as Error).message} retry={() => void refetch()} />
+          <ErrorState
+            message="Unable to load bounties right now. Please try again."
+            retry={() => void refetch()}
+          />
         ) : !data ? (
           <ErrorState message="Failed to load bounties" retry={() => void refetch()} />
         ) : data.items.length === 0 ? (
-          filters.q || filters.severity || filters.status || filters.sort !== "newest" ? (
+          hasFilters ? (
             <EmptyState
               title="No bounties found"
-              description="Try adjusting your search or filters."
+              description="Try adjusting your search or filters to find more programs."
             />
           ) : (
             <EmptyState
@@ -77,12 +83,12 @@ export function BrowseBounties() {
           )
         ) : (
           <>
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-              {data.items.map((b) => (
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {data!.items.map((b) => (
                 <BountyCard key={b.id} bounty={b} />
               ))}
             </div>
-            <PaginationBar pagination={data.pagination} onPage={setPage} />
+            <PaginationBar pagination={data!.pagination} onPage={setPage} />
           </>
         )}
       </div>

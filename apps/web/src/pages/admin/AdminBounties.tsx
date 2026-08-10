@@ -80,7 +80,7 @@ export function AdminBounties() {
                   </thead>
                   <tbody className="divide-y divide-border">
                     {data?.items.map((b) => (
-                      <tr key={b.id}>
+                      <tr key={b.id} className="transition-colors hover:bg-surface-2/50">
                         <td className="py-3 pr-4">
                           <p className="font-medium text-ink">{b.title}</p>
                           <p className="text-xs text-ink-faint">Deadline {formatDate(b.deadline)}</p>

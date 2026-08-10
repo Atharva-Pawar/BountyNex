@@ -14,16 +14,16 @@ export function AdminDashboard() {
   });
 
   if (isLoading) return <Spinner label="Loading platform stats..." />;
-  if (isError || !data) return <ErrorState message={(error as Error).message} />;
+  if (isError || !data) return <ErrorState message="Unable to load platform stats. Please try again." />;
 
   const s = data.stats;
   const roleTotal = Object.values(s.users.byRole).reduce((a, b) => a + b, 0) || s.users.total;
 
   const cards = [
-    { label: "Total users", value: s.users.total, icon: <Users className="h-5 w-5" />, to: "/admin/users", detail: `${roleTotal} across roles` },
-    { label: "Bounty programs", value: s.bounties.total, icon: <Bug className="h-5 w-5" />, to: "/admin/bounties", detail: `${s.bounties.funded} funded` },
-    { label: "Vulnerability reports", value: s.reports.total, icon: <FileText className="h-5 w-5" />, to: "/admin/reports", detail: "all submissions" },
-    { label: "Rewards paid", value: `${weiToEth(s.rewards.paidWei)} ETH`, icon: <Coins className="h-5 w-5" />, to: "/admin/analytics", detail: `${s.rewards.paidCount} payouts` },
+    { label: "Total users", value: String(s.users.total), icon: <Users className="h-5 w-5" />, to: "/admin/users", detail: `${roleTotal} across roles`, color: "text-cyan-500 bg-cyan-500/10" },
+    { label: "Bounty programs", value: String(s.bounties.total), icon: <Bug className="h-5 w-5" />, to: "/admin/bounties", detail: `${s.bounties.funded} funded`, color: "text-emerald-500 bg-emerald-500/10" },
+    { label: "Vulnerability reports", value: String(s.reports.total), icon: <FileText className="h-5 w-5" />, to: "/admin/reports", detail: "all submissions", color: "text-violet-500 bg-violet-500/10" },
+    { label: "Rewards paid", value: `${weiToEth(s.rewards.paidWei)} ETH`, icon: <Coins className="h-5 w-5" />, to: "/admin/analytics", detail: `${s.rewards.paidCount} payouts`, color: "text-amber-500 bg-amber-500/10" },
   ];
 
   return (
@@ -36,14 +36,14 @@ export function AdminDashboard() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => (
           <Link key={c.label} to={c.to}>
-            <Card className="flex items-center gap-4 p-5 transition-colors hover:border-accent/40">
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent/10 text-accent">
+            <Card hover className="flex items-center gap-4 p-5 h-full">
+              <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg ${c.color}`}>
                 {c.icon}
               </div>
-              <div>
-                <p className="text-xs text-ink-faint">{c.label}</p>
-                <p className="text-xl font-bold text-ink">{c.value}</p>
-                <p className="text-xs text-ink-faint">{c.detail}</p>
+              <div className="min-w-0">
+                <p className="text-xs text-ink-faint truncate">{c.label}</p>
+                <p className="text-lg font-bold text-ink truncate">{c.value}</p>
+                <p className="text-xs text-ink-faint truncate">{c.detail}</p>
               </div>
             </Card>
           </Link>
@@ -62,7 +62,7 @@ export function AdminDashboard() {
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-surface-2">
                   <div
-                    className="h-full rounded-full bg-accent"
+                    className="h-full rounded-full bg-emerald-500 transition-all duration-500"
                     style={{ width: s.bounties.total ? `${(count / s.bounties.total) * 100}%` : "0%" }}
                   />
                 </div>
@@ -82,7 +82,7 @@ export function AdminDashboard() {
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-surface-2">
                   <div
-                    className="h-full rounded-full bg-accent-2"
+                    className="h-full rounded-full bg-cyan-500 transition-all duration-500"
                     style={{ width: s.reports.total ? `${(count / s.reports.total) * 100}%` : "0%" }}
                   />
                 </div>
@@ -92,16 +92,18 @@ export function AdminDashboard() {
         </Card>
       </div>
 
-      <Card className="flex items-center gap-4 border-accent/30 p-5">
-        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent-2/15 text-accent-2">
-          <Activity className="h-6 w-6" />
-        </div>
-        <div>
-          <p className="text-xs uppercase tracking-wider text-ink-faint">Blockchain activity</p>
-          <p className="text-xl font-bold text-ink">
-            {s.transactions.total} transactions · {weiToEth(s.bounties.totalDepositedWei)} ETH escrowed
-          </p>
-        </div>
+      <Card className="border-accent/20">
+        <CardBody className="flex items-center gap-4 p-5">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
+            <Activity className="h-6 w-6" />
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-wider text-ink-faint">Blockchain activity</p>
+            <p className="text-lg font-bold text-ink">
+              {s.transactions.total} transactions · {weiToEth(s.bounties.totalDepositedWei)} ETH escrowed
+            </p>
+          </div>
+        </CardBody>
       </Card>
     </div>
   );

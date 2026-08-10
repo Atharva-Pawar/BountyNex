@@ -51,8 +51,8 @@ export function AdminTransactions() {
                 </thead>
                 <tbody className="divide-y divide-border">
                   {data?.items.map((tx) => (
-                    <tr key={tx.id}>
-                      <td className="py-3 pr-4"><TxHashLink hash={tx.txHash} /></td>
+                     <tr key={tx.id} className="transition-colors hover:bg-surface-2/50">
+                       <td className="py-3 pr-4"><TxHashLink hash={tx.txHash} /></td>
                       <td className="py-3 pr-4 text-ink">{tx.type.replace(/_/g, " ")}</td>
                       <td className="py-3 pr-4 text-ink-dim">{tx.bounty?.title ?? "—"}</td>
                       <td className="py-3 pr-4 font-mono text-ink-dim">

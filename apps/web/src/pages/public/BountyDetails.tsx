@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { api } from "../../lib/api";
 import type { Bounty } from "../../types";
-import { daysLeft, formatDate, weiToEth } from "../../lib/utils";
+import { cn, daysLeft, formatDate, severityColor, weiToEth } from "../../lib/utils";
 import { Badge } from "../../components/ui/Badge";
 import { Button } from "../../components/ui/Button";
 import { Card, CardBody, CardHeader } from "../../components/ui/Card";
@@ -43,17 +43,22 @@ export function BountyDetails() {
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-2xl font-bold text-ink sm:text-3xl">{bounty.title}</h1>
-            <Badge className={bounty.status === "ACTIVE" ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" : "bg-slate-500/15 text-slate-400 border-slate-500/30"}>
+            <Badge className={bounty.status === "ACTIVE" ? "bg-emerald-500/15 text-emerald-500 border-emerald-500/30" : "bg-slate-500/15 text-slate-500 border-slate-500/30"}>
               {bounty.status}
             </Badge>
+            {bounty.isFunded && (
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-500">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Funded
+              </span>
+            )}
           </div>
           <p className="mt-2 flex items-center gap-2 text-sm text-ink-dim">
-            <ShieldCheck className="h-4 w-4 text-accent-2" />
+            <ShieldCheck className={cn("h-4 w-4", bounty.organization?.isVerified ? "text-accent" : "text-ink-faint")} />
             {bounty.organization?.name}
             {bounty.organization?.isVerified && (
-              <span className="text-accent">· Verified organization</span>
+              <span className="text-accent font-medium">· Verified organization</span>
             )}
           </p>
         </div>
@@ -89,20 +94,20 @@ export function BountyDetails() {
         </Card>
         <Card className="p-4">
           <p className="flex items-center gap-2 text-xs text-ink-dim">
-            <CalendarClock className="h-4 w-4 text-accent-2" /> Deadline
+            <CalendarClock className="h-4 w-4 text-cyan-500" /> Deadline
           </p>
           <p className="mt-1 text-xl font-bold text-ink">{days} days left</p>
           <p className="text-xs text-ink-faint">{formatDate(bounty.deadline)}</p>
         </Card>
         <Card className="p-4">
           <p className="flex items-center gap-2 text-xs text-ink-dim">
-            <FileText className="h-4 w-4 text-info" /> Reports
+            <FileText className="h-4 w-4 text-violet-500" /> Reports
           </p>
           <p className="mt-1 text-xl font-bold text-ink">{bounty._count?.bugReports ?? 0}</p>
         </Card>
         <Card className="p-4">
           <p className="flex items-center gap-2 text-xs text-ink-dim">
-            <ShieldCheck className="h-4 w-4 text-violet-400" /> Funding
+            <ShieldCheck className="h-4 w-4 text-amber-500" /> Funding
           </p>
           <p className="mt-1 text-xl font-bold text-ink">{bounty.isFunded ? "Funded" : "Unfunded"}</p>
         </Card>
@@ -110,7 +115,7 @@ export function BountyDetails() {
 
       {/* On-chain status */}
       {(bounty.onChainId || bounty.isFunded) && (
-        <Card className="mb-6">
+        <Card className="mb-6 border-accent/20">
           <CardHeader title="On-chain escrow" subtitle="Live state from the BountyEscrow contract" />
           <CardBody className="grid gap-4 sm:grid-cols-3">
             <div>
@@ -151,7 +156,7 @@ export function BountyDetails() {
           <Card>
             <CardHeader title="Scope" />
             <CardBody>
-              <pre className="whitespace-pre-wrap rounded-lg bg-surface-2 p-4 font-mono text-xs text-ink-dim">
+              <pre className="whitespace-pre-wrap rounded-lg bg-surface-2 p-4 font-mono text-xs text-ink-dim leading-relaxed">
                 {bounty.scope}
               </pre>
             </CardBody>
@@ -169,14 +174,14 @@ export function BountyDetails() {
           <Card>
             <CardHeader title="Severity rewards" />
             <CardBody>
-              <ul className="space-y-3">
+              <ul className="space-y-2">
                 {bounty.severities.map((s) => (
                   <li
                     key={s.level}
                     className="flex items-center justify-between rounded-lg border border-border bg-surface-2 px-3 py-2.5"
                   >
-                    <span className="text-sm font-medium text-ink">{s.level}</span>
-                    <span className="font-mono text-sm text-accent">{weiToEth(s.rewardWei)} ETH</span>
+                    <span className={cn("text-sm font-medium", severityColor(s.level))}>{s.level}</span>
+                    <span className="font-mono text-sm font-semibold text-accent">{weiToEth(s.rewardWei)} ETH</span>
                   </li>
                 ))}
               </ul>
@@ -191,7 +196,7 @@ export function BountyDetails() {
                   {bounty.bugReports.map((r) => (
                     <li key={r.id} className="flex items-center justify-between text-sm">
                       <span className="truncate text-ink">{r.title}</span>
-                      <Badge className={r.severity === "CRITICAL" ? "bg-rose-500/15 text-rose-400 border-rose-500/30" : "bg-slate-500/15 text-slate-400 border-slate-500/30"}>
+                      <Badge className={r.severity === "CRITICAL" ? "bg-rose-500/15 text-rose-500 border-rose-500/30" : "bg-slate-500/15 text-slate-500 border-slate-500/30"}>
                         {r.severity}
                       </Badge>
                     </li>
