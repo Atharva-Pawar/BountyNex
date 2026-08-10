@@ -19,6 +19,7 @@ export interface User {
   role: Role;
   isVerified: boolean;
   isSuspended: boolean;
+  imageUrl?: string | null;
   createdAt?: string;
   wallet?: { address: string; chainId: number; isActive: boolean } | null;
   researcherProfile?: { handle: string; reputationScore: number } | null;

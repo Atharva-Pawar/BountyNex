@@ -13,6 +13,9 @@ export interface UploadedEvidence {
 
 const MAX_FILE_SIZE_BYTES = 15 * 1024 * 1024; // 15MB
 
+const PROFILE_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp", "image/gif"];
+const MAX_PROFILE_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+
 const KIND_BY_MIME: Record<string, string> = {
   "image/png": "IMAGE",
   "image/jpeg": "IMAGE",
@@ -119,4 +122,49 @@ export async function deleteEvidence(cloudinaryPublicId: string, resourceType: s
   } catch (err) {
     console.error("Failed to delete Cloudinary asset", err);
   }
+}
+
+/**
+ * Profile picture uploads are image-only and smaller than evidence uploads.
+ * The uploaded URL (never the binary) is stored on the user record.
+ */
+export function validateProfileImage(file: Express.Multer.File): void {
+  if (!PROFILE_IMAGE_TYPES.includes(file.mimetype)) {
+    throw ApiError.badRequest("Unsupported image type. Use PNG, JPEG, WebP or GIF.");
+  }
+  if (file.size > MAX_PROFILE_IMAGE_SIZE_BYTES) {
+    throw ApiError.badRequest("Profile picture is too large (max 5MB)");
+  }
+}
+
+export async function uploadProfileImage(
+  file: Express.Multer.File,
+): Promise<{ cloudinaryPublicId: string; url: string }> {
+  if (!isCloudinaryConfigured()) {
+    throw ApiError.badRequest(
+      "Profile picture uploads are not configured. Ask an administrator to enable Cloudinary.",
+    );
+  }
+
+  validateProfileImage(file);
+
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: `${env.CLOUDINARY_UPLOAD_FOLDER}/avatars`,
+        resource_type: "image",
+        use_filename: true,
+        unique_filename: true,
+        transformation: [{ width: 512, height: 512, crop: "limit" }],
+      },
+      (error, result) => {
+        if (error || !result) {
+          reject(ApiError.badRequest(`Image upload failed: ${error?.message ?? "unknown"}`));
+          return;
+        }
+        resolve({ cloudinaryPublicId: result.public_id, url: result.secure_url });
+      },
+    );
+    uploadStream.end(file.buffer);
+  });
 }

@@ -36,17 +36,20 @@ export const bountyIdParamsSchema = z.object({
   id: z.string().uuid("Invalid bounty id"),
 });
 
+// Treat empty-string query params as absent. The frontend URLSearchParams builder
+// includes empty values (e.g. `?severity=`), which would otherwise fail enum
+// validation for a default, no-filter request.
+const emptyToUndefined = (schema: z.ZodTypeAny) =>
+  z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), schema);
+
 export const listBountiesQuerySchema = z.object({
-  q: z.string().max(160).optional(),
-  status: z.enum(["ACTIVE", "PAUSED", "CLOSED", "DRAFT"]).optional(),
-  severity: z.enum(severityValues).optional(),
-  minReward: z.string().regex(/^\d+$/).optional(),
-  maxReward: z.string().regex(/^\d+$/).optional(),
-  sort: z.enum(["newest", "reward_high", "reward_low", "deadline"]).default("newest"),
-  page: z.coerce.number().int().positive().optional(),
-  limit: z.coerce.number().int().positive().max(100).optional(),
-  mine: z
-    .string()
-    .optional()
-    .transform((v) => v === "true"),
+  q: emptyToUndefined(z.string().max(160).optional()),
+  status: emptyToUndefined(z.enum(["ACTIVE", "PAUSED", "CLOSED", "DRAFT"]).optional()),
+  severity: emptyToUndefined(z.enum(severityValues).optional()),
+  minReward: emptyToUndefined(z.string().regex(/^\d+$/).optional()),
+  maxReward: emptyToUndefined(z.string().regex(/^\d+$/).optional()),
+  sort: emptyToUndefined(z.enum(["newest", "reward_high", "reward_low", "deadline"]).default("newest")),
+  page: emptyToUndefined(z.coerce.number().int().positive().optional()),
+  limit: emptyToUndefined(z.coerce.number().int().positive().max(100).optional()),
+  mine: emptyToUndefined(z.string().optional()).transform((v) => v === "true"),
 });

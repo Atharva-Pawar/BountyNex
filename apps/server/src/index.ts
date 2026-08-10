@@ -1,4 +1,5 @@
 import { createApp } from "./app.js";
+import { configureCloudinary } from "./config/cloudinary.js";
 import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
 import { prisma } from "./lib/prisma.js";
@@ -7,6 +8,12 @@ const app = createApp();
 
 async function bootstrap() {
   try {
+    const cloudinaryConfigured = configureCloudinary();
+    if (cloudinaryConfigured) {
+      logger.info("Cloudinary image uploads configured");
+    } else {
+      logger.warn("Cloudinary is not configured - image uploads will be disabled");
+    }
     await prisma.$connect();
     logger.info("Connected to PostgreSQL");
 

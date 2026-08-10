@@ -6,6 +6,7 @@ import { useAuth } from "../../providers/AuthProvider";
 import { Button } from "../../components/ui/Button";
 import { Card, CardBody, CardHeader } from "../../components/ui/Card";
 import { Field, Input, Textarea } from "../../components/ui/Field";
+import { AvatarUpload } from "../../components/profile/AvatarUpload";
 import { WalletPanel } from "../../components/wallet/WalletPanel";
 
 export function ResearcherProfile() {
@@ -41,14 +42,11 @@ export function ResearcherProfile() {
             <CardHeader title="Public profile" />
             <CardBody>
               <form onSubmit={onSubmit} className="space-y-4">
-                <div className="flex items-center gap-4 rounded-lg border border-border bg-surface-2 p-4">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/15 text-2xl font-bold text-accent">
-                    {(user?.name ?? "?").charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-ink">{user?.name}</p>
-                    <p className="text-sm text-accent">{user?.researcherProfile?.handle ? `@${user.researcherProfile.handle}` : "no handle"}</p>
-                  </div>
+                <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface-2 p-4">
+                  <AvatarUpload name={user?.name ?? ""} imageUrl={user?.imageUrl} onUploaded={refresh} />
+                  <p className="text-sm text-accent">
+                    {user?.researcherProfile?.handle ? `@${user.researcherProfile.handle}` : "no handle"}
+                  </p>
                 </div>
 
                 <Field label="Display name">

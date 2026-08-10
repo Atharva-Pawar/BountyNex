@@ -27,16 +27,20 @@ export function BrowseBounties() {
     setPage(1);
   }, [filters]);
 
-  const query = new URLSearchParams({
+  const raw: Record<string, string> = {
     q: filters.q,
     severity: filters.severity,
-    sort: filters.sort,
-    page: String(page),
+    sort: filters.sort !== "newest" ? filters.sort : "",
+    status: filters.status ?? "",
+    page: page > 1 ? String(page) : "",
     limit: "9",
-  });
-  if (filters.status) query.set("status", filters.status);
+  };
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(raw)) {
+    if (value !== "") query.set(key, value);
+  }
 
-  const { data, isLoading, isError, error, refetch } = useQuery<ListResponse>({
+  const { data, isLoading, isError, error, refetch, dataUpdatedAt } = useQuery<ListResponse>({
     queryKey: ["bounties", query.toString()],
     queryFn: async () => (await api.get(`/api/bounties?${query.toString()}`)) as ListResponse,
   });
@@ -53,17 +57,24 @@ export function BrowseBounties() {
       <BountyFilters filters={filters} onChange={setFilters} />
 
       <div className="mt-8">
-        {isLoading ? (
+        {isLoading && !data ? (
           <Spinner label="Loading bounties..." />
         ) : isError ? (
           <ErrorState message={(error as Error).message} retry={() => void refetch()} />
         ) : !data ? (
           <ErrorState message="Failed to load bounties" retry={() => void refetch()} />
         ) : data.items.length === 0 ? (
-          <EmptyState
-            title="No bounties found"
-            description="Try adjusting your search or filters."
-          />
+          filters.q || filters.severity || filters.status || filters.sort !== "newest" ? (
+            <EmptyState
+              title="No bounties found"
+              description="Try adjusting your search or filters."
+            />
+          ) : (
+            <EmptyState
+              title="No bounties available yet"
+              description="Organizations haven't published any programs yet. Check back soon."
+            />
+          )
         ) : (
           <>
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">

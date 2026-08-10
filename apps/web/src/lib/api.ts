@@ -39,10 +39,10 @@ api.interceptors.response.use(
 export async function uploadFile(url: string, file: File): Promise<unknown> {
   const form = new FormData();
   form.append("file", file);
-  const response = await axios.post(url, form, {
-    baseURL,
-    withCredentials: true,
-    headers: { "Content-Type": "multipart/form-data" },
+  return api.post(url, form, {
+    headers: {
+      "Content-Type": undefined,
+    },
+    transformRequest: (data) => data,
   });
-  return response.data?.data ?? response.data;
 }
