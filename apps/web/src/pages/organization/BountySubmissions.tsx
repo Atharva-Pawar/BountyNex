@@ -44,8 +44,8 @@ export function BountySubmissions({ all = false }: { all?: boolean }) {
             onClick={() => setStatus(s)}
             className={
               status === s
-                ? "rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent"
-                : "rounded-full border border-border px-3 py-1 text-xs font-medium text-ink-dim hover:border-border-strong hover:text-ink"
+                ? "rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent transition-colors"
+                : "rounded-full border border-border px-3 py-1 text-xs font-medium text-ink-dim transition-colors hover:border-border-strong hover:text-ink"
             }
           >
             {s === "ALL" ? "All" : s.replace(/_/g, " ")}
@@ -57,7 +57,7 @@ export function BountySubmissions({ all = false }: { all?: boolean }) {
         <CardHeader
           title="Reports"
           action={
-            <button onClick={() => void refetch()} className="text-sm text-accent hover:underline">
+            <button onClick={() => void refetch()} className="text-sm font-medium text-accent hover:underline">
               Refresh
             </button>
           }
@@ -66,7 +66,7 @@ export function BountySubmissions({ all = false }: { all?: boolean }) {
           {isLoading ? (
             <Spinner />
           ) : isError ? (
-            <ErrorState message={(error as Error).message} retry={() => void refetch()} />
+            <ErrorState message="Unable to load submissions. Please try again." retry={() => void refetch()} />
           ) : items.length === 0 ? (
             <EmptyState
               icon={<Inbox className="h-6 w-6" />}
@@ -88,7 +88,7 @@ export function BountySubmissions({ all = false }: { all?: boolean }) {
                 </thead>
                 <tbody className="divide-y divide-border">
                   {items.map((r) => (
-                    <tr key={r.id}>
+                    <tr key={r.id} className="transition-colors hover:bg-surface-2/50">
                       <td className="py-3 pr-4">
                         <Link to={`/organization/reports/${r.id}`} className="font-medium text-ink hover:text-accent">
                           {r.title}

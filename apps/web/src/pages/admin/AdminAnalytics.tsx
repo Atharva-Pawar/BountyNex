@@ -13,15 +13,15 @@ export function AdminAnalytics() {
   });
 
   if (isLoading) return <Spinner label="Loading analytics..." />;
-  if (isError || !data) return <ErrorState message={(error as Error).message} />;
+  if (isError || !data) return <ErrorState message="Unable to load analytics. Please try again." />;
 
   const s = data.stats;
 
   const highlights = [
-    { label: "Total users", value: s.users.total, icon: <Users className="h-5 w-5" /> },
-    { label: "Rewards paid", value: s.rewards.paidCount, icon: <Trophy className="h-5 w-5" /> },
-    { label: "Escrowed ETH", value: `${weiToEth(s.bounties.totalDepositedWei)} ETH`, icon: <Coins className="h-5 w-5" /> },
-    { label: "Verified orgs", value: s.users.byRole.ORGANIZATION ?? 0, icon: <ShieldCheck className="h-5 w-5" /> },
+    { label: "Total users", value: String(s.users.total), icon: <Users className="h-5 w-5" />, color: "text-cyan-500 bg-cyan-500/10" },
+    { label: "Rewards paid", value: String(s.rewards.paidCount), icon: <Trophy className="h-5 w-5" />, color: "text-amber-500 bg-amber-500/10" },
+    { label: "Escrowed ETH", value: `${weiToEth(s.bounties.totalDepositedWei)} ETH`, icon: <Coins className="h-5 w-5" />, color: "text-emerald-500 bg-emerald-500/10" },
+    { label: "Verified orgs", value: String(s.users.byRole.ORGANIZATION ?? 0), icon: <ShieldCheck className="h-5 w-5" />, color: "text-violet-500 bg-violet-500/10" },
   ];
 
   const usersTotal = Math.max(Object.values(s.users.byRole).reduce((a, b) => a + b, 0), 1);
@@ -37,10 +37,12 @@ export function AdminAnalytics() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {highlights.map((h) => (
           <Card key={h.label} className="flex items-center gap-4 p-5">
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent/10 text-accent">{h.icon}</div>
-            <div>
-              <p className="text-xs text-ink-faint">{h.label}</p>
-              <p className="text-xl font-bold text-ink">{h.value}</p>
+            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg ${h.color}`}>
+              {h.icon}
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs text-ink-faint truncate">{h.label}</p>
+              <p className="text-lg font-bold text-ink truncate">{h.value}</p>
             </div>
           </Card>
         ))}
@@ -57,7 +59,7 @@ export function AdminAnalytics() {
                   <span className="font-medium text-ink">{count}</span>
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-surface-2">
-                  <div className="h-full rounded-full bg-accent" style={{ width: `${(count / usersTotal) * 100}%` }} />
+                  <div className="h-full rounded-full bg-cyan-500 transition-all duration-500" style={{ width: `${(count / usersTotal) * 100}%` }} />
                 </div>
               </div>
             ))}
@@ -74,7 +76,7 @@ export function AdminAnalytics() {
                   <span className="font-medium text-ink">{count}</span>
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-surface-2">
-                  <div className="h-full rounded-full bg-accent-2" style={{ width: `${(count / txTotal) * 100}%` }} />
+                  <div className="h-full rounded-full bg-violet-500 transition-all duration-500" style={{ width: `${(count / txTotal) * 100}%` }} />
                 </div>
               </div>
             ))}

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { parseEther, formatEther } from "viem";
-import { Plus, Rocket, Trash2 } from "lucide-react";
+import { Plus, Rocket, Trash2, AlertCircle } from "lucide-react";
 import { api } from "../../lib/api";
 import type { Bounty, Severity } from "../../types";
 import { SEVERITY_ORDER } from "../../lib/utils";
@@ -108,7 +108,7 @@ export function CreateBounty() {
             <div className="rounded-xl border border-border bg-surface-2 p-4">
               <div className="mb-3 flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-ink">Severity rewards</h3>
-                <p className="font-mono text-xs text-ink-faint">Total {formatEther(totalWei)} ETH</p>
+                <p className="font-mono text-xs text-accent font-medium">Total {formatEther(totalWei)} ETH</p>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
                 {SEVERITIES.map((s) => (
@@ -123,7 +123,7 @@ export function CreateBounty() {
                         onChange={(e) => setSeverities((prev) => ({ ...prev, [s]: e.target.value }))}
                         className="pr-12"
                       />
-                      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-faint">ETH</span>
+                      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-faint font-medium">ETH</span>
                     </div>
                   </Field>
                 ))}
@@ -131,7 +131,10 @@ export function CreateBounty() {
             </div>
 
             {error && (
-              <p className="rounded-lg border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>
+              <div className="flex items-start gap-2 rounded-lg border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">
+                <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+                {error}
+              </div>
             )}
 
             <div className="flex justify-end gap-3 pt-2">
@@ -144,14 +147,14 @@ export function CreateBounty() {
         </CardBody>
       </Card>
 
-      <Card className="border-accent/30">
+      <Card className="border-accent/20">
         <CardHeader
           title="Next steps after creating"
           subtitle="Your program is created as a draft"
           action={<Rocket className="h-5 w-5 text-accent" />}
         />
         <CardBody>
-          <ol className="list-decimal space-y-2 pl-5 text-sm text-ink-dim">
+          <ol className="space-y-2 text-sm text-ink-dim list-decimal pl-5">
             <li>Fund the bounty on-chain with MetaMask (the contract escrows the total reward).</li>
             <li>Once the funding transaction confirms, the bounty is marked funded automatically.</li>
             <li>Activate the program so researchers can submit reports.</li>

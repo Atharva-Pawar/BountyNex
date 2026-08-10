@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { Fingerprint, Mail, Lock } from "lucide-react";
+import { Fingerprint, Mail, Lock, ArrowRight } from "lucide-react";
 import { useAuth } from "../../providers/AuthProvider";
 import { Button } from "../../components/ui/Button";
 import { Card, CardBody } from "../../components/ui/Card";
@@ -35,23 +35,23 @@ export function Login() {
   }
 
   return (
-    <div className="mx-auto flex max-w-md flex-col items-center px-4 py-16">
+    <div className="mx-auto flex max-w-md flex-col items-center px-4 py-12 sm:py-16">
       <div className="mb-8">
         <Logo />
       </div>
       <Card className="w-full">
         <CardBody className="space-y-6">
           <div>
-            <h1 className="text-2xl font-bold text-ink">Log in</h1>
-            <p className="mt-1 text-sm text-ink-dim">Access your researcher or organization dashboard</p>
+            <h1 className="text-2xl font-bold text-ink">Welcome back</h1>
+            <p className="mt-1 text-sm text-ink-dim">Log in to your researcher or organization dashboard</p>
           </div>
 
           <form onSubmit={onSubmit} className="space-y-4">
             <Field label="Email">
               <div className="relative">
-                <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+                <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
                 <Input
-                  className="pl-9"
+                  className="pl-10"
                   type="email"
                   required
                   value={email}
@@ -62,9 +62,9 @@ export function Login() {
             </Field>
             <Field label="Password">
               <div className="relative">
-                <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+                <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
                 <Input
-                  className="pl-9"
+                  className="pl-10"
                   type="password"
                   required
                   value={password}
@@ -75,9 +75,9 @@ export function Login() {
             </Field>
 
             {error && (
-              <p className="rounded-lg border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
+              <div className="rounded-lg border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">
                 {error}
-              </p>
+              </div>
             )}
 
             <Button type="submit" className="w-full" size="lg" loading={loading}>
@@ -87,8 +87,8 @@ export function Login() {
 
           <p className="text-center text-sm text-ink-dim">
             Don't have an account?{" "}
-            <Link to="/register" className="text-accent hover:underline">
-              Register
+            <Link to="/register" className="font-medium text-accent hover:underline">
+              Create one <ArrowRight className="inline h-3.5 w-3.5" />
             </Link>
           </p>
         </CardBody>

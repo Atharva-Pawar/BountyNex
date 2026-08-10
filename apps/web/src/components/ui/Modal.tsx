@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { cn } from "../../lib/utils";
 
@@ -15,6 +15,16 @@ export function Modal({
   children: React.ReactNode;
   wide?: boolean;
 }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      requestAnimationFrame(() => setVisible(true));
+    } else {
+      setVisible(false);
+    }
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
     const handler = (e: KeyboardEvent) => {
@@ -32,20 +42,24 @@ export function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+      className={cn(
+        "fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-200",
+        visible ? "bg-black/60 backdrop-blur-sm" : "bg-black/0",
+      )}
       onMouseDown={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
         className={cn(
-          "w-full rounded-2xl border border-border bg-surface shadow-2xl",
+          "w-full rounded-2xl border border-border bg-surface shadow-elevated transition-all duration-200",
           wide ? "max-w-3xl" : "max-w-lg",
+          visible ? "scale-100 opacity-100" : "scale-95 opacity-0",
         )}
       >
         <div className="flex items-center justify-between border-b border-border px-5 py-4">
-          <h3 className="text-lg font-semibold text-ink">{title}</h3>
+          <h3 className="text-base font-semibold text-ink">{title}</h3>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-ink-dim hover:bg-surface-2 hover:text-ink"
+            className="rounded-lg p-1.5 text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
             aria-label="Close"
           >
             <X className="h-5 w-5" />
@@ -80,7 +94,7 @@ export function ConfirmDialog({
       <div className="mt-6 flex justify-end gap-3">
         <button
           onClick={onClose}
-          className="rounded-lg border border-border px-4 py-2 text-sm text-ink-dim hover:text-ink"
+          className="rounded-lg border border-border px-4 py-2 text-sm text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
         >
           Cancel
         </button>
@@ -89,11 +103,12 @@ export function ConfirmDialog({
             onConfirm();
             onClose();
           }}
-          className={
+          className={cn(
+            "rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
             danger
-              ? "rounded-lg bg-danger px-4 py-2 text-sm font-semibold text-white hover:bg-danger/80"
-              : "rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-emerald-950 hover:bg-accent-dim"
-          }
+              ? "bg-danger text-white hover:bg-danger/85 focus-visible:ring-danger/50 focus-visible:ring-offset-bg"
+              : "bg-accent text-white hover:bg-accent-dim focus-visible:ring-accent/50 focus-visible:ring-offset-bg",
+          )}
         >
           {confirmLabel}
         </button>

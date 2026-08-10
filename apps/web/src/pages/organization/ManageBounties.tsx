@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useAccount, useWriteContract } from "wagmi";
 import { encodeFunctionData } from "viem";
-import { ExternalLink, Play, Rocket, Trash2, Wallet } from "lucide-react";
+import { ExternalLink, Play, Rocket, Trash2 } from "lucide-react";
 import { api } from "../../lib/api";
 import type { Bounty, Pagination } from "../../types";
 import { formatDate, weiToEth } from "../../lib/utils";
@@ -57,19 +57,16 @@ export function ManageBounties() {
     setPendingId(bounty.id);
     setPendingAction("fund");
     try {
-      // 1. Allocate an on-chain id for this bounty.
       let onChainId = bounty.onChainId;
       if (!onChainId) {
         const res = (await api.post(`/api/bounties/${bounty.id}/onchain`)) as { onChainId: string };
         onChainId = res.onChainId;
       }
 
-      // 2. Create the bounty on-chain if not already created.
       const deadlineSeconds = BigInt(Math.floor(new Date(bounty.deadline).getTime() / 1000));
       const createHash = await createOnChain(BigInt(onChainId), address, deadlineSeconds);
       await recordTx(createHash, { type: "BOUNTY_CREATE", bountyId: bounty.id });
 
-      // 3. Fund the bounty on-chain.
       const fundHash = await fund(BigInt(onChainId), BigInt(bounty.rewardAmountWei));
       await recordTx(fundHash, {
         type: "BOUNTY_FUND",
@@ -91,7 +88,6 @@ export function ManageBounties() {
     setPendingId(bounty.id);
     setPendingAction("status");
     try {
-      // Sync on-chain status when the bounty exists on-chain.
       if (bounty.onChainId && CONTRACT_ADDRESS) {
         const statusCode = status === "ACTIVE" ? 1 : status === "PAUSED" ? 2 : 3;
         const hash = await setOnChainStatus({
@@ -144,7 +140,7 @@ export function ManageBounties() {
           {isLoading ? (
             <Spinner />
           ) : isError ? (
-            <ErrorState message={(error as Error).message} retry={() => void refetch()} />
+            <ErrorState message="Unable to load bounties. Please try again." retry={() => void refetch()} />
           ) : (data?.items.length ?? 0) === 0 ? (
             <EmptyState
               title="No bounty programs"
@@ -157,9 +153,9 @@ export function ManageBounties() {
             />
           ) : (
             <>
-              <ul className="space-y-4">
+              <ul className="space-y-3">
                 {data?.items.map((b) => (
-                  <li key={b.id} className="rounded-xl border border-border p-4">
+                  <li key={b.id} className="rounded-xl border border-border p-4 transition-colors hover:border-border-strong">
                     <div className="flex flex-wrap items-start justify-between gap-4">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
@@ -167,13 +163,13 @@ export function ManageBounties() {
                             {b.title}
                           </Link>
                           <StatusBadge status={b.status} />
-                          {b.isFunded && <span className="text-xs font-medium text-accent">Funded</span>}
+                          {b.isFunded && <span className="text-xs font-medium text-emerald-500">Funded</span>}
                         </div>
                         <p className="mt-1 text-xs text-ink-faint">
                           {b._count?.bugReports ?? 0} reports · Deadline {formatDate(b.deadline)}
                           {b.onChainId ? ` · On-chain #${b.onChainId}` : " · Not on-chain yet"}
                         </p>
-                        <p className="mt-1 font-mono text-sm text-accent">{weiToEth(b.rewardAmountWei)} ETH total</p>
+                        <p className="mt-1 font-mono text-sm font-medium text-accent">{weiToEth(b.rewardAmountWei)} ETH total</p>
                       </div>
 
                       <div className="flex flex-wrap items-center gap-2">

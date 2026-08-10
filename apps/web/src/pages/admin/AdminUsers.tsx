@@ -106,7 +106,7 @@ export function AdminUsers() {
                   </thead>
                   <tbody className="divide-y divide-border">
                     {data?.items.map((u) => (
-                      <tr key={u.id}>
+                      <tr key={u.id} className="transition-colors hover:bg-surface-2/50">
                         <td className="py-3 pr-4">
                           <p className="font-medium text-ink">{u.name}</p>
                           <p className="text-xs text-ink-faint">{u.email}</p>

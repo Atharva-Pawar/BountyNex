@@ -1,6 +1,6 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Save, ShieldCheck, Star } from "lucide-react";
+import { Save, ShieldCheck, Star, Mail, CalendarDays } from "lucide-react";
 import { api } from "../../lib/api";
 import { useAuth } from "../../providers/AuthProvider";
 import { Button } from "../../components/ui/Button";
@@ -8,6 +8,7 @@ import { Card, CardBody, CardHeader } from "../../components/ui/Card";
 import { Field, Input, Textarea } from "../../components/ui/Field";
 import { AvatarUpload } from "../../components/profile/AvatarUpload";
 import { WalletPanel } from "../../components/wallet/WalletPanel";
+import { formatDate } from "../../lib/utils";
 
 export function ResearcherProfile() {
   const { user, refresh } = useAuth();
@@ -42,11 +43,14 @@ export function ResearcherProfile() {
             <CardHeader title="Public profile" />
             <CardBody>
               <form onSubmit={onSubmit} className="space-y-4">
-                <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface-2 p-4">
+                <div className="flex flex-col gap-4 rounded-xl border border-border bg-surface-2 p-5 sm:flex-row sm:items-center">
                   <AvatarUpload name={user?.name ?? ""} imageUrl={user?.imageUrl} onUploaded={refresh} />
-                  <p className="text-sm text-accent">
-                    {user?.researcherProfile?.handle ? `@${user.researcherProfile.handle}` : "no handle"}
-                  </p>
+                  <div>
+                    <p className="text-sm font-medium text-accent font-mono">
+                      {user?.researcherProfile?.handle ? `@${user.researcherProfile.handle}` : "no handle"}
+                    </p>
+                    <p className="text-xs text-ink-faint mt-0.5">Researcher</p>
+                  </div>
                 </div>
 
                 <Field label="Display name">
@@ -71,7 +75,7 @@ export function ResearcherProfile() {
         <div className="space-y-6">
           <Card className="p-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-amber-500/15 text-amber-400">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
                 <Star className="h-5 w-5" />
               </div>
               <div>
@@ -83,7 +87,7 @@ export function ResearcherProfile() {
 
           <Card className="p-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent/15 text-accent">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
                 <ShieldCheck className="h-5 w-5" />
               </div>
               <div>
@@ -95,11 +99,15 @@ export function ResearcherProfile() {
             </div>
           </Card>
 
-          <Card className="p-5 text-sm text-ink-dim">
-            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-ink-faint">Email</h3>
-            <p className="truncate text-ink">{user?.email}</p>
-            <h3 className="mb-1 mt-4 text-xs font-semibold uppercase tracking-wider text-ink-faint">Member since</h3>
-            <p className="text-ink">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "—"}</p>
+          <Card className="p-5 space-y-4">
+            <div className="flex items-center gap-2 text-sm text-ink-dim">
+              <Mail className="h-4 w-4 text-ink-faint" />
+              <span className="truncate text-ink">{user?.email}</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-ink-dim">
+              <CalendarDays className="h-4 w-4 text-ink-faint" />
+              <span>Member since {user?.createdAt ? formatDate(user.createdAt) : "—"}</span>
+            </div>
           </Card>
         </div>
       </div>

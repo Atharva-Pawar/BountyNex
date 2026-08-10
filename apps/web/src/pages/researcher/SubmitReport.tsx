@@ -76,7 +76,7 @@ export function SubmitReport() {
       </div>
 
       {!user?.isVerified && (
-        <div className="mb-6 flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-300">
+        <div className="mb-6 flex items-start gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-500">
           <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0" />
           Your account is not yet verified. Reports can still be submitted, but verification
           builds trust with organizations.
@@ -109,7 +109,7 @@ export function SubmitReport() {
             </Field>
 
             <Field label="Steps to reproduce">
-              <Textarea required minLength={20} value={form.stepsToReproduce} onChange={set("stepsToReproduce")} placeholder="1. Navigate to...&#10;2. Inject...&#10;3. Observe..." />
+              <Textarea required minLength={20} value={form.stepsToReproduce} onChange={set("stepsToReproduce")} placeholder={"1. Navigate to...\n2. Inject...\n3. Observe..."} />
             </Field>
 
             <Field label="Proof of concept (optional)">
@@ -121,15 +121,17 @@ export function SubmitReport() {
                 type="file"
                 multiple
                 onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
-                className="w-full text-sm text-ink-dim file:mr-3 file:rounded-lg file:border-0 file:bg-surface-2 file:px-4 file:py-2 file:text-sm file:text-accent hover:file:bg-accent/10"
+                className="w-full text-sm text-ink-dim file:mr-3 file:rounded-lg file:border-0 file:bg-surface-2 file:px-4 file:py-2 file:text-sm file:font-medium file:text-accent file:cursor-pointer hover:file:bg-accent/10"
               />
               {files.length > 0 && (
-                <p className="text-xs text-ink-faint">{files.length} file(s) attached</p>
+                <p className="text-xs text-ink-faint mt-1">{files.length} file(s) attached</p>
               )}
             </Field>
 
             {error && (
-              <p className="rounded-lg border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>
+              <div className="rounded-lg border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">
+                {error}
+              </div>
             )}
 
             <div className="flex justify-end gap-3 pt-2">

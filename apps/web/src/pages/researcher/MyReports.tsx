@@ -45,8 +45,8 @@ export function MyReports() {
             }}
             className={
               status === s
-                ? "rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent"
-                : "rounded-full border border-border px-3 py-1 text-xs font-medium text-ink-dim hover:border-border-strong hover:text-ink"
+                ? "rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent transition-colors"
+                : "rounded-full border border-border px-3 py-1 text-xs font-medium text-ink-dim transition-colors hover:border-border-strong hover:text-ink"
             }
           >
             {s === "ALL" ? "All" : s.replace(/_/g, " ")}
@@ -60,14 +60,14 @@ export function MyReports() {
           {isLoading ? (
             <Spinner />
           ) : isError ? (
-            <ErrorState message={(error as Error).message} retry={() => void refetch()} />
+            <ErrorState message="Unable to load reports. Please try again." retry={() => void refetch()} />
           ) : (data?.items.length ?? 0) === 0 ? (
             <EmptyState
               icon={<FileSearch className="h-6 w-6" />}
               title="No reports in this view"
               description="Adjust the status filter or submit a new report."
               action={
-                <Link to="/researcher/browse" className="text-sm text-accent hover:underline">
+                <Link to="/researcher/browse" className="text-sm font-medium text-accent hover:underline">
                   Browse bounties
                 </Link>
               }
@@ -90,7 +90,7 @@ export function MyReports() {
                     {data?.items.map((r) => (
                       <tr
                         key={r.id}
-                        className="cursor-pointer hover:bg-surface-2/50"
+                        className="cursor-pointer transition-colors hover:bg-surface-2/50"
                         onClick={() => setSelected(r)}
                       >
                         <td className="py-3 pr-4 font-medium text-ink hover:text-accent">{r.title}</td>

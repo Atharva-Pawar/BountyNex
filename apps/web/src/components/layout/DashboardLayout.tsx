@@ -20,7 +20,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAuth } from "../../providers/AuthProvider";
 import { cn } from "../../lib/utils";
 import { useWalletBinding } from "../../hooks/useWallet";
-import { Logo } from "./PublicLayout";
+import { ThemeToggle } from "../ui/ThemeToggle";
 
 interface NavItem {
   to: string;
@@ -66,9 +66,9 @@ function WalletStatus() {
     <div className="flex items-center gap-3">
       <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
       {address && (
-        <span className="hidden items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-2.5 py-1 text-xs text-accent lg:flex">
+        <span className="hidden items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-2.5 py-1 text-xs font-medium text-accent lg:flex">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
-          Bound to profile
+          Bound
         </span>
       )}
     </div>
@@ -89,20 +89,32 @@ export function DashboardLayout() {
 
   return (
     <div className="min-h-screen">
+      {/* Mobile overlay */}
+      {open && (
+        <div
+          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
+          onClick={() => setOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 w-64 border-r border-border bg-surface/80 backdrop-blur-md transition-transform lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-40 w-64 border-r border-border bg-surface lg:translate-x-0 transition-transform duration-300 ease-in-out",
           open ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <div className="flex h-16 items-center justify-between border-b border-border px-4">
           <Logo />
-          <button className="lg:hidden" onClick={() => setOpen(false)}>
-            <X className="h-5 w-5 text-ink-dim" />
+          <button
+            className="rounded-lg p-1.5 text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink lg:hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+            onClick={() => setOpen(false)}
+            aria-label="Close menu"
+          >
+            <X className="h-5 w-5" />
           </button>
         </div>
-        <nav className="space-y-1 p-3">
+        <nav className="space-y-0.5 p-3 overflow-y-auto max-h-[calc(100vh-8rem)]">
           {items.map((item) => (
             <NavLink
               key={item.to}
@@ -111,10 +123,10 @@ export function DashboardLayout() {
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors",
+                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
                   isActive
-                    ? "bg-accent/10 text-accent border border-accent/20"
-                    : "text-ink-dim hover:bg-surface-2 hover:text-ink",
+                    ? "bg-accent/10 text-accent border border-accent/20 shadow-sm"
+                    : "text-ink-dim hover:bg-surface-2 hover:text-ink border border-transparent",
                 )
               }
             >
@@ -123,37 +135,57 @@ export function DashboardLayout() {
             </NavLink>
           ))}
         </nav>
-        <div className="absolute inset-x-0 bottom-0 border-t border-border p-3">
+        <div className="absolute inset-x-0 bottom-0 border-t border-border bg-surface p-3">
           <button
             onClick={() => void logout().then(() => navigate("/"))}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-ink-dim hover:bg-surface-2 hover:text-danger"
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-ink-dim transition-colors hover:bg-surface-2 hover:text-danger focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
           >
-            <LogOut className="h-4 w-4" /> Logout
+            <LogOut className="h-4 w-4" /> Sign out
           </button>
         </div>
       </aside>
 
       {/* Main */}
       <div className="lg:pl-64">
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-bg/80 px-4 backdrop-blur-md sm:px-6">
+        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border bg-bg/80 px-4 backdrop-blur-md sm:px-6">
           <div className="flex items-center gap-3">
-            <button className="lg:hidden" onClick={() => setOpen(true)}>
-              <Menu className="h-5 w-5 text-ink-dim" />
+            <button
+              className="rounded-lg p-1.5 text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink lg:hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+              onClick={() => setOpen(true)}
+              aria-label="Open menu"
+            >
+              <Menu className="h-5 w-5" />
             </button>
-            <div>
+            <div className="hidden sm:block">
               <p className="text-xs text-ink-faint uppercase tracking-wider">Signed in as</p>
               <p className="text-sm font-medium text-ink">
-                {user.name} <span className="text-ink-faint">· {user.role}</span>
+                {user.name} <span className="text-ink-faint font-normal">· {user.role}</span>
               </p>
             </div>
           </div>
-          <WalletStatus />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <ThemeToggle />
+            <WalletStatus />
+          </div>
         </header>
         <main className="mx-auto max-w-6xl p-4 sm:p-6">
           <Outlet />
         </main>
       </div>
     </div>
+  );
+}
+
+function Logo() {
+  return (
+    <Link to="/" className="flex items-center gap-2">
+      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/15 text-accent glow-border">
+        <Bug className="h-5 w-5" />
+      </span>
+      <span className="text-lg font-bold tracking-tight text-ink">
+        Bounty<span className="text-accent glow-text">Nex</span>
+      </span>
+    </Link>
   );
 }
 

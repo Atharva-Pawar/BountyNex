@@ -10,6 +10,8 @@ import {
   ShieldCheck,
   Sparkles,
   Wallet,
+  TrendingUp,
+  Users,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../lib/api";
@@ -32,18 +34,18 @@ export function Landing() {
     <div>
       {/* Hero */}
       <section className="grid-bg relative overflow-hidden">
-        <div className="mx-auto max-w-7xl px-6 py-24 text-center">
-          <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 text-xs font-medium text-accent">
+        <div className="mx-auto max-w-7xl px-6 py-20 text-center sm:py-28">
+          <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/10 px-4 py-1.5 text-xs font-medium text-accent">
             <Sparkles className="h-3.5 w-3.5" />
             Ethereum Sepolia · Hybrid on-chain escrow
           </div>
-          <h1 className="mx-auto max-w-3xl text-4xl font-extrabold tracking-tight text-ink sm:text-6xl">
+          <h1 className="mx-auto max-w-4xl text-4xl font-extrabold tracking-tight text-ink sm:text-5xl lg:text-6xl">
             Crowdsource security with{" "}
-            <span className="bg-gradient-to-r from-accent to-accent-2 bg-clip-text text-transparent glow-text">
+            <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
               decentralized bounties
             </span>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-ink-dim">
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-ink-dim leading-relaxed">
             BountyNex connects organizations with ethical hackers. Programs are created on-chain,
             rewards are held in escrow by a smart contract, and researchers get paid in ETH the
             moment a valid report is approved.
@@ -63,13 +65,14 @@ export function Landing() {
 
           <div className="mx-auto mt-16 grid max-w-3xl grid-cols-3 gap-4">
             {[
-              { label: "On-chain escrow", value: "100%" },
-              { label: "Median reward", value: `${weiToEth("1000000000000000000")} ETH` },
-              { label: "Testnet only", value: "Sepolia" },
+              { label: "On-chain escrow", value: "100%", icon: <Lock className="h-4 w-4" /> },
+              { label: "Median reward", value: `${weiToEth("1000000000000000000")} ETH`, icon: <Coins className="h-4 w-4" /> },
+              { label: "Testnet only", value: "Sepolia", icon: <Globe className="h-4 w-4" /> },
             ].map((s) => (
-              <div key={s.label} className="rounded-xl border border-border bg-surface/70 p-4">
-                <p className="text-2xl font-bold text-accent">{s.value}</p>
-                <p className="text-xs text-ink-dim">{s.label}</p>
+              <div key={s.label} className="rounded-xl border border-border bg-surface/80 p-4 backdrop-blur-sm">
+                <div className="flex justify-center text-accent mb-2">{s.icon}</div>
+                <p className="text-xl font-bold text-ink">{s.value}</p>
+                <p className="text-xs text-ink-dim mt-1">{s.label}</p>
               </div>
             ))}
           </div>
@@ -77,32 +80,36 @@ export function Landing() {
       </section>
 
       {/* Featured bounties */}
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-ink">Featured bounties</h2>
-            <p className="text-sm text-ink-dim">Live programs from verified organizations</p>
+      {featured.length > 0 && (
+        <section className="mx-auto max-w-7xl px-6 py-16">
+          <div className="mb-8 flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-ink">Featured bounties</h2>
+              <p className="text-sm text-ink-dim mt-1">Live programs from verified organizations</p>
+            </div>
+            <Link to="/bounties" className="text-sm font-medium text-accent hover:underline">
+              View all <span aria-hidden="true">→</span>
+            </Link>
           </div>
-          <Link to="/bounties" className="text-sm text-accent hover:underline">
-            View all →
-          </Link>
-        </div>
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {featured.map((b) => (
-            <BountyCard key={b.id} bounty={b} />
-          ))}
-        </div>
-      </section>
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {featured.map((b) => (
+              <BountyCard key={b.id} bounty={b} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* How it works */}
-      <section id="how-it-works" className="border-y border-border bg-surface/40 py-20">
+      <section id="how-it-works" className="border-y border-border bg-surface/50 py-20">
         <div className="mx-auto max-w-7xl px-6">
-          <h2 className="text-center text-3xl font-bold text-ink">How it works</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-center text-ink-dim">
-            A hybrid architecture: normal operations live in a classic web stack, while
-            trust-critical reward handling runs on Ethereum.
-          </p>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-ink">How it works</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-ink-dim">
+              A hybrid architecture: normal operations live in a classic web stack, while
+              trust-critical reward handling runs on Ethereum.
+            </p>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">
             {[
               {
                 icon: <Bug className="h-6 w-6" />,
@@ -119,13 +126,14 @@ export function Landing() {
                 title: "Rewards released on-chain",
                 body: "On approval, the escrow contract releases ETH directly to the researcher's wallet. Duplicate payments are impossible.",
               },
-            ].map((s) => (
-              <div key={s.title} className="rounded-xl border border-border bg-surface p-6">
+            ].map((s, i) => (
+              <div key={s.title} className="rounded-xl border border-border bg-surface p-6 shadow-card transition-all hover:border-accent/20 hover:shadow-elevated">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10 text-accent">
                   {s.icon}
                 </div>
+                <div className="mb-2 text-xs font-semibold text-accent">Step {i + 1}</div>
                 <h3 className="font-semibold text-ink">{s.title}</h3>
-                <p className="mt-2 text-sm text-ink-dim">{s.body}</p>
+                <p className="mt-2 text-sm text-ink-dim leading-relaxed">{s.body}</p>
               </div>
             ))}
           </div>
@@ -135,7 +143,7 @@ export function Landing() {
       {/* Security */}
       <section id="security" className="mx-auto max-w-7xl px-6 py-20">
         <h2 className="text-center text-3xl font-bold text-ink">Built for trust</h2>
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {[
             {
               icon: <Lock className="h-5 w-5" />,
@@ -158,12 +166,12 @@ export function Landing() {
               body: "Everything runs on testnet ETH. No real money, ever.",
             },
           ].map((s) => (
-            <div key={s.title} className="rounded-xl border border-border bg-surface/70 p-6">
-              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-accent-2/10 text-accent-2">
+            <div key={s.title} className="rounded-xl border border-border bg-surface p-6 shadow-card transition-all hover:border-accent/20">
+              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-500/10 text-cyan-500">
                 {s.icon}
               </div>
               <h3 className="font-semibold text-ink">{s.title}</h3>
-              <p className="mt-2 text-sm text-ink-dim">{s.body}</p>
+              <p className="mt-2 text-sm text-ink-dim leading-relaxed">{s.body}</p>
             </div>
           ))}
         </div>
@@ -172,9 +180,11 @@ export function Landing() {
       {/* CTA */}
       <section className="border-t border-border bg-gradient-to-b from-surface/60 to-bg py-20">
         <div className="mx-auto max-w-3xl px-6 text-center">
-          <Wallet className="mx-auto h-10 w-10 text-accent" />
-          <h2 className="mt-4 text-3xl font-bold text-ink">Ready to start hunting?</h2>
-          <p className="mt-3 text-ink-dim">
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent/10 text-accent">
+            <Wallet className="h-8 w-8" />
+          </div>
+          <h2 className="text-3xl font-bold text-ink">Ready to start hunting?</h2>
+          <p className="mt-3 text-ink-dim text-lg">
             Create an account, connect your wallet and start earning testnet ETH for finding real
             vulnerabilities.
           </p>

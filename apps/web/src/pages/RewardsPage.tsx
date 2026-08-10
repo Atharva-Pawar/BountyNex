@@ -30,7 +30,7 @@ export function RewardsPage({ scope }: { scope: "researcher" | "organization" })
       </div>
 
       <Card className="flex items-center gap-4 p-5">
-        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10 text-accent">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
           <Coins className="h-6 w-6" />
         </div>
         <div>
@@ -45,7 +45,7 @@ export function RewardsPage({ scope }: { scope: "researcher" | "organization" })
           {isLoading ? (
             <Spinner />
           ) : isError ? (
-            <ErrorState message={(error as Error).message} />
+            <ErrorState message="Unable to load rewards. Please try again." />
           ) : rewards.length === 0 ? (
             <EmptyState
               icon={<Award className="h-6 w-6" />}
@@ -67,13 +67,13 @@ export function RewardsPage({ scope }: { scope: "researcher" | "organization" })
                 </thead>
                 <tbody className="divide-y divide-border">
                   {rewards.map((r) => (
-                    <tr key={r.id}>
+                    <tr key={r.id} className="transition-colors hover:bg-surface-2/50">
                       <td className="py-3 pr-4">
                         <p className="font-medium text-ink">{r.report?.title ?? "Report"}</p>
                         <p className="text-xs text-ink-faint">{r.report?.severity}</p>
                       </td>
                       <td className="py-3 pr-4 text-ink-dim">{r.bounty?.title}</td>
-                      <td className="py-3 pr-4 font-mono text-accent">{weiToEth(r.amountWei)} ETH</td>
+                      <td className="py-3 pr-4 font-mono font-medium text-accent">{weiToEth(r.amountWei)} ETH</td>
                       <td className="py-3 pr-4">
                         <Badge className={statusStyle(r.status)}>{r.status}</Badge>
                       </td>

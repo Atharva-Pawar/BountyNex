@@ -68,7 +68,7 @@ export function AdminReports() {
                   </thead>
                   <tbody className="divide-y divide-border">
                     {data?.items.map((r) => (
-                      <tr key={r.id}>
+                      <tr key={r.id} className="transition-colors hover:bg-surface-2/50">
                         <td className="py-3 pr-4">
                           <p className="font-medium text-ink">{r.title}</p>
                           <p className="text-xs text-ink-faint">{r.bounty?.title}</p>

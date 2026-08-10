@@ -3,6 +3,7 @@ import { Bug, LogOut, ShieldCheck } from "lucide-react";
 import { useAuth } from "../../providers/AuthProvider";
 import { cn } from "../../lib/utils";
 import { Button } from "../ui/Button";
+import { ThemeToggle } from "../ui/ThemeToggle";
 
 export function Logo({ compact }: { compact?: boolean }) {
   return (
@@ -27,21 +28,22 @@ export function PublicNavbar() {
     <header className="sticky top-0 z-40 border-b border-border bg-bg/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Logo />
-        <nav className="hidden items-center gap-8 text-sm text-ink-dim md:flex">
+        <nav className="hidden items-center gap-8 text-sm font-medium text-ink-dim md:flex">
           <NavLink
             to="/bounties"
-            className={({ isActive }) => cn("hover:text-accent", isActive && "text-accent")}
+            className={({ isActive }) => cn("transition-colors hover:text-accent", isActive && "text-accent")}
           >
             Browse Bounties
           </NavLink>
-          <NavLink to="/#how-it-works" className="hover:text-accent">
+          <Link to="/#how-it-works" className="transition-colors hover:text-accent">
             How it works
-          </NavLink>
-          <NavLink to="/#security" className="hover:text-accent">
+          </Link>
+          <Link to="/#security" className="transition-colors hover:text-accent">
             Security
-          </NavLink>
+          </Link>
         </nav>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <ThemeToggle />
           {isAuthenticated ? (
             <>
               <Link to={dashboardPath(user!.role)}>
@@ -51,8 +53,9 @@ export function PublicNavbar() {
               </Link>
               <button
                 onClick={() => void logout().then(() => navigate("/"))}
-                className="rounded-lg p-2 text-ink-dim hover:bg-surface-2 hover:text-ink"
+                className="rounded-lg p-2 text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
                 title="Logout"
+                aria-label="Logout"
               >
                 <LogOut className="h-4 w-4" />
               </button>
@@ -90,14 +93,14 @@ export function dashboardPath(role: string): string {
 
 export function PublicFooter() {
   return (
-    <footer className="border-t border-border bg-surface/40">
+    <footer className="border-t border-border bg-surface/60">
       <div className="mx-auto max-w-7xl px-6 py-10 text-sm text-ink-dim">
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
           <Logo />
           <div className="flex flex-wrap items-center justify-center gap-6">
-            <Link to="/bounties" className="hover:text-accent">Browse Bounties</Link>
-            <Link to="/register" className="hover:text-accent">Join as researcher</Link>
-            <Link to="/register" className="hover:text-accent">Launch a program</Link>
+            <Link to="/bounties" className="transition-colors hover:text-accent">Browse Bounties</Link>
+            <Link to="/register" className="transition-colors hover:text-accent">Join as researcher</Link>
+            <Link to="/register" className="transition-colors hover:text-accent">Launch a program</Link>
           </div>
         </div>
         <p className="mt-8 text-center text-xs text-ink-faint">

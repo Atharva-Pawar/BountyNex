@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { BadgeDollarSign, RefreshCw } from "lucide-react";
+import { BadgeDollarSign, RefreshCw, CheckCircle2, XCircle, Clock, ExternalLink } from "lucide-react";
 import { api } from "../lib/api";
 import type { BlockchainTransaction, Pagination } from "../types";
-import { formatDateTime, statusStyle, weiToEth } from "../lib/utils";
+import { cn, formatDateTime, statusStyle, weiToEth } from "../lib/utils";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { Card, CardBody, CardHeader } from "../components/ui/Card";
@@ -15,6 +15,17 @@ import { TxHashLink } from "../components/wallet/TxHashLink";
 interface TxResponse {
   items: BlockchainTransaction[];
   pagination: Pagination;
+}
+
+function StatusWithIcon({ status }: { status: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      {status === "CONFIRMED" && <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />}
+      {status === "FAILED" && <XCircle className="h-3.5 w-3.5 text-rose-500" />}
+      {status === "PENDING" && <Clock className="h-3.5 w-3.5 text-amber-500" />}
+      <Badge className={statusStyle(status)}>{status}</Badge>
+    </span>
+  );
 }
 
 export function TransactionsPage({ scope }: { scope: "researcher" | "organization" }) {
@@ -57,7 +68,7 @@ export function TransactionsPage({ scope }: { scope: "researcher" | "organizatio
           {isLoading ? (
             <Spinner />
           ) : isError ? (
-            <ErrorState message={(error as Error).message} retry={() => void refetch()} />
+            <ErrorState message="Unable to load transactions. Please try again." retry={() => void refetch()} />
           ) : (data?.items.length ?? 0) === 0 ? (
             <EmptyState
               icon={<BadgeDollarSign className="h-6 w-6" />}
@@ -81,14 +92,14 @@ export function TransactionsPage({ scope }: { scope: "researcher" | "organizatio
                   </thead>
                   <tbody className="divide-y divide-border">
                     {data?.items.map((tx) => (
-                      <tr key={tx.id}>
+                      <tr key={tx.id} className="transition-colors hover:bg-surface-2/50">
                         <td className="py-3 pr-4"><TxHashLink hash={tx.txHash} /></td>
                         <td className="py-3 pr-4 text-ink">{tx.type.replace(/_/g, " ")}</td>
-                        <td className="py-3 pr-4"><Badge className={statusStyle(tx.status)}>{tx.status}</Badge></td>
+                        <td className="py-3 pr-4"><StatusWithIcon status={tx.status} /></td>
                         <td className="py-3 pr-4 font-mono text-ink-dim">
                           {tx.amountWei ? `${weiToEth(tx.amountWei)} ETH` : "—"}
                         </td>
-                        <td className="py-3 pr-4 text-ink-dim">{tx.blockNumber ?? "—"}</td>
+                        <td className="py-3 pr-4 font-mono text-ink-dim">{tx.blockNumber ?? "—"}</td>
                         <td className="py-3 pr-4 text-ink-dim">{formatDateTime(tx.createdAt)}</td>
                         <td className="py-3">
                           <Button variant="ghost" size="sm" loading={verifying === tx.txHash} onClick={() => void verify(tx.txHash)}>
