@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { BadgeDollarSign, RefreshCw, CheckCircle2, XCircle, Clock, ExternalLink } from "lucide-react";
+import { BadgeDollarSign, RefreshCw, CheckCircle2, XCircle, Clock } from "lucide-react";
 import { api } from "../lib/api";
 import type { BlockchainTransaction, Pagination } from "../types";
-import { cn, formatDateTime, statusStyle, weiToEth } from "../lib/utils";
+import { formatDateTime, statusStyle, weiToEth } from "../lib/utils";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { Card, CardBody, CardHeader } from "../components/ui/Card";
@@ -54,7 +54,7 @@ export function TransactionsPage({ scope }: { scope: "researcher" | "organizatio
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-ink">Blockchain transactions</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-ink">Blockchain transactions</h1>
           <p className="text-sm text-ink-dim">Ethereum Sepolia · verified on-chain</p>
         </div>
         <Button variant="secondary" size="sm" onClick={() => void refetch()}>

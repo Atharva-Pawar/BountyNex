@@ -60,7 +60,7 @@ export function Register() {
       <Card className="w-full">
         <CardBody className="space-y-6">
           <div>
-            <h1 className="text-2xl font-bold text-ink">Create your account</h1>
+            <h1 className="text-2xl font-semibold tracking-tight text-ink">Create your account</h1>
             <p className="mt-1 text-sm text-ink-dim">Join as a security researcher or an organization</p>
           </div>
 
@@ -76,9 +76,9 @@ export function Register() {
                 type="button"
                 onClick={() => setType(t)}
                 className={cn(
-                  "flex flex-col items-center gap-2 rounded-xl border px-4 py-4 text-sm font-medium transition-all duration-200",
+                  "flex flex-col items-center gap-2 rounded-lg border px-4 py-4 text-sm font-medium transition-all duration-150",
                   type === t
-                    ? "border-accent bg-accent/10 text-accent shadow-sm"
+                    ? "border-accent bg-accent/10 text-accent"
                     : "border-border bg-surface-2 text-ink-dim hover:border-border-strong hover:text-ink",
                 )}
               >
@@ -118,7 +118,7 @@ export function Register() {
             )}
 
             {error && (
-              <div className="rounded-lg border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">
+              <div className="rounded-md border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">
                 {error}
               </div>
             )}

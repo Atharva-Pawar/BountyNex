@@ -68,7 +68,7 @@ export function SubmitReport() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-ink">Submit a report</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">Submit a report</h1>
         <p className="text-sm text-ink-dim">
           for <span className="font-medium text-accent">{bounty.title}</span> ·{" "}
           <span className="font-mono">{weiToEth(bounty.rewardAmountWei)} ETH</span>
@@ -76,7 +76,7 @@ export function SubmitReport() {
       </div>
 
       {!user?.isVerified && (
-        <div className="mb-6 flex items-start gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-500">
+        <div className="mb-6 flex items-start gap-3 rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-500">
           <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0" />
           Your account is not yet verified. Reports can still be submitted, but verification
           builds trust with organizations.
@@ -121,7 +121,7 @@ export function SubmitReport() {
                 type="file"
                 multiple
                 onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
-                className="w-full text-sm text-ink-dim file:mr-3 file:rounded-lg file:border-0 file:bg-surface-2 file:px-4 file:py-2 file:text-sm file:font-medium file:text-accent file:cursor-pointer hover:file:bg-accent/10"
+                className="w-full text-sm text-ink-dim file:mr-3 file:rounded-md file:border-0 file:bg-surface-2 file:px-4 file:py-2 file:text-sm file:font-medium file:text-accent file:cursor-pointer hover:file:bg-accent/10"
               />
               {files.length > 0 && (
                 <p className="text-xs text-ink-faint mt-1">{files.length} file(s) attached</p>
@@ -129,7 +129,7 @@ export function SubmitReport() {
             </Field>
 
             {error && (
-              <div className="rounded-lg border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">
+              <div className="rounded-md border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">
                 {error}
               </div>
             )}

@@ -33,7 +33,7 @@ export function ResearcherProfile() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-ink">Profile</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">Profile</h1>
         <p className="text-sm text-ink-dim">Manage your researcher identity</p>
       </div>
 
@@ -43,7 +43,7 @@ export function ResearcherProfile() {
             <CardHeader title="Public profile" />
             <CardBody>
               <form onSubmit={onSubmit} className="space-y-4">
-                <div className="flex flex-col gap-4 rounded-xl border border-border bg-surface-2 p-5 sm:flex-row sm:items-center">
+                <div className="flex flex-col gap-4 rounded-lg border border-border bg-surface-2 p-4 sm:flex-row sm:items-center">
                   <AvatarUpload name={user?.name ?? ""} imageUrl={user?.imageUrl} onUploaded={refresh} />
                   <div>
                     <p className="text-sm font-medium text-accent font-mono">
@@ -75,7 +75,7 @@ export function ResearcherProfile() {
         <div className="space-y-6">
           <Card className="p-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-amber-500/10 text-amber-500">
                 <Star className="h-5 w-5" />
               </div>
               <div>
@@ -87,7 +87,7 @@ export function ResearcherProfile() {
 
           <Card className="p-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent/10 text-accent">
                 <ShieldCheck className="h-5 w-5" />
               </div>
               <div>

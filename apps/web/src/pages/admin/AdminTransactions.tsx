@@ -19,7 +19,7 @@ export function AdminTransactions() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-ink">Transactions</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-ink">Transactions</h1>
           <p className="text-sm text-ink-dim">Latest on-chain activity (up to 100)</p>
         </div>
         <Button variant="secondary" size="sm" onClick={() => void refetch()}>

@@ -53,7 +53,7 @@ export function AdminOrganizations() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-ink">Organizations</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">Organizations</h1>
         <p className="text-sm text-ink-dim">Verify organizations running bounty programs</p>
       </div>
 

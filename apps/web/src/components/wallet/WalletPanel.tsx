@@ -29,12 +29,12 @@ export function WalletPanel() {
         </div>
 
         {bound ? (
-          <div className="flex items-center gap-2.5 rounded-lg border border-emerald-500/20 bg-emerald-500/5 px-4 py-3 text-sm text-emerald-500">
+          <div className="flex items-center gap-2.5 rounded-md border border-emerald-500/20 bg-emerald-500/5 px-4 py-3 text-sm text-emerald-500">
             <CheckCircle2 className="h-5 w-5 shrink-0" />
             <span>Wallet verified and bound to your profile ({shortAddress(serverWallet.address, 5)})</span>
           </div>
         ) : isConnected ? (
-          <div className="flex flex-col gap-3 rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-3">
+          <div className="flex flex-col gap-3 rounded-md border border-amber-500/20 bg-amber-500/5 px-4 py-3">
             <p className="flex items-center gap-2 text-sm text-amber-500">
               <ShieldAlert className="h-5 w-5 shrink-0" />
               This wallet is connected but not yet bound to your account.

@@ -45,7 +45,7 @@ export function AvatarUpload({
   return (
     <div className="flex items-center gap-4">
       <div
-        className={`relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden ${rounded} bg-accent/10 text-xl font-bold text-accent ring-2 ring-border transition-all`}
+        className={`relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden ${rounded} bg-surface-2 text-xl font-semibold text-accent ring-1 ring-border`}
       >
         {imageUrl ? (
           <img src={imageUrl} alt={name} className="h-full w-full object-cover" />
@@ -77,7 +77,7 @@ export function AvatarUpload({
           loading={uploading}
           onClick={() => inputRef.current?.click()}
         >
-          <Camera className="h-4 w-4" />
+          <Camera className="h-3.5 w-3.5" />
           {imageUrl ? "Change picture" : "Upload picture"}
         </Button>
         <p className="mt-1.5 text-xs text-ink-faint">

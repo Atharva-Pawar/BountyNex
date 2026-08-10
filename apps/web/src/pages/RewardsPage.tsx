@@ -23,19 +23,19 @@ export function RewardsPage({ scope }: { scope: "researcher" | "organization" })
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-ink">Rewards</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">Rewards</h1>
         <p className="text-sm text-ink-dim">
           {scope === "researcher" ? "Your earnings from approved reports" : "Reward distribution for your programs"}
         </p>
       </div>
 
       <Card className="flex items-center gap-4 p-5">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
-          <Coins className="h-6 w-6" />
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent/10 text-accent">
+          <Coins className="h-5 w-5" />
         </div>
         <div>
           <p className="text-xs uppercase tracking-wider text-ink-faint">Total paid on-chain</p>
-          <p className="text-2xl font-bold text-ink">{weiToEth(totalPaid)} ETH</p>
+          <p className="text-xl font-semibold text-ink">{weiToEth(totalPaid)} ETH</p>
         </div>
       </Card>
 

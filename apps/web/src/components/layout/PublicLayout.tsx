@@ -8,12 +8,12 @@ import { ThemeToggle } from "../ui/ThemeToggle";
 export function Logo({ compact }: { compact?: boolean }) {
   return (
     <Link to="/" className="flex items-center gap-2">
-      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/15 text-accent glow-border">
-        <Bug className="h-5 w-5" />
+      <span className="flex h-8 w-8 items-center justify-center rounded-md bg-accent/10 text-accent">
+        <Bug className="h-4 w-4" />
       </span>
       {!compact && (
-        <span className="text-lg font-bold tracking-tight text-ink">
-          Bounty<span className="text-accent glow-text">Nex</span>
+        <span className="text-base font-semibold tracking-tight text-ink">
+          Bounty<span className="text-accent">Nex</span>
         </span>
       )}
     </Link>
@@ -26,19 +26,19 @@ export function PublicNavbar() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-bg/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Logo />
-        <nav className="hidden items-center gap-8 text-sm font-medium text-ink-dim md:flex">
+        <nav className="hidden items-center gap-6 text-sm text-ink-dim md:flex">
           <NavLink
             to="/bounties"
-            className={({ isActive }) => cn("transition-colors hover:text-accent", isActive && "text-accent")}
+            className={({ isActive }) => cn("transition-colors hover:text-ink", isActive && "text-accent font-medium")}
           >
             Browse Bounties
           </NavLink>
-          <Link to="/#how-it-works" className="transition-colors hover:text-accent">
+          <Link to="/#how-it-works" className="transition-colors hover:text-ink">
             How it works
           </Link>
-          <Link to="/#security" className="transition-colors hover:text-accent">
+          <Link to="/#security" className="transition-colors hover:text-ink">
             Security
           </Link>
         </nav>
@@ -48,12 +48,12 @@ export function PublicNavbar() {
             <>
               <Link to={dashboardPath(user!.role)}>
                 <Button variant="secondary" size="sm">
-                  <ShieldCheck className="h-4 w-4" /> Dashboard
+                  <ShieldCheck className="h-3.5 w-3.5" /> Dashboard
                 </Button>
               </Link>
               <button
                 onClick={() => void logout().then(() => navigate("/"))}
-                className="rounded-lg p-2 text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+                className="rounded-md p-1.5 text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                 title="Logout"
                 aria-label="Logout"
               >
@@ -93,17 +93,17 @@ export function dashboardPath(role: string): string {
 
 export function PublicFooter() {
   return (
-    <footer className="border-t border-border bg-surface/60">
-      <div className="mx-auto max-w-7xl px-6 py-10 text-sm text-ink-dim">
+    <footer className="border-t border-border bg-surface/50">
+      <div className="mx-auto max-w-6xl px-6 py-8 text-sm text-ink-dim">
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
           <Logo />
           <div className="flex flex-wrap items-center justify-center gap-6">
-            <Link to="/bounties" className="transition-colors hover:text-accent">Browse Bounties</Link>
-            <Link to="/register" className="transition-colors hover:text-accent">Join as researcher</Link>
-            <Link to="/register" className="transition-colors hover:text-accent">Launch a program</Link>
+            <Link to="/bounties" className="transition-colors hover:text-ink">Browse Bounties</Link>
+            <Link to="/register" className="transition-colors hover:text-ink">Join as researcher</Link>
+            <Link to="/register" className="transition-colors hover:text-ink">Launch a program</Link>
           </div>
         </div>
-        <p className="mt-8 text-center text-xs text-ink-faint">
+        <p className="mt-6 text-center text-xs text-ink-faint">
           BountyNex runs on the Ethereum Sepolia testnet. Never use real funds. © {new Date().getFullYear()} BountyNex
         </p>
       </div>

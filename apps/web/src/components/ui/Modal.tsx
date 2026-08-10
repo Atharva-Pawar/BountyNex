@@ -43,26 +43,26 @@ export function Modal({
   return (
     <div
       className={cn(
-        "fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-200",
-        visible ? "bg-black/60 backdrop-blur-sm" : "bg-black/0",
+        "fixed inset-0 z-50 flex items-center justify-center p-4 transition-opacity duration-200",
+        visible ? "bg-black/50 backdrop-blur-sm" : "bg-black/0",
       )}
       onMouseDown={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
         className={cn(
-          "w-full rounded-2xl border border-border bg-surface shadow-elevated transition-all duration-200",
+          "w-full rounded-lg border border-border bg-surface transition-all duration-200",
           wide ? "max-w-3xl" : "max-w-lg",
           visible ? "scale-100 opacity-100" : "scale-95 opacity-0",
         )}
       >
         <div className="flex items-center justify-between border-b border-border px-5 py-4">
-          <h3 className="text-base font-semibold text-ink">{title}</h3>
+          <h3 className="text-sm font-semibold text-ink">{title}</h3>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+            className="rounded-md p-1.5 text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             aria-label="Close"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
         <div className="max-h-[75vh] overflow-y-auto p-5">{children}</div>
@@ -94,7 +94,7 @@ export function ConfirmDialog({
       <div className="mt-6 flex justify-end gap-3">
         <button
           onClick={onClose}
-          className="rounded-lg border border-border px-4 py-2 text-sm text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+          className="rounded-md border border-border px-4 py-2 text-sm text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
         >
           Cancel
         </button>
@@ -104,10 +104,10 @@ export function ConfirmDialog({
             onClose();
           }}
           className={cn(
-            "rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+            "rounded-md px-4 py-2 text-sm font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
             danger
-              ? "bg-danger text-white hover:bg-danger/85 focus-visible:ring-danger/50 focus-visible:ring-offset-bg"
-              : "bg-accent text-white hover:bg-accent-dim focus-visible:ring-accent/50 focus-visible:ring-offset-bg",
+              ? "bg-danger text-white hover:brightness-110 focus-visible:ring-danger/40 focus-visible:ring-offset-bg"
+              : "bg-accent text-white hover:brightness-110 focus-visible:ring-accent/40 focus-visible:ring-offset-bg",
           )}
         >
           {confirmLabel}

@@ -9,11 +9,10 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-xl border border-border bg-surface transition-all duration-200",
-        hover && "hover:border-accent/30",
+        "rounded-lg border border-border bg-surface transition-colors duration-150",
+        hover && "hover:border-border-strong",
         className,
       )}
-      style={{ boxShadow: "var(--shadow-card, none)" }}
       {...props}
     >
       {children}

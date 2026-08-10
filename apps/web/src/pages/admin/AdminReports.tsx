@@ -26,7 +26,7 @@ export function AdminReports() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-ink">Reports</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">Reports</h1>
         <p className="text-sm text-ink-dim">All vulnerability reports across the platform</p>
       </div>
 

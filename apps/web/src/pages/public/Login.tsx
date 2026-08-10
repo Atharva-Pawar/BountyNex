@@ -42,16 +42,16 @@ export function Login() {
       <Card className="w-full">
         <CardBody className="space-y-6">
           <div>
-            <h1 className="text-2xl font-bold text-ink">Welcome back</h1>
+            <h1 className="text-2xl font-semibold tracking-tight text-ink">Welcome back</h1>
             <p className="mt-1 text-sm text-ink-dim">Log in to your researcher or organization dashboard</p>
           </div>
 
           <form onSubmit={onSubmit} className="space-y-4">
             <Field label="Email">
               <div className="relative">
-                <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+                <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
                 <Input
-                  className="pl-10"
+                  className="pl-9"
                   type="email"
                   required
                   value={email}
@@ -62,9 +62,9 @@ export function Login() {
             </Field>
             <Field label="Password">
               <div className="relative">
-                <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+                <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
                 <Input
-                  className="pl-10"
+                  className="pl-9"
                   type="password"
                   required
                   value={password}
@@ -75,7 +75,7 @@ export function Login() {
             </Field>
 
             {error && (
-              <div className="rounded-lg border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">
+              <div className="rounded-md border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">
                 {error}
               </div>
             )}

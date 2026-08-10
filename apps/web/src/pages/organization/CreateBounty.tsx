@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { parseEther, formatEther } from "viem";
-import { Plus, Rocket, Trash2, AlertCircle } from "lucide-react";
+import { Plus, Rocket, AlertCircle } from "lucide-react";
 import { api } from "../../lib/api";
 import type { Bounty, Severity } from "../../types";
 import { SEVERITY_ORDER } from "../../lib/utils";
@@ -75,7 +75,7 @@ export function CreateBounty() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-ink">Create a bounty program</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">Create a bounty program</h1>
         <p className="text-sm text-ink-dim">
           Define scope, rules, and severity-based rewards. Fund it on-chain to go live.
         </p>
@@ -105,7 +105,7 @@ export function CreateBounty() {
               <Input required type="datetime-local" value={form.deadline} onChange={set("deadline")} />
             </Field>
 
-            <div className="rounded-xl border border-border bg-surface-2 p-4">
+            <div className="rounded-lg border border-border bg-surface-2 p-4">
               <div className="mb-3 flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-ink">Severity rewards</h3>
                 <p className="font-mono text-xs text-accent font-medium">Total {formatEther(totalWei)} ETH</p>
@@ -131,7 +131,7 @@ export function CreateBounty() {
             </div>
 
             {error && (
-              <div className="flex items-start gap-2 rounded-lg border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">
+              <div className="flex items-start gap-2 rounded-md border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">
                 <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                 {error}
               </div>
@@ -147,14 +147,14 @@ export function CreateBounty() {
         </CardBody>
       </Card>
 
-      <Card className="border-accent/20">
+      <Card>
         <CardHeader
           title="Next steps after creating"
           subtitle="Your program is created as a draft"
           action={<Rocket className="h-5 w-5 text-accent" />}
         />
         <CardBody>
-          <ol className="space-y-2 text-sm text-ink-dim list-decimal pl-5">
+          <ol className="list-decimal space-y-2 pl-5 text-sm text-ink-dim">
             <li>Fund the bounty on-chain with MetaMask (the contract escrows the total reward).</li>
             <li>Once the funding transaction confirms, the bounty is marked funded automatically.</li>
             <li>Activate the program so researchers can submit reports.</li>

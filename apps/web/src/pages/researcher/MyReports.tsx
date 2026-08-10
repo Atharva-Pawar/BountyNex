@@ -31,7 +31,7 @@ export function MyReports() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-ink">My reports</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">My reports</h1>
         <p className="text-sm text-ink-dim">Every vulnerability report you've submitted</p>
       </div>
 
@@ -45,8 +45,8 @@ export function MyReports() {
             }}
             className={
               status === s
-                ? "rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent transition-colors"
-                : "rounded-full border border-border px-3 py-1 text-xs font-medium text-ink-dim transition-colors hover:border-border-strong hover:text-ink"
+                ? "rounded-md border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-medium text-accent transition-colors"
+                : "rounded-md border border-border px-3 py-1 text-xs font-medium text-ink-dim transition-colors hover:border-border-strong hover:text-ink"
             }
           >
             {s === "ALL" ? "All" : s.replace(/_/g, " ")}

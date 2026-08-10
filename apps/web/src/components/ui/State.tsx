@@ -21,9 +21,9 @@ export function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border-strong bg-surface/50 py-14 text-center">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-2 text-ink-faint">
-        {icon ?? <Inbox className="h-6 w-6" />}
+    <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border bg-surface/50 py-14 text-center">
+      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-2 text-ink-faint">
+        {icon ?? <Inbox className="h-5 w-5" />}
       </div>
       <h3 className="text-sm font-semibold text-ink">{title}</h3>
       {description && <p className="max-w-xs text-sm text-ink-dim">{description}</p>}
@@ -34,15 +34,15 @@ export function EmptyState({
 
 export function ErrorState({ message, retry }: { message: string; retry?: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-danger/20 bg-danger/5 py-14 text-center">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-danger/10 text-danger">
-        <AlertTriangle className="h-6 w-6" />
+    <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-danger/20 bg-danger/5 py-14 text-center">
+      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-danger/10 text-danger">
+        <AlertTriangle className="h-5 w-5" />
       </div>
       <p className="max-w-sm text-sm text-ink">{message}</p>
       {retry && (
         <button
           onClick={retry}
-          className="mt-1 rounded-lg border border-border px-4 py-1.5 text-sm font-medium text-accent transition-colors hover:bg-surface-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+          className="mt-1 rounded-md border border-border px-4 py-1.5 text-sm font-medium text-accent transition-colors hover:bg-surface-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
         >
           Try again
         </button>

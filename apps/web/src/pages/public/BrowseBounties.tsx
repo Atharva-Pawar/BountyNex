@@ -49,9 +49,9 @@ export function BrowseBounties() {
   const hasFilters = !!(filters.q || filters.severity || filters.status || filters.sort !== "newest");
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-ink sm:text-3xl">Browse bounties</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">Browse bounties</h1>
         <p className="mt-1 text-sm text-ink-dim">
           Public programs funded with testnet ETH. Find a target and start hunting.
         </p>
@@ -59,7 +59,7 @@ export function BrowseBounties() {
 
       <BountyFilters filters={filters} onChange={setFilters} />
 
-      <div className="mt-8">
+      <div className="mt-6">
         {isLoading && !data ? (
           <SkeletonBountyGrid count={6} />
         ) : isError ? (
@@ -83,7 +83,7 @@ export function BrowseBounties() {
           )
         ) : (
           <>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {data.items.map((b) => (
                 <BountyCard key={b.id} bounty={b} />
               ))}

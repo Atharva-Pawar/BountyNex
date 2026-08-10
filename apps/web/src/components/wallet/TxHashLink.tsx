@@ -9,11 +9,11 @@ export function TxHashLink({ hash, className }: { hash: string; className?: stri
       rel="noreferrer"
       className={
         className ??
-        "inline-flex items-center gap-1 font-mono text-xs text-accent-2 hover:underline"
+        "inline-flex items-center gap-1 font-mono text-xs text-accent hover:underline"
       }
       title="View on Sepolia block explorer"
     >
-      {shortAddress(hash, 6)}
+      {shortAddress(hash, 5)}
       <ExternalLink className="h-3 w-3" />
     </a>
   );

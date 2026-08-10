@@ -37,7 +37,7 @@ export function OrgProfile() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-ink">Organization profile</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">Organization profile</h1>
         <p className="text-sm text-ink-dim">Manage how your organization appears on the platform</p>
       </div>
 
@@ -47,12 +47,12 @@ export function OrgProfile() {
             <CardHeader title="Organization details" />
             <CardBody>
               <form onSubmit={onSubmit} className="space-y-4">
-                <div className="flex flex-col gap-4 rounded-xl border border-border bg-surface-2 p-5 sm:flex-row sm:items-center">
+                <div className="flex flex-col gap-4 rounded-lg border border-border bg-surface-2 p-4 sm:flex-row sm:items-center">
                   <AvatarUpload
                     name={user?.organization?.name ?? ""}
                     imageUrl={user?.imageUrl}
                     onUploaded={refresh}
-                    rounded="rounded-xl"
+                    rounded="rounded-lg"
                   />
                   <div>
                     <p className="text-sm font-medium text-ink">{user?.organization?.name}</p>
@@ -65,7 +65,7 @@ export function OrgProfile() {
                 </Field>
                 <Field label="Website">
                   <div className="relative">
-                    <Globe className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+                    <Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
                     <Input className="pl-10" type="url" value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://acme.com" />
                   </div>
                 </Field>
@@ -88,7 +88,7 @@ export function OrgProfile() {
         <div className="space-y-6">
           <Card className="p-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent/10 text-accent">
                 <ShieldCheck className="h-5 w-5" />
               </div>
               <div>

@@ -1,7 +1,7 @@
 import { cn } from "../../lib/utils";
 
 const baseField =
-  "w-full rounded-lg border border-border bg-surface-2 px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-faint transition-all duration-200 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20";
+  "w-full rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-ink placeholder:text-ink-faint transition-colors duration-150 focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/20";
 
 export function Field({
   label,
@@ -17,7 +17,7 @@ export function Field({
   return (
     <div className="space-y-1.5">
       {label && (
-        <label className="block text-xs font-medium uppercase tracking-wider text-ink-dim">
+        <label className="block text-xs font-medium text-ink-dim">
           {label}
         </label>
       )}
@@ -77,7 +77,7 @@ export function Select({ className, invalid, children, ...props }: SelectProps) 
         className,
       )}
       style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238892a6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
       }}
       {...props}
     >

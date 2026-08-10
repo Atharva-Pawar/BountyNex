@@ -66,8 +66,8 @@ function WalletStatus() {
     <div className="flex items-center gap-3">
       <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
       {address && (
-        <span className="hidden items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-2.5 py-1 text-xs font-medium text-accent lg:flex">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
+        <span className="hidden items-center gap-1.5 rounded-md border border-accent/20 bg-accent/5 px-2 py-1 text-[10px] font-medium text-accent lg:flex">
+          <span className="h-1.5 w-1.5 rounded-full bg-accent" />
           Bound
         </span>
       )}
@@ -89,29 +89,27 @@ export function DashboardLayout() {
 
   return (
     <div className="min-h-screen">
-      {/* Mobile overlay */}
       {open && (
         <div
-          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 w-64 border-r border-border bg-surface lg:translate-x-0 transition-transform duration-300 ease-in-out",
+          "fixed inset-y-0 left-0 z-40 w-60 border-r border-border bg-surface lg:translate-x-0 transition-transform duration-200 ease-in-out",
           open ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div className="flex h-16 items-center justify-between border-b border-border px-4">
+        <div className="flex h-14 items-center justify-between border-b border-border px-4">
           <Logo />
           <button
-            className="rounded-lg p-1.5 text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink lg:hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+            className="rounded-md p-1.5 text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink lg:hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             onClick={() => setOpen(false)}
             aria-label="Close menu"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
         <nav className="space-y-0.5 p-3 overflow-y-auto max-h-[calc(100vh-8rem)]">
@@ -123,10 +121,10 @@ export function DashboardLayout() {
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
+                  "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors duration-150",
                   isActive
-                    ? "bg-accent/10 text-accent border border-accent/20 shadow-sm"
-                    : "text-ink-dim hover:bg-surface-2 hover:text-ink border border-transparent",
+                    ? "bg-accent/10 text-accent font-medium"
+                    : "text-ink-dim hover:bg-surface-2 hover:text-ink",
                 )
               }
             >
@@ -138,26 +136,25 @@ export function DashboardLayout() {
         <div className="absolute inset-x-0 bottom-0 border-t border-border bg-surface p-3">
           <button
             onClick={() => void logout().then(() => navigate("/"))}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-ink-dim transition-colors hover:bg-surface-2 hover:text-danger focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+            className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm text-ink-dim transition-colors hover:bg-surface-2 hover:text-danger focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           >
             <LogOut className="h-4 w-4" /> Sign out
           </button>
         </div>
       </aside>
 
-      {/* Main */}
-      <div className="lg:pl-64">
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border bg-bg/80 px-4 backdrop-blur-md sm:px-6">
+      <div className="lg:pl-60">
+        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-bg/80 px-4 backdrop-blur-md sm:px-6">
           <div className="flex items-center gap-3">
             <button
-              className="rounded-lg p-1.5 text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink lg:hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+              className="rounded-md p-1.5 text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink lg:hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
               onClick={() => setOpen(true)}
               aria-label="Open menu"
             >
-              <Menu className="h-5 w-5" />
+              <Menu className="h-4 w-4" />
             </button>
             <div className="hidden sm:block">
-              <p className="text-xs text-ink-faint uppercase tracking-wider">Signed in as</p>
+              <p className="text-[11px] text-ink-faint uppercase tracking-wider">Signed in as</p>
               <p className="text-sm font-medium text-ink">
                 {user.name} <span className="text-ink-faint font-normal">· {user.role}</span>
               </p>
@@ -179,11 +176,11 @@ export function DashboardLayout() {
 function Logo() {
   return (
     <Link to="/" className="flex items-center gap-2">
-      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/15 text-accent glow-border">
-        <Bug className="h-5 w-5" />
+      <span className="flex h-8 w-8 items-center justify-center rounded-md bg-accent/10 text-accent">
+        <Bug className="h-4 w-4" />
       </span>
-      <span className="text-lg font-bold tracking-tight text-ink">
-        Bounty<span className="text-accent glow-text">Nex</span>
+      <span className="text-base font-semibold tracking-tight text-ink">
+        Bounty<span className="text-accent">Nex</span>
       </span>
     </Link>
   );

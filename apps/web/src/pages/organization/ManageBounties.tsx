@@ -126,7 +126,7 @@ export function ManageBounties() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-ink">My bounties</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-ink">My bounties</h1>
           <p className="text-sm text-ink-dim">Fund, activate, and manage your programs</p>
         </div>
         <Link to="/organization/create">
@@ -153,13 +153,13 @@ export function ManageBounties() {
             />
           ) : (
             <>
-              <ul className="space-y-3">
+              <div className="divide-y divide-border">
                 {data?.items.map((b) => (
-                  <li key={b.id} className="rounded-xl border border-border p-4 transition-colors hover:border-border-strong">
+                  <div key={b.id} className="py-4 first:pt-0 last:pb-0">
                     <div className="flex flex-wrap items-start justify-between gap-4">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
-                          <Link to={`/organization/bounties/${b.id}/reports`} className="font-semibold text-ink hover:text-accent">
+                          <Link to={`/organization/bounties/${b.id}/reports`} className="font-medium text-ink hover:text-accent">
                             {b.title}
                           </Link>
                           <StatusBadge status={b.status} />
@@ -222,9 +222,9 @@ export function ManageBounties() {
                         )}
                       </div>
                     </div>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
               <PaginationBar pagination={data?.pagination} onPage={setPage} />
             </>
           )}

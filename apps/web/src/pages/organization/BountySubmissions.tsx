@@ -6,7 +6,6 @@ import { api } from "../../lib/api";
 import type { BugReport, ReportStatus } from "../../types";
 import { formatDate, weiToEth } from "../../lib/utils";
 import { StatusBadge } from "../../components/ui/Badge";
-import { Button } from "../../components/ui/Button";
 import { Card, CardBody, CardHeader } from "../../components/ui/Card";
 import { EmptyState, ErrorState, Spinner } from "../../components/ui/State";
 
@@ -31,7 +30,7 @@ export function BountySubmissions({ all = false }: { all?: boolean }) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-ink">Submissions</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">Submissions</h1>
         <p className="text-sm text-ink-dim">
           {all ? "Reports across all your bounty programs" : "Reports for a single program"}
         </p>
@@ -44,8 +43,8 @@ export function BountySubmissions({ all = false }: { all?: boolean }) {
             onClick={() => setStatus(s)}
             className={
               status === s
-                ? "rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent transition-colors"
-                : "rounded-full border border-border px-3 py-1 text-xs font-medium text-ink-dim transition-colors hover:border-border-strong hover:text-ink"
+                ? "rounded-md border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-medium text-accent transition-colors"
+                : "rounded-md border border-border px-3 py-1 text-xs font-medium text-ink-dim transition-colors hover:border-border-strong hover:text-ink"
             }
           >
             {s === "ALL" ? "All" : s.replace(/_/g, " ")}

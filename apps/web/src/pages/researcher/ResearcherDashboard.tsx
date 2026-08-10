@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Award, Bug, Clock, FileText, ShieldCheck, TrendingUp } from "lucide-react";
+import { Award, Bug, Clock, FileText, ShieldCheck } from "lucide-react";
 import { api } from "../../lib/api";
 import type { BugReport } from "../../types";
 import { useAuth } from "../../providers/AuthProvider";
@@ -34,17 +34,17 @@ export function ResearcherDashboard() {
   const totalEarned = paid.reduce((acc, r) => acc + BigInt(r.amountWei), 0n);
 
   const stats = [
-    { label: "Reports submitted", value: String(reports?.pagination.total ?? 0), icon: <FileText className="h-5 w-5" />, color: "text-accent bg-accent/10" },
-    { label: "Pending review", value: String(items.filter((r) => r.status === "SUBMITTED" || r.status === "UNDER_REVIEW").length), icon: <Clock className="h-5 w-5" />, color: "text-amber-500 bg-amber-500/10" },
-    { label: "Accepted", value: String(items.filter((r) => r.status === "ACCEPTED" || r.status === "REWARDED").length), icon: <TrendingUp className="h-5 w-5" />, color: "text-emerald-500 bg-emerald-500/10" },
-    { label: "Total earned", value: `${weiToEth(totalEarned)} ETH`, icon: <Award className="h-5 w-5" />, color: "text-violet-500 bg-violet-500/10" },
+    { label: "Reports submitted", value: String(reports?.pagination.total ?? 0), icon: <FileText className="h-4 w-4" /> },
+    { label: "Pending review", value: String(items.filter((r) => r.status === "SUBMITTED" || r.status === "UNDER_REVIEW").length), icon: <Clock className="h-4 w-4" /> },
+    { label: "Accepted", value: String(items.filter((r) => r.status === "ACCEPTED" || r.status === "REWARDED").length), icon: <Bug className="h-4 w-4" /> },
+    { label: "Total earned", value: `${weiToEth(totalEarned)} ETH`, icon: <Award className="h-4 w-4" /> },
   ];
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-ink">
+          <h1 className="text-2xl font-semibold tracking-tight text-ink">
             Welcome back, {user?.name?.split(" ")[0]}
           </h1>
           <p className="text-sm text-ink-dim">
@@ -56,23 +56,19 @@ export function ResearcherDashboard() {
           </p>
         </div>
         <Link to="/researcher/browse">
-          <Button>
-            <Bug className="h-4 w-4" /> Find bounties
-          </Button>
+          <Button>Find bounties</Button>
         </Link>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
-          <Card key={s.label} className="flex items-center gap-4 p-5">
-            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg ${s.color}`}>
+          <div key={s.label} className="bg-surface p-4">
+            <div className="flex items-center gap-2 text-ink-dim mb-2">
               {s.icon}
+              <span className="text-xs">{s.label}</span>
             </div>
-            <div className="min-w-0">
-              <p className="text-xs text-ink-faint truncate">{s.label}</p>
-              <p className="text-lg font-bold text-ink truncate">{s.value}</p>
-            </div>
-          </Card>
+            <p className="text-xl font-semibold text-ink">{s.value}</p>
+          </div>
         ))}
       </div>
 
@@ -97,17 +93,17 @@ export function ResearcherDashboard() {
               }
             />
           ) : (
-            <ul className="divide-y divide-border">
+            <div className="divide-y divide-border">
               {items.map((r) => (
-                <li key={r.id} className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0">
+                <div key={r.id} className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-ink">{r.title}</p>
                     <p className="truncate text-xs text-ink-faint">{r.bounty?.title}</p>
                   </div>
                   <StatusBadge status={r.status} />
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           )}
         </CardBody>
       </Card>

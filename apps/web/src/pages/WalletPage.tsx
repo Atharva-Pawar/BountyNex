@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Wallet2, Link2, CheckCircle2, XCircle, Clock } from "lucide-react";
+import { Wallet2, CheckCircle2, XCircle, Clock } from "lucide-react";
 import { api } from "../lib/api";
 import type { BlockchainTransaction, Wallet } from "../types";
 import { formatDateTime, shortAddress, statusStyle, weiToEth } from "../lib/utils";
@@ -8,7 +8,6 @@ import { WalletPanel } from "../components/wallet/WalletPanel";
 import { TxHashLink } from "../components/wallet/TxHashLink";
 import { Badge } from "../components/ui/Badge";
 import { EmptyState, Spinner } from "../components/ui/State";
-import { cn } from "../lib/utils";
 
 function TxStatusIcon({ status }: { status: string }) {
   if (status === "CONFIRMED") return <CheckCircle2 className="h-4 w-4 text-emerald-500" />;
@@ -33,7 +32,7 @@ export function WalletPage({ scope }: { scope: "researcher" | "organization" }) 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-ink">Wallet</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">Wallet</h1>
         <p className="text-sm text-ink-dim">
           {scope === "researcher"
             ? "Connect MetaMask to receive rewards"
@@ -48,7 +47,7 @@ export function WalletPage({ scope }: { scope: "researcher" | "organization" }) 
         <CardBody className="space-y-3">
           {wallet ? (
             <>
-              <div className="flex items-center justify-between rounded-lg border border-border bg-surface-2 px-4 py-3">
+              <div className="flex items-center justify-between rounded-md border border-border bg-surface-2 px-4 py-3">
                 <span className="flex items-center gap-2.5 text-sm text-ink">
                   <Wallet2 className="h-4 w-4 text-accent" />
                   <span className="font-mono">{shortAddress(wallet.address, 6)}</span>
@@ -67,9 +66,9 @@ export function WalletPage({ scope }: { scope: "researcher" | "organization" }) 
         <Card>
           <CardHeader title="Recent transactions" />
           <CardBody>
-            <ul className="space-y-2">
+            <div className="divide-y divide-border">
               {txData.items.map((tx) => (
-                <li key={tx.id} className="flex items-center justify-between rounded-lg border border-border bg-surface-2 px-4 py-3 transition-colors hover:border-border-strong">
+                <div key={tx.id} className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0">
                   <div className="flex items-center gap-3">
                     <TxStatusIcon status={tx.status} />
                     <div>
@@ -83,9 +82,9 @@ export function WalletPage({ scope }: { scope: "researcher" | "organization" }) 
                     )}
                     <TxHashLink hash={tx.txHash} />
                   </div>
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           </CardBody>
         </Card>
       )}

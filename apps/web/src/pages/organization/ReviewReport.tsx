@@ -93,7 +93,7 @@ export function ReviewReport() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
-        <button onClick={() => window.history.back()} className="flex items-center gap-2 text-sm text-ink-dim transition-colors hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 rounded-lg px-2 py-1">
+        <button onClick={() => window.history.back()} className="flex items-center gap-2 text-sm text-ink-dim transition-colors hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded-md px-2 py-1">
           <ArrowLeft className="h-4 w-4" /> Back
         </button>
         <div className="flex items-center gap-2">
@@ -150,7 +150,7 @@ export function ReviewReport() {
             )}
 
             {isAccepted && (
-              <div className="rounded-xl border border-accent/20 bg-accent/5 p-4">
+              <div className="rounded-lg border border-accent/20 bg-accent/5 p-4">
                 <div className="mb-3 flex items-center justify-between">
                   <p className="text-sm font-medium text-ink">Reward assigned</p>
                   <p className="font-mono font-semibold text-accent">{weiToEth(report.rewardWei)} ETH</p>

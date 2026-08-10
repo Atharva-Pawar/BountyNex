@@ -11,10 +11,10 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-surface text-ink-dim transition-all duration-200 hover:border-accent/40 hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+      className="relative flex h-8 w-8 items-center justify-center rounded-md border border-border text-ink-dim transition-all duration-200 hover:border-border-strong hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
     >
       <Sun
-        className="h-[18px] w-[18px] transition-all duration-300"
+        className="h-[16px] w-[16px] transition-all duration-300"
         style={
           isDark
             ? { opacity: 1, transform: "scale(1) rotate(0deg)" }
@@ -22,7 +22,7 @@ export function ThemeToggle() {
         }
       />
       <Moon
-        className="h-[18px] w-[18px] absolute transition-all duration-300"
+        className="h-[16px] w-[16px] absolute transition-all duration-300"
         style={
           isDark
             ? { opacity: 0, transform: "scale(0.5) rotate(90deg)" }
