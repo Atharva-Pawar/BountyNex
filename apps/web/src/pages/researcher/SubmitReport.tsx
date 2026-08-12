@@ -76,7 +76,7 @@ export function SubmitReport() {
       </div>
 
       {!user?.isVerified && (
-        <div className="mb-6 flex items-start gap-3 rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-500">
+        <div className="mb-6 flex items-start gap-3 rounded-lg border border-warn/20 bg-warn/5 px-4 py-3 text-sm text-warn">
           <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0" />
           Your account is not yet verified. Reports can still be submitted, but verification
           builds trust with organizations.

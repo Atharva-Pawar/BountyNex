@@ -41,81 +41,82 @@ export function BountyDetails() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
-      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-tight text-ink">{bounty.title}</h1>
-            <Badge className={bounty.status === "ACTIVE" ? "bg-emerald-500/15 text-emerald-500 border-emerald-500/30" : "bg-slate-500/15 text-slate-500 border-slate-500/30"}>
-              {bounty.status}
-            </Badge>
-            {bounty.isFunded && (
-              <span className="inline-flex items-center gap-1 rounded-md border border-emerald-500/20 bg-emerald-500/5 px-2 py-0.5 text-[11px] font-medium text-emerald-500">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Funded
-              </span>
-            )}
-          </div>
-          <p className="mt-2 flex items-center gap-2 text-sm text-ink-dim">
-            <ShieldCheck className={cn("h-4 w-4", bounty.organization?.isVerified ? "text-accent" : "text-ink-faint")} />
-            {bounty.organization?.name}
-            {bounty.organization?.isVerified && (
-              <span className="text-accent font-medium">· Verified</span>
-            )}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          {isOwner && (
-            <Link to={`/organization/bounties/${bounty.id}/reports`}>
-              <Button variant="secondary">Manage submissions</Button>
-            </Link>
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="text-2xl font-semibold tracking-tight text-ink">{bounty.title}</h1>
+          <Badge className={bounty.status === "ACTIVE" ? "bg-accent/10 text-accent border-accent/20" : "bg-ink-faint/10 text-ink-faint border-ink-faint/20"}>
+            {bounty.status}
+          </Badge>
+          {bounty.isFunded && (
+            <span className="inline-flex items-center gap-1 rounded-md border border-accent/20 bg-accent/5 px-2 py-0.5 font-mono text-[10px] text-accent">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Funded
+            </span>
           )}
-          {canSubmit ? (
-            <Link to={`/bounties/${bounty.id}/submit`}>
-              <Button size="lg">
-                <Bug className="h-4 w-4" /> Submit a report
-              </Button>
-            </Link>
-          ) : user?.role === "GUEST" || !user ? (
-            <Link to={`/login?next=/bounties/${bounty.id}/submit`}>
-              <Button size="lg" variant="outline">
-                <Lock className="h-4 w-4" /> Log in to submit
-              </Button>
-            </Link>
-          ) : null}
         </div>
+        <p className="mt-2 flex items-center gap-2 text-sm text-ink-dim">
+          <ShieldCheck className={cn("h-4 w-4", bounty.organization?.isVerified ? "text-accent" : "text-ink-faint")} />
+          {bounty.organization?.name}
+          {bounty.organization?.isVerified && (
+            <span className="text-accent font-medium">Verified</span>
+          )}
+        </p>
       </div>
 
       {/* Key stats */}
-      <div className="mb-6 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-8 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
         <div className="bg-surface p-4">
           <p className="flex items-center gap-2 text-xs text-ink-dim">
             <CircleDollarSign className="h-3.5 w-3.5 text-accent" /> Reward pool
           </p>
-          <p className="mt-1 text-lg font-semibold text-ink">{weiToEth(bounty.rewardAmountWei)} ETH</p>
+          <p className="mt-1 font-mono text-lg font-semibold text-ink">{weiToEth(bounty.rewardAmountWei)} ETH</p>
         </div>
         <div className="bg-surface p-4">
           <p className="flex items-center gap-2 text-xs text-ink-dim">
-            <CalendarClock className="h-3.5 w-3.5 text-cyan-500" /> Deadline
+            <CalendarClock className="h-3.5 w-3.5 text-accent-2" /> Deadline
           </p>
           <p className="mt-1 text-lg font-semibold text-ink">{days} days left</p>
           <p className="text-xs text-ink-faint">{formatDate(bounty.deadline)}</p>
         </div>
         <div className="bg-surface p-4">
           <p className="flex items-center gap-2 text-xs text-ink-dim">
-            <FileText className="h-3.5 w-3.5 text-violet-500" /> Reports
+            <FileText className="h-3.5 w-3.5 text-info" /> Reports
           </p>
           <p className="mt-1 text-lg font-semibold text-ink">{bounty._count?.bugReports ?? 0}</p>
         </div>
         <div className="bg-surface p-4">
           <p className="flex items-center gap-2 text-xs text-ink-dim">
-            <ShieldCheck className="h-3.5 w-3.5 text-amber-500" /> Funding
+            <ShieldCheck className="h-3.5 w-3.5 text-warn" /> Funding
           </p>
           <p className="mt-1 text-lg font-semibold text-ink">{bounty.isFunded ? "Funded" : "Unfunded"}</p>
         </div>
       </div>
 
+      {/* Actions */}
+      <div className="mb-8 flex items-center gap-3">
+        {isOwner && (
+          <Link to={`/organization/bounties/${bounty.id}/reports`}>
+            <Button variant="secondary">Manage submissions</Button>
+          </Link>
+        )}
+        {canSubmit ? (
+          <Link to={`/bounties/${bounty.id}/submit`}>
+            <Button>
+              <Bug className="h-4 w-4" /> Submit a report
+            </Button>
+          </Link>
+        ) : user?.role === "GUEST" || !user ? (
+          <Link to={`/login?next=/bounties/${bounty.id}/submit`}>
+            <Button variant="outline">
+              <Lock className="h-4 w-4" /> Log in to submit
+            </Button>
+          </Link>
+        ) : null}
+      </div>
+
       {/* On-chain status */}
       {(bounty.onChainId || bounty.isFunded) && (
-        <Card className="mb-6">
+        <Card className="mb-8">
           <CardHeader title="On-chain escrow" subtitle="Live state from the BountyEscrow contract" />
           <CardBody className="grid gap-4 sm:grid-cols-3">
             <div>
@@ -196,7 +197,7 @@ export function BountyDetails() {
                   {bounty.bugReports.map((r) => (
                     <li key={r.id} className="flex items-center justify-between text-sm">
                       <span className="truncate text-ink">{r.title}</span>
-                      <Badge className={r.severity === "CRITICAL" ? "bg-rose-500/15 text-rose-500 border-rose-500/30" : "bg-slate-500/15 text-slate-500 border-slate-500/30"}>
+                      <Badge className={r.severity === "CRITICAL" ? "bg-danger/10 text-danger border-danger/20" : "bg-ink-faint/10 text-ink-faint border-ink-faint/20"}>
                         {r.severity}
                       </Badge>
                     </li>

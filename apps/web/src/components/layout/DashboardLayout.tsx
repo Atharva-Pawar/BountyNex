@@ -66,7 +66,7 @@ function WalletStatus() {
     <div className="flex items-center gap-3">
       <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
       {address && (
-        <span className="hidden items-center gap-1.5 rounded-md border border-accent/20 bg-accent/5 px-2 py-1 text-[10px] font-medium text-accent lg:flex">
+        <span className="hidden items-center gap-1.5 rounded-md border border-accent/20 bg-accent/5 px-2 py-1 font-mono text-[10px] text-accent lg:flex">
           <span className="h-1.5 w-1.5 rounded-full bg-accent" />
           Bound
         </span>
@@ -98,21 +98,14 @@ export function DashboardLayout() {
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 w-60 border-r border-border bg-surface lg:translate-x-0 transition-transform duration-200 ease-in-out",
+          "fixed inset-y-0 left-0 z-40 w-56 border-r border-border bg-surface lg:translate-x-0 transition-transform duration-200 ease-out",
           open ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div className="flex h-14 items-center justify-between border-b border-border px-4">
+        <div className="flex h-14 items-center border-b border-border px-4">
           <Logo />
-          <button
-            className="rounded-md p-1.5 text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink lg:hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
-            onClick={() => setOpen(false)}
-            aria-label="Close menu"
-          >
-            <X className="h-4 w-4" />
-          </button>
         </div>
-        <nav className="space-y-0.5 p-3 overflow-y-auto max-h-[calc(100vh-8rem)]">
+        <nav className="space-y-0.5 p-2 overflow-y-auto max-h-[calc(100vh-8rem)]">
           {items.map((item) => (
             <NavLink
               key={item.to}
@@ -121,7 +114,7 @@ export function DashboardLayout() {
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors duration-150",
+                  "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-all duration-150",
                   isActive
                     ? "bg-accent/10 text-accent font-medium"
                     : "text-ink-dim hover:bg-surface-2 hover:text-ink",
@@ -133,7 +126,7 @@ export function DashboardLayout() {
             </NavLink>
           ))}
         </nav>
-        <div className="absolute inset-x-0 bottom-0 border-t border-border bg-surface p-3">
+        <div className="absolute inset-x-0 bottom-0 border-t border-border bg-surface p-2">
           <button
             onClick={() => void logout().then(() => navigate("/"))}
             className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm text-ink-dim transition-colors hover:bg-surface-2 hover:text-danger focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
@@ -143,7 +136,7 @@ export function DashboardLayout() {
         </div>
       </aside>
 
-      <div className="lg:pl-60">
+      <div className="lg:pl-56">
         <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-bg/80 px-4 backdrop-blur-md sm:px-6">
           <div className="flex items-center gap-3">
             <button
@@ -165,7 +158,7 @@ export function DashboardLayout() {
             <WalletStatus />
           </div>
         </header>
-        <main className="mx-auto max-w-6xl p-4 sm:p-6">
+        <main className="mx-auto max-w-5xl p-4 sm:p-6">
           <Outlet />
         </main>
       </div>
@@ -179,7 +172,7 @@ function Logo() {
       <span className="flex h-8 w-8 items-center justify-center rounded-md bg-accent/10 text-accent">
         <Bug className="h-4 w-4" />
       </span>
-      <span className="text-base font-semibold tracking-tight text-ink">
+      <span className="text-sm font-semibold tracking-tight text-ink">
         Bounty<span className="text-accent">Nex</span>
       </span>
     </Link>

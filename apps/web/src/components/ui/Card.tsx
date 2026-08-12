@@ -9,8 +9,8 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-lg border border-border bg-surface transition-colors duration-150",
-        hover && "hover:border-border-strong",
+        "rounded-lg border border-border bg-surface transition-all duration-200",
+        hover && "hover:border-border-strong hover:bg-surface-2",
         className,
       )}
       {...props}
@@ -30,7 +30,7 @@ export function CardHeader({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-start justify-between gap-4 border-b border-border px-5 py-4">
+    <div className="flex items-start justify-between gap-4 border-b border-border px-5 py-3.5">
       <div className="min-w-0">
         <h3 className="text-sm font-semibold text-ink">{title}</h3>
         {subtitle && <p className="mt-0.5 text-xs text-ink-dim">{subtitle}</p>}

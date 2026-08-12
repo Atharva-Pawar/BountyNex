@@ -75,12 +75,12 @@ export function ResearcherProfile() {
         <div className="space-y-6">
           <Card className="p-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-amber-500/10 text-amber-500">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-warn/10 text-warn">
                 <Star className="h-5 w-5" />
               </div>
               <div>
                 <p className="text-xs text-ink-faint">Reputation score</p>
-                <p className="text-2xl font-bold text-ink">{user?.researcherProfile?.reputationScore ?? 0}</p>
+                <p className="font-mono text-2xl font-bold text-ink">{user?.researcherProfile?.reputationScore ?? 0}</p>
               </div>
             </div>
           </Card>

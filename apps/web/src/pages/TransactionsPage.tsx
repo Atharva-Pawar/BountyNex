@@ -20,9 +20,9 @@ interface TxResponse {
 function StatusWithIcon({ status }: { status: string }) {
   return (
     <span className="inline-flex items-center gap-1.5">
-      {status === "CONFIRMED" && <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />}
-      {status === "FAILED" && <XCircle className="h-3.5 w-3.5 text-rose-500" />}
-      {status === "PENDING" && <Clock className="h-3.5 w-3.5 text-amber-500" />}
+      {status === "CONFIRMED" && <CheckCircle2 className="h-3.5 w-3.5 text-accent" />}
+      {status === "FAILED" && <XCircle className="h-3.5 w-3.5 text-danger" />}
+      {status === "PENDING" && <Clock className="h-3.5 w-3.5 text-warn" />}
       <Badge className={statusStyle(status)}>{status}</Badge>
     </span>
   );
@@ -55,7 +55,7 @@ export function TransactionsPage({ scope }: { scope: "researcher" | "organizatio
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-ink">Blockchain transactions</h1>
-          <p className="text-sm text-ink-dim">Ethereum Sepolia · verified on-chain</p>
+          <p className="text-sm text-ink-dim">Ethereum Sepolia &middot; verified on-chain</p>
         </div>
         <Button variant="secondary" size="sm" onClick={() => void refetch()}>
           <RefreshCw className="h-4 w-4" /> Refresh

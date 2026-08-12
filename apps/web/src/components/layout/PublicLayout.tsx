@@ -12,7 +12,7 @@ export function Logo({ compact }: { compact?: boolean }) {
         <Bug className="h-4 w-4" />
       </span>
       {!compact && (
-        <span className="text-base font-semibold tracking-tight text-ink">
+        <span className="text-sm font-semibold tracking-tight text-ink">
           Bounty<span className="text-accent">Nex</span>
         </span>
       )}
@@ -26,7 +26,7 @@ export function PublicNavbar() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-bg/80 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
         <Logo />
         <nav className="hidden items-center gap-6 text-sm text-ink-dim md:flex">
           <NavLink
@@ -94,7 +94,7 @@ export function dashboardPath(role: string): string {
 export function PublicFooter() {
   return (
     <footer className="border-t border-border bg-surface/50">
-      <div className="mx-auto max-w-6xl px-6 py-8 text-sm text-ink-dim">
+      <div className="mx-auto max-w-5xl px-6 py-8 text-sm text-ink-dim">
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
           <Logo />
           <div className="flex flex-wrap items-center justify-center gap-6">
@@ -104,7 +104,7 @@ export function PublicFooter() {
           </div>
         </div>
         <p className="mt-6 text-center text-xs text-ink-faint">
-          BountyNex runs on the Ethereum Sepolia testnet. Never use real funds. © {new Date().getFullYear()} BountyNex
+          BountyNex runs on the Ethereum Sepolia testnet. Never use real funds. &copy; {new Date().getFullYear()} BountyNex
         </p>
       </div>
     </footer>

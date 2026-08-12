@@ -77,7 +77,7 @@ export function OrgDashboard() {
               {s.icon}
               <span className="text-xs">{s.label}</span>
             </div>
-            <p className="text-xl font-semibold text-ink">{s.value}</p>
+            <p className="font-mono text-xl font-semibold text-ink">{s.value}</p>
           </div>
         ))}
       </div>
@@ -110,7 +110,7 @@ export function OrgDashboard() {
                       {b.title}
                     </Link>
                     <p className="text-xs text-ink-faint">
-                      {b._count?.bugReports ?? 0} reports · {b.isFunded ? "Funded" : "Not funded"}
+                      {b._count?.bugReports ?? 0} reports &middot; {b.isFunded ? "Funded" : "Not funded"}
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-3">

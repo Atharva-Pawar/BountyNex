@@ -40,7 +40,7 @@ export function AdminDashboard() {
               {c.icon}
               <span className="text-xs">{c.label}</span>
             </div>
-            <p className="text-xl font-semibold text-ink">{c.value}</p>
+            <p className="font-mono text-xl font-semibold text-ink">{c.value}</p>
             <p className="text-xs text-ink-faint mt-1">{c.detail}</p>
           </Link>
         ))}
@@ -58,7 +58,7 @@ export function AdminDashboard() {
                 </div>
                 <div className="h-1.5 overflow-hidden rounded-full bg-surface-2">
                   <div
-                    className="h-full rounded-full bg-emerald-500 transition-all duration-500"
+                    className="h-full rounded-full bg-accent transition-all duration-500"
                     style={{ width: s.bounties.total ? `${(count / s.bounties.total) * 100}%` : "0%" }}
                   />
                 </div>
@@ -78,7 +78,7 @@ export function AdminDashboard() {
                 </div>
                 <div className="h-1.5 overflow-hidden rounded-full bg-surface-2">
                   <div
-                    className="h-full rounded-full bg-cyan-500 transition-all duration-500"
+                    className="h-full rounded-full bg-accent-2 transition-all duration-500"
                     style={{ width: s.reports.total ? `${(count / s.reports.total) * 100}%` : "0%" }}
                   />
                 </div>
@@ -95,8 +95,8 @@ export function AdminDashboard() {
           </div>
           <div>
             <p className="text-xs uppercase tracking-wider text-ink-faint">Blockchain activity</p>
-            <p className="text-lg font-semibold text-ink">
-              {s.transactions.total} transactions · {weiToEth(s.bounties.totalDepositedWei)} ETH escrowed
+            <p className="font-mono text-lg font-semibold text-ink">
+              {s.transactions.total} transactions &middot; {weiToEth(s.bounties.totalDepositedWei)} ETH escrowed
             </p>
           </div>
         </CardBody>

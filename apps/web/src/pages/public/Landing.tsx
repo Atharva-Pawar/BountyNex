@@ -8,7 +8,6 @@ import {
   Globe,
   Lock,
   ShieldCheck,
-  Sparkles,
   Wallet,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -31,45 +30,48 @@ export function Landing() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-6xl px-6 py-20 text-center sm:py-28 lg:py-36">
-          <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-ink-dim">
-            <Sparkles className="h-3 w-3 text-accent" />
-            Ethereum Sepolia · Hybrid on-chain escrow
-          </div>
-          <h1 className="mx-auto max-w-4xl text-4xl font-bold tracking-tight text-ink sm:text-5xl lg:text-6xl">
-            Crowdsource security.
-            <br />
-            <span className="text-accent">Reward researchers.</span>
-            <br />
-            On-chain.
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-base text-ink-dim leading-relaxed sm:text-lg">
-            BountyNex connects organizations with ethical hackers. Programs are created on-chain,
-            rewards are held in escrow by a smart contract, and researchers get paid in ETH the
-            moment a valid report is approved.
-          </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-            <Link to="/bounties">
-              <Button size="lg">
-                Browse active bounties <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-            <Link to="/register">
-              <Button size="lg" variant="outline">
-                Become a researcher
-              </Button>
-            </Link>
+        <div className="mx-auto max-w-5xl px-6 pt-20 pb-16 sm:pt-28 sm:pb-20 lg:pt-32 lg:pb-24">
+          <div className="max-w-3xl">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 font-mono text-[11px] text-ink-dim">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+              Ethereum Sepolia &middot; Hybrid on-chain escrow
+            </div>
+            <h1 className="text-4xl font-bold tracking-tight text-ink sm:text-5xl lg:text-6xl text-balance">
+              Crowdsource security.
+              <br />
+              <span className="text-accent">Reward researchers.</span>
+              <br />
+              On-chain.
+            </h1>
+            <p className="mt-6 max-w-xl text-base text-ink-dim leading-relaxed sm:text-lg">
+              BountyNex connects organizations with ethical hackers. Programs are created on-chain,
+              rewards are held in escrow by a smart contract, and researchers get paid in ETH the
+              moment a valid report is approved.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Link to="/bounties">
+                <Button size="lg">
+                  Browse active bounties <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+              <Link to="/register">
+                <Button size="lg" variant="outline">
+                  Become a researcher
+                </Button>
+              </Link>
+            </div>
           </div>
 
-          <div className="mx-auto mt-16 grid max-w-2xl grid-cols-3 gap-6">
+          {/* Inline stats */}
+          <div className="mt-16 grid max-w-lg grid-cols-3 gap-8 border-t border-border pt-8">
             {[
               { label: "On-chain escrow", value: "100%" },
               { label: "Median reward", value: `${weiToEth("1000000000000000000")} ETH` },
               { label: "Testnet only", value: "Sepolia" },
             ].map((s) => (
-              <div key={s.label} className="text-center">
-                <p className="text-2xl font-bold text-ink">{s.value}</p>
-                <p className="mt-1 text-xs text-ink-dim">{s.label}</p>
+              <div key={s.label}>
+                <p className="font-mono text-xl font-semibold text-ink">{s.value}</p>
+                <p className="mt-1 text-xs text-ink-faint">{s.label}</p>
               </div>
             ))}
           </div>
@@ -78,32 +80,34 @@ export function Landing() {
 
       {/* Featured bounties */}
       {featured.length > 0 && (
-        <section className="mx-auto max-w-6xl px-6 py-16">
-          <div className="mb-8 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-ink">Featured bounties</h2>
-            <Link to="/bounties" className="text-sm font-medium text-accent hover:underline">
-              View all <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((b) => (
-              <BountyCard key={b.id} bounty={b} />
-            ))}
+        <section className="border-y border-border bg-surface/30 py-16">
+          <div className="mx-auto max-w-5xl px-6">
+            <div className="mb-8 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-ink">Featured bounties</h2>
+              <Link to="/bounties" className="text-sm font-medium text-accent hover:underline">
+                View all <span aria-hidden="true">&rarr;</span>
+              </Link>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {featured.map((b) => (
+                <BountyCard key={b.id} bounty={b} />
+              ))}
+            </div>
           </div>
         </section>
       )}
 
       {/* How it works */}
-      <section id="how-it-works" className="border-y border-border py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="mb-12">
+      <section id="how-it-works" className="py-20">
+        <div className="mx-auto max-w-5xl px-6">
+          <div className="mb-12 max-w-xl">
             <h2 className="text-2xl font-semibold text-ink">How it works</h2>
-            <p className="mt-2 text-sm text-ink-dim max-w-xl">
-              A hybrid architecture: normal operations live in a classic web stack, while
+            <p className="mt-2 text-sm text-ink-dim">
+              A hybrid architecture. Normal operations live in a classic web stack, while
               trust-critical reward handling runs on Ethereum.
             </p>
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-3">
             {[
               {
                 icon: <Bug className="h-5 w-5" />,
@@ -112,7 +116,7 @@ export function Landing() {
               },
               {
                 icon: <FileSearch className="h-5 w-5" />,
-                title: "Researchers hunt & report",
+                title: "Researchers hunt and report",
                 body: "Connect MetaMask, submit vulnerability reports with evidence. Track status in real time from SUBMITTED to REWARDED.",
               },
               {
@@ -122,8 +126,8 @@ export function Landing() {
               },
             ].map((s, i) => (
               <div key={s.title} className="group">
-                <div className="mb-3 flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10 text-accent text-xs font-mono">
+                <div className="mb-4 flex items-center gap-3">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-md bg-accent/10 text-accent font-mono text-xs font-medium">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <div className="flex h-8 w-8 items-center justify-center rounded-md bg-surface-2 text-ink-dim">
@@ -139,44 +143,51 @@ export function Landing() {
       </section>
 
       {/* Security */}
-      <section id="security" className="mx-auto max-w-6xl px-6 py-20">
-        <h2 className="text-2xl font-semibold text-ink">Built for trust</h2>
-        <div className="mt-8 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            {
-              icon: <Lock className="h-4 w-4" />,
-              title: "On-chain escrow",
-              body: "Rewards are held by the BountyEscrow contract, not the platform.",
-            },
-            {
-              icon: <Fingerprint className="h-4 w-4" />,
-              title: "Signed wallet binding",
-              body: "Wallets are verified with a cryptographic signature before use.",
-            },
-            {
-              icon: <ShieldCheck className="h-4 w-4" />,
-              title: "Role-based access",
-              body: "JWT auth with strict per-role authorization on every endpoint.",
-            },
-            {
-              icon: <Globe className="h-4 w-4" />,
-              title: "Sepolia testnet",
-              body: "Everything runs on testnet ETH. No real money, ever.",
-            },
-          ].map((s) => (
-            <div key={s.title} className="bg-surface p-5">
-              <div className="mb-2 text-accent-2">
-                {s.icon}
+      <section id="security" className="border-y border-border bg-surface/30 py-20">
+        <div className="mx-auto max-w-5xl px-6">
+          <div className="mb-10 max-w-xl">
+            <h2 className="text-2xl font-semibold text-ink">Built for trust</h2>
+            <p className="mt-2 text-sm text-ink-dim">
+              Security-first architecture at every layer of the platform.
+            </p>
+          </div>
+          <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                icon: <Lock className="h-4 w-4" />,
+                title: "On-chain escrow",
+                body: "Rewards are held by the BountyEscrow contract, not the platform.",
+              },
+              {
+                icon: <Fingerprint className="h-4 w-4" />,
+                title: "Signed wallet binding",
+                body: "Wallets are verified with a cryptographic signature before use.",
+              },
+              {
+                icon: <ShieldCheck className="h-4 w-4" />,
+                title: "Role-based access",
+                body: "JWT auth with strict per-role authorization on every endpoint.",
+              },
+              {
+                icon: <Globe className="h-4 w-4" />,
+                title: "Sepolia testnet",
+                body: "Everything runs on testnet ETH. No real money, ever.",
+              },
+            ].map((s) => (
+              <div key={s.title} className="bg-surface p-5">
+                <div className="mb-2 text-accent-2">
+                  {s.icon}
+                </div>
+                <h3 className="text-sm font-semibold text-ink">{s.title}</h3>
+                <p className="mt-1.5 text-xs text-ink-dim leading-relaxed">{s.body}</p>
               </div>
-              <h3 className="text-sm font-semibold text-ink">{s.title}</h3>
-              <p className="mt-1.5 text-xs text-ink-dim leading-relaxed">{s.body}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="border-t border-border py-20">
+      <section className="py-20">
         <div className="mx-auto max-w-2xl px-6 text-center">
           <div className="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10 text-accent">
             <Wallet className="h-6 w-6" />

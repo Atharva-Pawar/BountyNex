@@ -43,19 +43,19 @@ export function Modal({
   return (
     <div
       className={cn(
-        "fixed inset-0 z-50 flex items-center justify-center p-4 transition-opacity duration-200",
-        visible ? "bg-black/50 backdrop-blur-sm" : "bg-black/0",
+        "fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-200",
+        visible ? "bg-black/60 backdrop-blur-sm" : "bg-black/0",
       )}
       onMouseDown={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
         className={cn(
-          "w-full rounded-lg border border-border bg-surface transition-all duration-200",
+          "w-full rounded-lg border border-border bg-surface transition-all duration-200 ease-out",
           wide ? "max-w-3xl" : "max-w-lg",
-          visible ? "scale-100 opacity-100" : "scale-95 opacity-0",
+          visible ? "scale-100 opacity-100 translate-y-0" : "scale-[0.97] opacity-0 translate-y-1",
         )}
       >
-        <div className="flex items-center justify-between border-b border-border px-5 py-4">
+        <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
           <h3 className="text-sm font-semibold text-ink">{title}</h3>
           <button
             onClick={onClose}

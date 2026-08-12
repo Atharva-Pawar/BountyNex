@@ -58,9 +58,9 @@ export function BountyFilters({
       ) : (
         <Select value={filters.minReward ?? ""} onChange={(e) => update({ minReward: e.target.value })}>
           <option value="">Any reward</option>
-          <option value="100000000000000000">≥ 0.1 ETH</option>
-          <option value="500000000000000000">≥ 0.5 ETH</option>
-          <option value="1000000000000000000">≥ 1 ETH</option>
+          <option value="100000000000000000">{"\u2265"} 0.1 ETH</option>
+          <option value="500000000000000000">{"\u2265"} 0.5 ETH</option>
+          <option value="1000000000000000000">{"\u2265"} 1 ETH</option>
         </Select>
       )}
     </div>

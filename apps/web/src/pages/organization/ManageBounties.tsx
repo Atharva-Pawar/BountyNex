@@ -163,7 +163,7 @@ export function ManageBounties() {
                             {b.title}
                           </Link>
                           <StatusBadge status={b.status} />
-                          {b.isFunded && <span className="text-xs font-medium text-emerald-500">Funded</span>}
+                          {b.isFunded && <span className="text-xs font-medium text-accent">Funded</span>}
                         </div>
                         <p className="mt-1 text-xs text-ink-faint">
                           {b._count?.bugReports ?? 0} reports · Deadline {formatDate(b.deadline)}

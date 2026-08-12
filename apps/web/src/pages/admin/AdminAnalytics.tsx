@@ -57,7 +57,7 @@ export function AdminAnalytics() {
                   <span className="font-medium text-ink">{count}</span>
                 </div>
                 <div className="h-1.5 overflow-hidden rounded-full bg-surface-2">
-                  <div className="h-full rounded-full bg-cyan-500 transition-all duration-500" style={{ width: `${(count / usersTotal) * 100}%` }} />
+                  <div className="h-full rounded-full bg-accent-2 transition-all duration-500" style={{ width: `${(count / usersTotal) * 100}%` }} />
                 </div>
               </div>
             ))}
@@ -74,7 +74,7 @@ export function AdminAnalytics() {
                   <span className="font-medium text-ink">{count}</span>
                 </div>
                 <div className="h-1.5 overflow-hidden rounded-full bg-surface-2">
-                  <div className="h-full rounded-full bg-violet-500 transition-all duration-500" style={{ width: `${(count / txTotal) * 100}%` }} />
+                  <div className="h-full rounded-full bg-accent transition-all duration-500" style={{ width: `${(count / txTotal) * 100}%` }} />
                 </div>
               </div>
             ))}

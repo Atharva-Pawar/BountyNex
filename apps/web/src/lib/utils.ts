@@ -66,29 +66,29 @@ export function explorerTxUrl(hash: string): string {
 }
 
 export const STATUS_STYLES: Record<string, string> = {
-  ACTIVE: "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
-  DRAFT: "bg-slate-500/15 text-slate-500 border-slate-500/30",
-  PAUSED: "bg-amber-500/15 text-amber-500 border-amber-500/30",
-  CLOSED: "bg-rose-500/15 text-rose-500 border-rose-500/30",
-  SUBMITTED: "bg-cyan-500/15 text-cyan-500 border-cyan-500/30",
-  UNDER_REVIEW: "bg-sky-500/15 text-sky-500 border-sky-500/30",
-  NEEDS_INFORMATION: "bg-amber-500/15 text-amber-500 border-amber-500/30",
-  ACCEPTED: "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
-  REJECTED: "bg-rose-500/15 text-rose-500 border-rose-500/30",
-  REWARDED: "bg-violet-500/15 text-violet-500 border-violet-500/30",
-  PENDING: "bg-amber-500/15 text-amber-500 border-amber-500/30",
-  PAID: "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
-  FAILED: "bg-rose-500/15 text-rose-500 border-rose-500/30",
-  CONFIRMED: "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
-  CRITICAL: "bg-rose-500/15 text-rose-500 border-rose-500/30",
-  HIGH: "bg-orange-500/15 text-orange-500 border-orange-500/30",
-  MEDIUM: "bg-amber-500/15 text-amber-500 border-amber-500/30",
-  LOW: "bg-sky-500/15 text-sky-500 border-sky-500/30",
-  INFORMATIONAL: "bg-slate-500/15 text-slate-500 border-slate-500/30",
-  RESEARCHER: "bg-cyan-500/15 text-cyan-500 border-cyan-500/30",
-  ORGANIZATION: "bg-violet-500/15 text-violet-500 border-violet-500/30",
-  ADMIN: "bg-rose-500/15 text-rose-500 border-rose-500/30",
-  GUEST: "bg-slate-500/15 text-slate-500 border-slate-500/30",
+  ACTIVE: "bg-accent/10 text-accent border-accent/20",
+  DRAFT: "bg-ink-faint/10 text-ink-faint border-ink-faint/20",
+  PAUSED: "bg-warn/10 text-warn border-warn/20",
+  CLOSED: "bg-danger/10 text-danger border-danger/20",
+  SUBMITTED: "bg-info/10 text-info border-info/20",
+  UNDER_REVIEW: "bg-info/10 text-info border-info/20",
+  NEEDS_INFORMATION: "bg-warn/10 text-warn border-warn/20",
+  ACCEPTED: "bg-accent/10 text-accent border-accent/20",
+  REJECTED: "bg-danger/10 text-danger border-danger/20",
+  REWARDED: "bg-accent-2/10 text-accent-2 border-accent-2/20",
+  PENDING: "bg-warn/10 text-warn border-warn/20",
+  PAID: "bg-accent/10 text-accent border-accent/20",
+  FAILED: "bg-danger/10 text-danger border-danger/20",
+  CONFIRMED: "bg-accent/10 text-accent border-accent/20",
+  CRITICAL: "bg-danger/10 text-danger border-danger/20",
+  HIGH: "bg-danger/10 text-danger border-danger/20",
+  MEDIUM: "bg-warn/10 text-warn border-warn/20",
+  LOW: "bg-info/10 text-info border-info/20",
+  INFORMATIONAL: "bg-ink-faint/10 text-ink-faint border-ink-faint/20",
+  RESEARCHER: "bg-info/10 text-info border-info/20",
+  ORGANIZATION: "bg-accent-2/10 text-accent-2 border-accent-2/20",
+  ADMIN: "bg-danger/10 text-danger border-danger/20",
+  GUEST: "bg-ink-faint/10 text-ink-faint border-ink-faint/20",
 };
 
 export function statusStyle(status: string): string {
@@ -98,11 +98,11 @@ export function statusStyle(status: string): string {
 export const SEVERITY_ORDER = ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFORMATIONAL"] as const;
 
 export const SEVERITY_COLORS: Record<string, string> = {
-  CRITICAL: "text-rose-500",
-  HIGH: "text-orange-500",
-  MEDIUM: "text-amber-500",
-  LOW: "text-sky-500",
-  INFORMATIONAL: "text-slate-500",
+  CRITICAL: "text-danger",
+  HIGH: "text-danger",
+  MEDIUM: "text-warn",
+  LOW: "text-info",
+  INFORMATIONAL: "text-ink-faint",
 };
 
 export function severityColor(severity: string): string {

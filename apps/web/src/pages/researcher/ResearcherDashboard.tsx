@@ -67,7 +67,7 @@ export function ResearcherDashboard() {
               {s.icon}
               <span className="text-xs">{s.label}</span>
             </div>
-            <p className="text-xl font-semibold text-ink">{s.value}</p>
+            <p className="font-mono text-xl font-semibold text-ink">{s.value}</p>
           </div>
         ))}
       </div>

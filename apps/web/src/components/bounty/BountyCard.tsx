@@ -11,7 +11,7 @@ export function BountyCard({ bounty }: { bounty: Bounty }) {
   return (
     <Link
       to={`/bounties/${bounty.id}`}
-      className="group block rounded-lg border border-border bg-surface p-4 transition-all duration-150 hover:border-border-strong"
+      className="group block rounded-lg border border-border bg-surface p-4 transition-all duration-200 hover:border-border-strong hover:bg-surface-2"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
@@ -22,7 +22,7 @@ export function BountyCard({ bounty }: { bounty: Bounty }) {
             <Shield className={cn("h-3 w-3", bounty.organization?.isVerified ? "text-accent" : "text-ink-faint")} />
             {bounty.organization?.name ?? "Organization"}
             {bounty.organization?.isVerified && (
-              <span className="text-accent">· Verified</span>
+              <span className="text-accent">Verified</span>
             )}
           </p>
         </div>

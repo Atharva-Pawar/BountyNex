@@ -3,7 +3,7 @@ import { AlertTriangle, Inbox, Loader2 } from "lucide-react";
 export function Spinner({ label }: { label?: string }) {
   return (
     <div className="flex items-center justify-center gap-2.5 py-12 text-ink-dim">
-      <Loader2 className="h-5 w-5 animate-spin text-accent" />
+      <Loader2 className="h-4 w-4 animate-spin text-accent" />
       {label && <span className="text-sm">{label}</span>}
     </div>
   );

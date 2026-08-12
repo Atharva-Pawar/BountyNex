@@ -2,17 +2,16 @@ import { useQuery } from "@tanstack/react-query";
 import { Wallet2, CheckCircle2, XCircle, Clock } from "lucide-react";
 import { api } from "../lib/api";
 import type { BlockchainTransaction, Wallet } from "../types";
-import { formatDateTime, shortAddress, statusStyle, weiToEth } from "../lib/utils";
+import { formatDateTime, shortAddress, weiToEth } from "../lib/utils";
 import { Card, CardBody, CardHeader } from "../components/ui/Card";
 import { WalletPanel } from "../components/wallet/WalletPanel";
 import { TxHashLink } from "../components/wallet/TxHashLink";
-import { Badge } from "../components/ui/Badge";
 import { EmptyState, Spinner } from "../components/ui/State";
 
 function TxStatusIcon({ status }: { status: string }) {
-  if (status === "CONFIRMED") return <CheckCircle2 className="h-4 w-4 text-emerald-500" />;
-  if (status === "FAILED") return <XCircle className="h-4 w-4 text-rose-500" />;
-  return <Clock className="h-4 w-4 text-amber-500" />;
+  if (status === "CONFIRMED") return <CheckCircle2 className="h-4 w-4 text-accent" />;
+  if (status === "FAILED") return <XCircle className="h-4 w-4 text-danger" />;
+  return <Clock className="h-4 w-4 text-warn" />;
 }
 
 export function WalletPage({ scope }: { scope: "researcher" | "organization" }) {
