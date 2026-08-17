@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Award, Bug, Clock, FileText, ShieldCheck } from "lucide-react";
+import { Award, Bug, Clock, FileText, Plus, ShieldCheck } from "lucide-react";
 import { api } from "../../lib/api";
 import type { BugReport } from "../../types";
 import { useAuth } from "../../providers/AuthProvider";
 import { weiToEth } from "../../lib/utils";
 import { StatusBadge } from "../../components/ui/Badge";
-import { Card, CardBody, CardHeader } from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
 import { EmptyState, Spinner } from "../../components/ui/State";
 
@@ -18,7 +17,7 @@ interface ReportsResponse {
 export function ResearcherDashboard() {
   const { user } = useAuth();
 
-  const { data: reports, isLoading } = useQuery<ReportsResponse>({
+  const { data: reports, isLoading: reportsLoading } = useQuery<ReportsResponse>({
     queryKey: ["researcher-dashboard-reports"],
     queryFn: async () => (await api.get("/api/reports/my?limit=5")) as ReportsResponse,
   });
@@ -41,13 +40,14 @@ export function ResearcherDashboard() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-ink">
             Welcome back, {user?.name?.split(" ")[0]}
           </h1>
-          <p className="text-sm text-ink-dim">
+          <p className="mt-1 text-sm text-ink-dim">
             {user?.researcherProfile?.handle ? (
               <span className="font-mono">@{user.researcherProfile.handle}</span>
             ) : (
@@ -56,10 +56,13 @@ export function ResearcherDashboard() {
           </p>
         </div>
         <Link to="/researcher/browse">
-          <Button>Find bounties</Button>
+          <Button>
+            <Plus className="h-4 w-4" /> Find bounties
+          </Button>
         </Link>
       </div>
 
+      {/* Stats - inline, not cards */}
       <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
           <div key={s.label} className="bg-surface p-4">
@@ -72,32 +75,37 @@ export function ResearcherDashboard() {
         ))}
       </div>
 
-      <Card>
-        <CardHeader
-          title="Recent reports"
-          subtitle="Track the status of your latest submissions"
-          action={<Link to="/researcher/reports" className="text-sm font-medium text-accent hover:underline">View all</Link>}
-        />
-        <CardBody>
-          {isLoading ? (
+      {/* Recent reports */}
+      <div>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-ink">Recent reports</h2>
+          <Link to="/researcher/reports" className="text-sm font-medium text-accent hover:underline">
+            View all <span aria-hidden="true">&rarr;</span>
+          </Link>
+        </div>
+
+        <div className="rounded-lg border border-border bg-surface">
+          {reportsLoading ? (
             <Spinner />
           ) : items.length === 0 ? (
-            <EmptyState
-              icon={<ShieldCheck className="h-6 w-6" />}
-              title="No reports yet"
-              description="Browse active bounties and submit your first vulnerability report."
-              action={
-                <Link to="/researcher/browse">
-                  <Button size="sm">Browse bounties</Button>
-                </Link>
-              }
-            />
+            <div className="p-8">
+              <EmptyState
+                icon={<ShieldCheck className="h-6 w-6" />}
+                title="No reports yet"
+                description="Browse active bounties and submit your first vulnerability report."
+                action={
+                  <Link to="/researcher/browse">
+                    <Button size="sm">Browse bounties</Button>
+                  </Link>
+                }
+              />
+            </div>
           ) : (
             <div className="divide-y divide-border">
               {items.map((r) => (
-                <div key={r.id} className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0">
+                <div key={r.id} className="flex items-center justify-between gap-4 px-4 py-3 first:pt-3 last:pb-3">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-ink">{r.title}</p>
+                    <p className="text-sm font-medium text-ink">{r.title}</p>
                     <p className="truncate text-xs text-ink-faint">{r.bounty?.title}</p>
                   </div>
                   <StatusBadge status={r.status} />
@@ -105,8 +113,8 @@ export function ResearcherDashboard() {
               ))}
             </div>
           )}
-        </CardBody>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
