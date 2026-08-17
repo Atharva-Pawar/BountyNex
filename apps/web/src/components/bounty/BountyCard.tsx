@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { CalendarClock, CircleDollarSign, FileText, Shield } from "lucide-react";
 import type { Bounty } from "../../types";
@@ -8,11 +9,17 @@ export function BountyCard({ bounty }: { bounty: Bounty }) {
   const days = daysLeft(bounty.deadline);
   const isActive = bounty.status === "ACTIVE";
 
+  const prefersReduced = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   return (
-    <Link
-      to={`/bounties/${bounty.id}`}
-      className="group block rounded-lg border border-border bg-surface p-4 transition-all duration-200 hover:border-border-strong hover:bg-surface-2"
+    <motion.div
+      whileHover={prefersReduced ? undefined : { y: -2, scale: 1.01 }}
+      transition={{ duration: 0.2 }}
     >
+      <Link
+        to={`/bounties/${bounty.id}`}
+        className="group block rounded-lg border border-border bg-surface p-4 transition-all duration-200 hover:border-border-strong hover:bg-surface-2"
+      >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <h3 className="truncate text-sm font-medium text-ink transition-colors group-hover:text-accent">
@@ -65,5 +72,6 @@ export function BountyCard({ bounty }: { bounty: Bounty }) {
         </span>
       </div>
     </Link>
+    </motion.div>
   );
 }
