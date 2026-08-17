@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
@@ -30,8 +31,13 @@ export function Landing() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-5xl px-6 pt-20 pb-16 sm:pt-28 sm:pb-20 lg:pt-32 lg:pb-24">
-          <div className="max-w-3xl">
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-15%,rgba(16,185,129,0.03),transparent)]" />
+          <div className="absolute right-0 top-0 -z-10 h-px w-1/2 bg-gradient-to-l from-accent/20 to-transparent" />
+        </div>
+
+        <div className="mx-auto max-w-5xl px-6 pt-24 pb-16 sm:pt-28 sm:pb-20 lg:pt-32 lg:pb-24">
+          <div className="max-w-2xl">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 font-mono text-[11px] text-ink-dim">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               Ethereum Sepolia &middot; Hybrid on-chain escrow
@@ -43,7 +49,7 @@ export function Landing() {
               <br />
               On-chain.
             </h1>
-            <p className="mt-6 max-w-xl text-base text-ink-dim leading-relaxed sm:text-lg">
+            <p className="mt-6 max-w-lg text-base text-ink-dim leading-relaxed sm:text-lg">
               BountyNex connects organizations with ethical hackers. Programs are created on-chain,
               rewards are held in escrow by a smart contract, and researchers get paid in ETH the
               moment a valid report is approved.
@@ -62,12 +68,12 @@ export function Landing() {
             </div>
           </div>
 
-          {/* Inline stats */}
-          <div className="mt-16 grid max-w-lg grid-cols-3 gap-8 border-t border-border pt-8">
+          {/* Hero stats */}
+          <div className="mt-16 grid max-w-lg grid-cols-3 gap-6 border-t border-border pt-8">
             {[
               { label: "On-chain escrow", value: "100%" },
               { label: "Median reward", value: `${weiToEth("1000000000000000000")} ETH` },
-              { label: "Testnet only", value: "Sepolia" },
+              { label: "Testnet", value: "Sepolia" },
             ].map((s) => (
               <div key={s.label}>
                 <p className="font-mono text-xl font-semibold text-ink">{s.value}</p>
@@ -127,7 +133,7 @@ export function Landing() {
             ].map((s, i) => (
               <div key={s.title} className="group">
                 <div className="mb-4 flex items-center gap-3">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-md bg-accent/10 text-accent font-mono text-xs font-medium">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-md bg-accent/10 font-mono text-xs font-medium text-accent">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <div className="flex h-8 w-8 items-center justify-center rounded-md bg-surface-2 text-ink-dim">
