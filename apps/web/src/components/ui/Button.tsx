@@ -5,7 +5,7 @@ type Size = "sm" | "md" | "lg";
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "bg-acid-lime text-void font-medium hover:bg-acid-lime-dim active:scale-[0.98] disabled:hover:bg-acid-lime",
+    "bg-acid-lime text-on-accent font-medium hover:bg-acid-lime-dim active:scale-[0.98] disabled:hover:bg-acid-lime",
   secondary:
     "bg-transparent text-mist border border-graphite hover:border-smoke hover:text-paper hover:bg-obsidian active:scale-[0.98]",
   ghost:

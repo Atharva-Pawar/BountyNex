@@ -136,7 +136,7 @@ export function CreateBounty() {
             </div>
 
             {error && (
-              <div className="flex items-start gap-2 rounded-md border border-coral-red/25 bg-coral-red/10 px-4 py-3 text-sm text-[#ff8d8d]">
+              <div className="flex items-start gap-2 rounded-md border border-coral-red/25 bg-coral-red/10 px-4 py-3 text-sm text-coral-red">
                 <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                 {error}
               </div>
