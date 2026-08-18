@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { Button } from "./Button";
@@ -17,6 +17,7 @@ export function Modal({
   wide?: boolean;
 }) {
   const [visible, setVisible] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (open) {
@@ -26,18 +27,24 @@ export function Modal({
     }
   }, [open]);
 
+  const handleKey = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    },
+    [onClose],
+  );
+
   useEffect(() => {
     if (!open) return;
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", handler);
+    const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    if (panelRef.current) panelRef.current.focus();
+    document.addEventListener("keydown", handleKey);
     return () => {
-      document.removeEventListener("keydown", handler);
-      document.body.style.overflow = "";
+      document.removeEventListener("keydown", handleKey);
+      document.body.style.overflow = previousOverflow;
     };
-  }, [open, onClose]);
+  }, [open, handleKey]);
 
   if (!open) return null;
 
@@ -50,8 +57,14 @@ export function Modal({
       onMouseDown={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
+        ref={panelRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        data-lenis-prevent
         className={cn(
-          "w-full rounded-lg border border-graphite bg-surface transition-all duration-200 ease-out shadow-elevated",
+          "w-full rounded-lg border border-graphite bg-surface outline-none transition-all duration-200 ease-out shadow-elevated",
           wide ? "max-w-3xl" : "max-w-lg",
           visible ? "scale-100 opacity-100 translate-y-0" : "scale-[0.97] opacity-0 translate-y-1",
         )}

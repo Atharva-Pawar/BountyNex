@@ -45,7 +45,7 @@ export function AvatarUpload({
   return (
     <div className="flex items-center gap-4">
       <div
-        className={`relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden ${rounded} bg-surface-2 text-xl font-semibold text-accent ring-1 ring-border`}
+        className={`relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden ${rounded} bg-surface-2 text-xl font-medium text-accent ring-1 ring-border`}
       >
         {imageUrl ? (
           <img src={imageUrl} alt={name} className="h-full w-full object-cover" />

@@ -156,7 +156,7 @@ export function ReviewReport() {
               <div className="rounded-lg border border-graphite bg-carbon p-5">
                 <div className="mb-4 flex items-center justify-between">
                   <p className="text-sm font-medium text-paper">Reward assigned</p>
-                  <p className="font-mono font-semibold text-acid-lime">{weiToEth(report.rewardWei)} ETH</p>
+                  <p className="font-mono font-medium text-acid-lime">{weiToEth(report.rewardWei)} ETH</p>
                 </div>
                 <Button size="lg" loading={releasing || (acting && action === "RELEASE")} onClick={() => void releaseReward()}>
                   <Send className="h-4 w-4" /> Release reward on-chain

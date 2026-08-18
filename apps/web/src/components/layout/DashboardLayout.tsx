@@ -113,7 +113,7 @@ export function DashboardLayout() {
           </button>
         </div>
 
-        <nav className="space-y-0.5 overflow-y-auto p-2.5 max-h-[calc(100vh-8rem)]">
+        <nav data-lenis-prevent className="space-y-0.5 overflow-y-auto p-2.5 max-h-[calc(100vh-8rem)]">
           <p className="px-3 pb-1.5 pt-2 font-mono text-[10px] uppercase tracking-wider text-ash">
             {user.role.toLowerCase()}
           </p>

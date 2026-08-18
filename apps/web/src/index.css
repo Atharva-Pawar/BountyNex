@@ -19,6 +19,7 @@
   --color-paper: #ffffff; /* primary text */
   --color-acid-lime: #e4f222; /* primary action — use sparingly */
   --color-acid-lime-dim: #c9d71f;
+  --color-on-accent: #0c0d0e; /* text/icon on top of the accent */
   --color-pulse-green: #27a644; /* success / verified */
   --color-coral-red: #eb5757; /* danger / critical */
   --color-signal-teal: #02b8cc; /* info / in-progress */
@@ -55,7 +56,6 @@
 }
 
 html {
-  scroll-behavior: smooth;
   --shadow-card: none;
   --shadow-elevated: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.24);
 }
@@ -86,14 +86,32 @@ html[data-theme="light"] {
   --color-ink: #141414;
   --color-ink-dim: #3f3f46;
   --color-ink-faint: #71717a;
-  --color-accent: #9bb000;
-  --color-accent-dim: #7d8f00;
+  --color-accent: #7a8900;
+  --color-accent-dim: #697700;
   --color-accent-2: #0284a8;
   --color-warn: #a16207;
   --color-danger: #dc2626;
   --color-info: #0284a8;
   --color-pulse-green: #15803d;
   --color-signal-teal: #0284a8;
+  /* Named midnight tokens remapped by role so the same
+     component classes stay readable across themes. */
+  --color-void: #f7f7f5; /* matches --color-bg */
+  --color-carbon: #ffffff; /* matches --color-surface */
+  --color-obsidian: #f4f4f2; /* matches --color-surface-2 */
+  --color-graphite: #e3e3e0; /* matches --color-border */
+  --color-smoke: #c9c9c4; /* matches --color-border-strong */
+  --color-ash: #6e7178; /* deep muted */
+  --color-fog: #71717a; /* muted */
+  --color-mist: #3f3f46; /* secondary text */
+  --color-bone: #27272a; /* near-primary text */
+  --color-paper: #141414; /* primary text */
+  --color-acid-lime: #7a8900; /* readable olive accent */
+  --color-acid-lime-dim: #697700;
+  --color-on-accent: #ffffff;
+  --color-coral-red: #dc2626;
+  --color-iris-violet: #4f46e5;
+  --color-lavender: #7c3aed;
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.04);
   --shadow-elevated: 0 4px 16px rgb(0 0 0 / 0.06);
 }
@@ -119,7 +137,7 @@ html[data-theme="light"] body {
   color: var(--color-paper);
 }
 html[data-theme="light"] ::selection {
-  background: rgba(155, 176, 0, 0.18);
+  background: rgba(122, 137, 0, 0.18);
   color: var(--color-ink);
 }
 
@@ -238,5 +256,5 @@ html[data-theme="light"] ::selection {
   box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px rgba(228, 242, 34, 0.4);
 }
 html[data-theme="light"] :focus-visible {
-  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px rgba(155, 176, 0, 0.35);
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px rgba(122, 137, 0, 0.35);
 }

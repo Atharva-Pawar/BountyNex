@@ -157,7 +157,7 @@ export function SubmitReport() {
             </Field>
 
             {error && (
-              <div className="rounded-md border border-coral-red/25 bg-coral-red/10 px-4 py-3 text-sm text-[#ff8d8d]">
+              <div className="rounded-md border border-coral-red/25 bg-coral-red/10 px-4 py-3 text-sm text-coral-red">
                 {error}
               </div>
             )}
