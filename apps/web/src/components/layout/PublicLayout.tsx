@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Bug, LogOut, Menu, ShieldCheck, X } from "lucide-react";
+import { Bug, LogOut, Menu, ShieldCheck, User, X } from "lucide-react";
 import { useAuth } from "../../providers/AuthProvider";
 import { cn } from "../../lib/utils";
 import { Button } from "../ui/Button";
 import { ThemeToggle } from "../ui/ThemeToggle";
+
+const navLinkClass =
+  "relative after:absolute after:-bottom-[3px] after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-acid-lime after:transition-transform after:duration-200 after:ease-out hover:after:scale-x-100";
 
 export function Logo({ compact }: { compact?: boolean }) {
   return (
@@ -31,6 +34,7 @@ export function PublicNavbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const profilePath = user && user.role !== "GUEST" ? `/${user.role.toLowerCase()}/profile` : "/profile";
 
   useEffect(() => {
     if (mobileOpen) document.body.style.overflow = "hidden";
@@ -51,7 +55,7 @@ export function PublicNavbar() {
                 <a
                   key={link.to}
                   href={link.to}
-                  className="text-fog transition-colors duration-150 hover:text-paper"
+                  className={cn(navLinkClass, "text-fog transition-colors duration-150 hover:text-paper")}
                 >
                   {link.label}
                 </a>
@@ -61,8 +65,9 @@ export function PublicNavbar() {
                   to={link.to}
                   className={({ isActive }) =>
                     cn(
+                      navLinkClass,
                       "transition-colors duration-150 hover:text-paper",
-                      isActive ? "text-paper font-medium" : "text-fog",
+                      isActive ? "text-paper font-medium after:scale-x-100" : "text-fog",
                     )
                   }
                 >
@@ -77,6 +82,16 @@ export function PublicNavbar() {
           <ThemeToggle />
           {isAuthenticated ? (
             <>
+              {user?.role !== "GUEST" && user?.researcherProfile?.handle ? (
+                <span className="hidden max-w-[140px] truncate font-mono text-[12px] text-fog xl:block">
+                  @{user.researcherProfile.handle}
+                </span>
+              ) : null}
+              <Link to={profilePath} className="hidden sm:block">
+                <Button variant="ghost" size="sm">
+                  <User className="h-3.5 w-3.5" /> Profile
+                </Button>
+              </Link>
               <Link to={dashboardPath(user!.role)} className="hidden sm:block">
                 <Button variant="secondary" size="sm">
                   <ShieldCheck className="h-3.5 w-3.5" /> Dashboard
@@ -132,6 +147,11 @@ export function PublicNavbar() {
             <div className="mt-2 flex gap-2 border-t border-graphite pt-3">
               {isAuthenticated ? (
                 <>
+                  <Link to={profilePath} className="flex-1" onClick={() => setMobileOpen(false)}>
+                    <Button variant="ghost" size="sm" className="w-full">
+                      <User className="h-3.5 w-3.5" /> Profile
+                    </Button>
+                  </Link>
                   <Link to={dashboardPath(user!.role)} className="flex-1" onClick={() => setMobileOpen(false)}>
                     <Button variant="secondary" size="sm" className="w-full">
                       <ShieldCheck className="h-3.5 w-3.5" /> Dashboard

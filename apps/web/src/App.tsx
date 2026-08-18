@@ -3,6 +3,8 @@ import type { Role } from "./types";
 import { useAuth } from "./providers/AuthProvider";
 import { DashboardLayout } from "./components/layout/DashboardLayout";
 import { PublicLayout } from "./components/layout/PublicPage";
+import { dashboardPath } from "./components/layout/PublicLayout";
+import { PageLoader } from "./components/ui/PageLoader";
 import { Landing } from "./pages/public/Landing";
 import { BrowseBounties } from "./pages/public/BrowseBounties";
 import { BountyDetails } from "./pages/public/BountyDetails";
@@ -34,10 +36,24 @@ import { AdminTransactions } from "./pages/admin/AdminTransactions";
 
 function RequireRole({ roles, children }: { roles: Role[]; children: React.ReactNode }) {
   const { user, loading } = useAuth();
-  if (loading) return null;
+  if (loading) return <PageLoader />;
   if (!user || !roles.includes(user.role)) {
     return <Navigate to={user ? "/" : "/login"} replace />;
   }
+  return <>{children}</>;
+}
+
+function RootRoute() {
+  const { user, loading } = useAuth();
+  if (loading) return <PageLoader />;
+  if (user) return <Navigate to={dashboardPath(user.role)} replace />;
+  return <Landing />;
+}
+
+function SignedOut({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  if (loading) return <PageLoader />;
+  if (user) return <Navigate to={dashboardPath(user.role)} replace />;
   return <>{children}</>;
 }
 
@@ -46,11 +62,11 @@ export function App() {
     <Routes>
       {/* Public */}
       <Route element={<PublicLayout />}>
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<RootRoute />} />
         <Route path="/bounties" element={<BrowseBounties />} />
         <Route path="/bounties/:id" element={<BountyDetails />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<SignedOut><Login /></SignedOut>} />
+        <Route path="/register" element={<SignedOut><Register /></SignedOut>} />
       </Route>
 
       {/* Researcher */}

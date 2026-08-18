@@ -125,7 +125,7 @@ export function DashboardLayout() {
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
                 cn(
-                  "group flex items-center gap-2.5 rounded-sm px-3 py-2 text-[13px] transition-all duration-150",
+                  "group flex items-center gap-2.5 rounded-sm px-3 py-2 text-[13px] transition-all duration-150 hover:translate-x-0.5",
                   isActive
                     ? "bg-obsidian text-paper font-medium"
                     : "text-fog hover:bg-obsidian/60 hover:text-paper",
@@ -140,7 +140,12 @@ export function DashboardLayout() {
                       isActive ? "bg-acid-lime" : "bg-transparent group-hover:bg-smoke",
                     )}
                   />
-                  <span className={cn(isActive ? "text-acid-lime" : "text-ash", "transition-colors duration-150")}>
+                  <span
+                    className={cn(
+                      isActive ? "text-acid-lime" : "text-ash group-hover:text-acid-lime/80",
+                      "transition-all duration-150 group-hover:scale-110",
+                    )}
+                  >
                     {item.icon}
                   </span>
                   {item.label}

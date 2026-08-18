@@ -187,6 +187,11 @@ html[data-theme="light"] ::selection {
   to { opacity: 1; transform: scale(1); }
 }
 
+@keyframes loader-slide {
+  0% { transform: translateX(-160%); }
+  100% { transform: translateX(400%); }
+}
+
 @utility animate-fade-in {
   animation: fade-in 0.25s var(--ease-precision) both;
 }
