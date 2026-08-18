@@ -12,6 +12,7 @@ import { ErrorState, Spinner } from "../../components/ui/State";
 import { PaginationBar } from "../../components/ui/PaginationBar";
 import { Input } from "../../components/ui/Field";
 import { PageHeader } from "../../components/ui/PageHeader";
+import { ConfirmDialog } from "../../components/ui/ConfirmDialog";
 
 interface AdminUser {
   id: string;
@@ -32,6 +33,7 @@ export function AdminUsers() {
   const [role, setRole] = useState<Role | "ALL">("ALL");
   const [q, setQ] = useState("");
   const [pendingId, setPendingId] = useState<string | null>(null);
+  const [suspendTarget, setSuspendTarget] = useState<AdminUser | null>(null);
 
   const { data, isLoading, isError, error, refetch } = useQuery<{ items: AdminUser[]; pagination: Pagination }>({
     queryKey: ["admin-users", page, role, q],
@@ -130,7 +132,7 @@ export function AdminUsers() {
                             variant={u.isSuspended ? "secondary" : "danger"}
                             size="sm"
                             loading={pendingId === u.id}
-                            onClick={() => void toggleSuspend(u)}
+                            onClick={() => (u.isSuspended ? void toggleSuspend(u) : setSuspendTarget(u))}
                           >
                             {u.isSuspended ? "Unsuspend" : "Suspend"}
                           </Button>
@@ -147,6 +149,21 @@ export function AdminUsers() {
           )}
         </CardBody>
       </Card>
+
+      <ConfirmDialog
+        open={Boolean(suspendTarget)}
+        onCancel={() => setSuspendTarget(null)}
+        onConfirm={() => {
+          if (!suspendTarget) return;
+          void toggleSuspend(suspendTarget).finally(() => setSuspendTarget(null));
+        }}
+        title={`Suspend ${suspendTarget?.name ?? "this user"}?`}
+        description="Suspended users cannot sign in or use the platform until an admin reinstates them."
+        confirmLabel="Suspend user"
+        cancelLabel="Cancel"
+        variant="danger"
+        loading={Boolean(suspendTarget) && pendingId === suspendTarget?.id}
+      />
     </div>
   );
 }

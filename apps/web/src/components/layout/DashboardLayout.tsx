@@ -21,6 +21,7 @@ import { useAuth } from "../../providers/AuthProvider";
 import { cn } from "../../lib/utils";
 import { useWalletBinding } from "../../hooks/useWallet";
 import { ThemeToggle } from "../ui/ThemeToggle";
+import { ConfirmDialog } from "../ui/ConfirmDialog";
 
 interface NavItem {
   to: string;
@@ -79,11 +80,24 @@ export function DashboardLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [signOutOpen, setSignOutOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const items = user ? NAV[user.role] ?? [] : [];
 
   useEffect(() => {
     if (!user || user.role === "GUEST") navigate("/login", { replace: true });
   }, [user, navigate]);
+
+  async function handleSignOut() {
+    setSigningOut(true);
+    try {
+      await logout();
+      navigate("/");
+    } finally {
+      setSigningOut(false);
+      setSignOutOpen(false);
+    }
+  }
 
   if (!user || user.role === "GUEST") return null;
 
@@ -157,7 +171,7 @@ export function DashboardLayout() {
 
         <div className="absolute inset-x-0 bottom-0 border-t border-graphite bg-surface p-2.5">
           <button
-            onClick={() => void logout().then(() => navigate("/"))}
+            onClick={() => setSignOutOpen(true)}
             className="flex w-full items-center gap-2.5 rounded-sm px-3 py-2 text-[13px] text-fog transition-colors duration-150 hover:bg-obsidian hover:text-coral-red"
           >
             <LogOut className="h-4 w-4" /> Sign out
@@ -191,6 +205,18 @@ export function DashboardLayout() {
           <Outlet />
         </main>
       </div>
+
+      <ConfirmDialog
+        open={signOutOpen}
+        onCancel={() => setSignOutOpen(false)}
+        onConfirm={() => void handleSignOut()}
+        title="Sign out?"
+        description="Are you sure you want to sign out of your BountyNex account?"
+        confirmLabel="Sign out"
+        cancelLabel="Cancel"
+        variant="danger"
+        loading={signingOut}
+      />
     </div>
   );
 }

@@ -16,7 +16,7 @@ import { Button } from "../../components/ui/Button";
 import { Card, CardBody } from "../../components/ui/Card";
 import { EmptyState, ErrorState, Spinner } from "../../components/ui/State";
 import { PaginationBar } from "../../components/ui/PaginationBar";
-import { ConfirmDialog } from "../../components/ui/Modal";
+import { ConfirmDialog } from "../../components/ui/ConfirmDialog";
 import { TxHashLink } from "../../components/wallet/TxHashLink";
 import { PageHeader } from "../../components/ui/PageHeader";
 
@@ -32,6 +32,8 @@ export function ManageBounties() {
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [pendingAction, setPendingAction] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<Bounty | null>(null);
+  const [closeTarget, setCloseTarget] = useState<Bounty | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const { address } = useAccount();
 
   const { create: createOnChain } = useCreateBountyOnChain();
@@ -113,6 +115,7 @@ export function ManageBounties() {
 
   async function removeDraft() {
     if (!deleteTarget) return;
+    setDeleting(true);
     try {
       await api.delete(`/api/bounties/${deleteTarget.id}`);
       toast.success("Draft deleted");
@@ -120,7 +123,14 @@ export function ManageBounties() {
       void refetch();
     } catch (err) {
       toast.error((err as Error).message);
+    } finally {
+      setDeleting(false);
     }
+  }
+
+  function confirmCloseBounty() {
+    if (!closeTarget) return;
+    void changeStatus(closeTarget, "CLOSED").finally(() => setCloseTarget(null));
   }
 
   return (
@@ -211,7 +221,7 @@ export function ManageBounties() {
                           </Button>
                         )}
                         {(b.status === "ACTIVE" || b.status === "PAUSED") && (
-                          <Button size="sm" variant="danger" loading={pendingId === b.id && pendingAction === "status"} onClick={() => void changeStatus(b, "CLOSED")}>
+                          <Button size="sm" variant="danger" onClick={() => setCloseTarget(b)}>
                             Close
                           </Button>
                         )}
@@ -242,12 +252,25 @@ export function ManageBounties() {
 
       <ConfirmDialog
         open={Boolean(deleteTarget)}
-        onClose={() => setDeleteTarget(null)}
+        onCancel={() => setDeleteTarget(null)}
         onConfirm={() => void removeDraft()}
         title="Delete draft bounty?"
         description="This action cannot be undone. Only drafts can be deleted."
         confirmLabel="Delete"
-        danger
+        cancelLabel="Keep draft"
+        variant="danger"
+        loading={deleting}
+      />
+
+      <ConfirmDialog
+        open={Boolean(closeTarget)}
+        onCancel={() => setCloseTarget(null)}
+        onConfirm={() => confirmCloseBounty()}
+        title={`Close ${closeTarget?.title ?? "this bounty"}?`}
+        description="Closing ends the program: researchers can no longer submit reports and it will be shown as closed. You can reopen it later if needed."
+        confirmLabel="Close bounty"
+        variant="warning"
+        loading={pendingId === closeTarget?.id && pendingAction === "status"}
       />
     </div>
   );

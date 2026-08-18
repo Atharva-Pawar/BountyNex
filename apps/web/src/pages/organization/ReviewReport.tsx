@@ -14,12 +14,14 @@ import { ErrorState, Spinner } from "../../components/ui/State";
 import { Field, Textarea } from "../../components/ui/Field";
 import { ReportDetail } from "../researcher/ReportDetail";
 import { PageHeader } from "../../components/ui/PageHeader";
+import { ConfirmDialog } from "../../components/ui/ConfirmDialog";
 
 export function ReviewReport() {
   const { id } = useParams<{ id: string }>();
   const [note, setNote] = useState("");
   const [acting, setActing] = useState(false);
   const [action, setAction] = useState<ReportStatus | "RELEASE" | "">("");
+  const [rejectOpen, setRejectOpen] = useState(false);
   const { release, isPending: releasing } = useReleaseReward();
 
   const { data, isLoading, isError, error, refetch } = useQuery<{ report: BugReport }>({
@@ -135,7 +137,7 @@ export function ReviewReport() {
                 </Button>
               )}
               {!isAccepted && (
-                <Button variant="danger" loading={acting && action === "REJECTED"} onClick={() => void setStatus("REJECTED")}>
+                <Button variant="danger" loading={acting && action === "REJECTED"} onClick={() => setRejectOpen(true)}>
                   <XCircle className="h-4 w-4" /> Reject
                 </Button>
               )}
@@ -166,6 +168,18 @@ export function ReviewReport() {
           </CardBody>
         </Card>
       )}
+
+      <ConfirmDialog
+        open={rejectOpen}
+        onCancel={() => setRejectOpen(false)}
+        onConfirm={() => void setStatus("REJECTED").finally(() => setRejectOpen(false))}
+        title="Reject this submission?"
+        description="Rejecting is final and the researcher will be notified. Only choose this if the report does not qualify for a reward."
+        confirmLabel="Reject report"
+        cancelLabel="Cancel"
+        variant="danger"
+        loading={acting && action === "REJECTED"}
+      />
     </div>
   );
 }

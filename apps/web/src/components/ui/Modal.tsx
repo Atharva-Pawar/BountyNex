@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { Button } from "./Button";
+import { lockScroll, unlockScroll } from "../../lib/scroll-lock";
 
 export function Modal({
   open,
@@ -36,13 +37,12 @@ export function Modal({
 
   useEffect(() => {
     if (!open) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    lockScroll();
     if (panelRef.current) panelRef.current.focus();
     document.addEventListener("keydown", handleKey);
     return () => {
       document.removeEventListener("keydown", handleKey);
-      document.body.style.overflow = previousOverflow;
+      unlockScroll();
     };
   }, [open, handleKey]);
 
@@ -82,43 +82,5 @@ export function Modal({
         <div className="max-h-[75vh] overflow-y-auto p-5">{children}</div>
       </div>
     </div>
-  );
-}
-
-export function ConfirmDialog({
-  open,
-  onClose,
-  onConfirm,
-  title,
-  description,
-  confirmLabel = "Confirm",
-  danger,
-}: {
-  open: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  description: string;
-  confirmLabel?: string;
-  danger?: boolean;
-}) {
-  return (
-    <Modal open={open} onClose={onClose} title={title}>
-      <p className="text-sm leading-relaxed text-mist">{description}</p>
-      <div className="mt-6 flex justify-end gap-3">
-        <Button variant="outline" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button
-          variant={danger ? "danger" : "primary"}
-          onClick={() => {
-            onConfirm();
-            onClose();
-          }}
-        >
-          {confirmLabel}
-        </Button>
-      </div>
-    </Modal>
   );
 }

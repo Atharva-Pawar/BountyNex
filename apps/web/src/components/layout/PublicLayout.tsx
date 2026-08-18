@@ -3,7 +3,9 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Bug, LogOut, Menu, ShieldCheck, User, X } from "lucide-react";
 import { useAuth } from "../../providers/AuthProvider";
 import { cn } from "../../lib/utils";
+import { lockScroll, unlockScroll } from "../../lib/scroll-lock";
 import { Button } from "../ui/Button";
+import { ConfirmDialog } from "../ui/ConfirmDialog";
 import { ThemeToggle } from "../ui/ThemeToggle";
 
 const navLinkClass =
@@ -34,14 +36,24 @@ export function PublicNavbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [signOutOpen, setSignOutOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const profilePath = user && user.role !== "GUEST" ? `/${user.role.toLowerCase()}/profile` : "/profile";
 
+  async function handleSignOut() {
+    setSigningOut(true);
+    try {
+      await logout();
+      navigate("/");
+    } finally {
+      setSigningOut(false);
+      setSignOutOpen(false);
+    }
+  }
+
   useEffect(() => {
-    if (mobileOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    if (mobileOpen) lockScroll();
+    return () => unlockScroll();
   }, [mobileOpen]);
 
   return (
@@ -98,7 +110,7 @@ export function PublicNavbar() {
                 </Button>
               </Link>
               <button
-                onClick={() => void logout().then(() => navigate("/"))}
+                onClick={() => setSignOutOpen(true)}
                 className="flex h-8 w-8 items-center justify-center rounded-sm text-fog transition-colors duration-150 hover:bg-obsidian hover:text-paper"
                 title="Logout"
                 aria-label="Logout"
@@ -162,7 +174,7 @@ export function PublicNavbar() {
                     size="sm"
                     onClick={() => {
                       setMobileOpen(false);
-                      void logout().then(() => navigate("/"));
+                      setSignOutOpen(true);
                     }}
                   >
                     <LogOut className="h-3.5 w-3.5" /> Logout
@@ -179,6 +191,18 @@ export function PublicNavbar() {
           </nav>
         </div>
       )}
+
+      <ConfirmDialog
+        open={signOutOpen}
+        onCancel={() => setSignOutOpen(false)}
+        onConfirm={() => void handleSignOut()}
+        title="Sign out?"
+        description="Are you sure you want to sign out of your BountyNex account?"
+        confirmLabel="Sign out"
+        cancelLabel="Cancel"
+        variant="danger"
+        loading={signingOut}
+      />
     </header>
   );
 }
