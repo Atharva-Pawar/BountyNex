@@ -66,45 +66,45 @@ export function explorerTxUrl(hash: string): string {
 }
 
 export const STATUS_STYLES: Record<string, string> = {
-  ACTIVE: "bg-accent/10 text-accent border-accent/20",
-  DRAFT: "bg-ink-faint/10 text-ink-faint border-ink-faint/20",
-  PAUSED: "bg-warn/10 text-warn border-warn/20",
-  CLOSED: "bg-danger/10 text-danger border-danger/20",
-  SUBMITTED: "bg-info/10 text-info border-info/20",
-  UNDER_REVIEW: "bg-info/10 text-info border-info/20",
-  NEEDS_INFORMATION: "bg-warn/10 text-warn border-warn/20",
-  ACCEPTED: "bg-accent/10 text-accent border-accent/20",
-  REJECTED: "bg-danger/10 text-danger border-danger/20",
-  REWARDED: "bg-accent-2/10 text-accent-2 border-accent-2/20",
-  PENDING: "bg-warn/10 text-warn border-warn/20",
-  PAID: "bg-accent/10 text-accent border-accent/20",
-  FAILED: "bg-danger/10 text-danger border-danger/20",
-  CONFIRMED: "bg-accent/10 text-accent border-accent/20",
-  CRITICAL: "bg-danger/10 text-danger border-danger/20",
-  HIGH: "bg-danger/10 text-danger border-danger/20",
-  MEDIUM: "bg-warn/10 text-warn border-warn/20",
-  LOW: "bg-info/10 text-info border-info/20",
-  INFORMATIONAL: "bg-ink-faint/10 text-ink-faint border-ink-faint/20",
-  RESEARCHER: "bg-info/10 text-info border-info/20",
-  ORGANIZATION: "bg-accent-2/10 text-accent-2 border-accent-2/20",
-  ADMIN: "bg-danger/10 text-danger border-danger/20",
-  GUEST: "bg-ink-faint/10 text-ink-faint border-ink-faint/20",
+  ACTIVE: "bg-acid-lime/10 text-acid-lime border-acid-lime/25",
+  DRAFT: "bg-ash/10 text-ash border-ash/25",
+  PAUSED: "bg-warn/10 text-warn border-warn/25",
+  CLOSED: "bg-danger/10 text-danger border-danger/25",
+  SUBMITTED: "bg-info/10 text-info border-info/25",
+  UNDER_REVIEW: "bg-info/10 text-info border-info/25",
+  NEEDS_INFORMATION: "bg-warn/10 text-warn border-warn/25",
+  ACCEPTED: "bg-pulse-green/10 text-pulse-green border-pulse-green/25",
+  REJECTED: "bg-danger/10 text-danger border-danger/25",
+  REWARDED: "bg-pulse-green/10 text-pulse-green border-pulse-green/25",
+  PENDING: "bg-warn/10 text-warn border-warn/25",
+  PAID: "bg-pulse-green/10 text-pulse-green border-pulse-green/25",
+  FAILED: "bg-danger/10 text-danger border-danger/25",
+  CONFIRMED: "bg-pulse-green/10 text-pulse-green border-pulse-green/25",
+  CRITICAL: "bg-danger/10 text-danger border-danger/25",
+  HIGH: "bg-danger/10 text-danger border-danger/25",
+  MEDIUM: "bg-warn/10 text-warn border-warn/25",
+  LOW: "bg-info/10 text-info border-info/25",
+  INFORMATIONAL: "bg-ash/10 text-ash border-ash/25",
+  RESEARCHER: "bg-info/10 text-info border-info/25",
+  ORGANIZATION: "bg-accent-2/10 text-accent-2 border-accent-2/25",
+  ADMIN: "bg-lavender/10 text-lavender border-lavender/25",
+  GUEST: "bg-ash/10 text-ash border-ash/25",
 };
 
 export function statusStyle(status: string): string {
-  return STATUS_STYLES[status] ?? "bg-slate-500/15 text-slate-500 border-slate-500/30";
+  return STATUS_STYLES[status] ?? "bg-smoke/10 text-fog border-smoke/25";
 }
 
 export const SEVERITY_ORDER = ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFORMATIONAL"] as const;
 
 export const SEVERITY_COLORS: Record<string, string> = {
-  CRITICAL: "text-danger",
-  HIGH: "text-danger",
+  CRITICAL: "text-coral-red",
+  HIGH: "text-coral-red",
   MEDIUM: "text-warn",
-  LOW: "text-info",
-  INFORMATIONAL: "text-ink-faint",
+  LOW: "text-signal-teal",
+  INFORMATIONAL: "text-ash",
 };
 
 export function severityColor(severity: string): string {
-  return SEVERITY_COLORS[severity] ?? "text-slate-500";
+  return SEVERITY_COLORS[severity] ?? "text-fog";
 }

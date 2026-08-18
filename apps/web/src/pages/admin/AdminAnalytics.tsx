@@ -3,8 +3,9 @@ import { Coins, ShieldCheck, Trophy, Users } from "lucide-react";
 import { api } from "../../lib/api";
 import type { AdminStats } from "../../types";
 import { weiToEth } from "../../lib/utils";
-import { Card, CardBody, CardHeader } from "../../components/ui/Card";
+import { Card, CardBody } from "../../components/ui/Card";
 import { ErrorState, Spinner } from "../../components/ui/State";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 export function AdminAnalytics() {
   const { data, isLoading, isError, error } = useQuery<{ stats: AdminStats }>({
@@ -28,36 +29,39 @@ export function AdminAnalytics() {
   const txTotal = Math.max(Object.values(s.transactions.byStatus).reduce((a, b) => a + b, 0), 1);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-ink">Analytics</h1>
-        <p className="text-sm text-ink-dim">Key metrics and platform health</p>
-      </div>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="Console"
+        title="Analytics"
+        subtitle="Key metrics and platform health"
+      />
 
-      <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-px overflow-hidden rounded-lg border border-graphite bg-graphite sm:grid-cols-2 lg:grid-cols-4">
         {highlights.map((h) => (
           <div key={h.label} className="bg-surface p-4">
-            <div className="flex items-center gap-2 text-ink-dim mb-2">
+            <div className="flex items-center gap-2 text-fog">
               {h.icon}
               <span className="text-xs">{h.label}</span>
             </div>
-            <p className="text-xl font-semibold text-ink">{h.value}</p>
+            <p className="font-mono text-xl font-medium tracking-tight text-paper">{h.value}</p>
           </div>
         ))}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
-          <CardHeader title="Users by role" />
-          <CardBody className="space-y-3">
+          <div className="border-b border-graphite px-5 py-3.5">
+            <h2 className="text-sm font-medium tracking-tight text-paper">Users by role</h2>
+          </div>
+          <CardBody className="space-y-3.5 p-5">
             {Object.entries(s.users.byRole).map(([role, count]) => (
               <div key={role}>
-                <div className="mb-1 flex justify-between text-sm">
-                  <span className="text-ink-dim">{role}</span>
-                  <span className="font-medium text-ink">{count}</span>
+                <div className="mb-1.5 flex justify-between text-[13px]">
+                  <span className="text-mist">{role}</span>
+                  <span className="font-medium text-paper">{count}</span>
                 </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-surface-2">
-                  <div className="h-full rounded-full bg-accent-2 transition-all duration-500" style={{ width: `${(count / usersTotal) * 100}%` }} />
+                <div className="h-1 overflow-hidden rounded-full bg-obsidian">
+                  <div className="h-full rounded-full bg-signal-teal transition-all duration-500" style={{ width: `${(count / usersTotal) * 100}%` }} />
                 </div>
               </div>
             ))}
@@ -65,16 +69,18 @@ export function AdminAnalytics() {
         </Card>
 
         <Card>
-          <CardHeader title="Transaction status" />
-          <CardBody className="space-y-3">
+          <div className="border-b border-graphite px-5 py-3.5">
+            <h2 className="text-sm font-medium tracking-tight text-paper">Transaction status</h2>
+          </div>
+          <CardBody className="space-y-3.5 p-5">
             {Object.entries(s.transactions.byStatus).map(([status, count]) => (
               <div key={status}>
-                <div className="mb-1 flex justify-between text-sm">
-                  <span className="text-ink-dim">{status}</span>
-                  <span className="font-medium text-ink">{count}</span>
+                <div className="mb-1.5 flex justify-between text-[13px]">
+                  <span className="text-mist">{status}</span>
+                  <span className="font-medium text-paper">{count}</span>
                 </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-surface-2">
-                  <div className="h-full rounded-full bg-accent transition-all duration-500" style={{ width: `${(count / txTotal) * 100}%` }} />
+                <div className="h-1 overflow-hidden rounded-full bg-obsidian">
+                  <div className="h-full rounded-full bg-acid-lime transition-all duration-500" style={{ width: `${(count / txTotal) * 100}%` }} />
                 </div>
               </div>
             ))}
@@ -83,22 +89,24 @@ export function AdminAnalytics() {
       </div>
 
       <Card>
-        <CardHeader title="Bounty & reward summary" />
-        <CardBody className="grid gap-px overflow-hidden rounded-md border border-border bg-border text-sm sm:grid-cols-3">
+        <div className="border-b border-graphite px-5 py-3.5">
+          <h2 className="text-sm font-medium tracking-tight text-paper">Bounty & reward summary</h2>
+        </div>
+        <CardBody className="grid gap-px overflow-hidden rounded-b-lg border border-t-0 border-graphite bg-graphite text-sm sm:grid-cols-3">
           <div className="bg-surface p-4">
-            <p className="text-xs text-ink-faint">Bounties</p>
-            <p className="mt-1 text-lg font-semibold text-ink">{s.bounties.total}</p>
-            <p className="text-xs text-ink-faint">{s.bounties.funded} funded</p>
+            <p className="text-[11px] text-ash">Bounties</p>
+            <p className="mt-1 font-mono text-lg font-medium text-paper">{s.bounties.total}</p>
+            <p className="text-[11px] text-fog">{s.bounties.funded} funded</p>
           </div>
           <div className="bg-surface p-4">
-            <p className="text-xs text-ink-faint">Reports</p>
-            <p className="mt-1 text-lg font-semibold text-ink">{s.reports.total}</p>
-            <p className="text-xs text-ink-faint">across all programs</p>
+            <p className="text-[11px] text-ash">Reports</p>
+            <p className="mt-1 font-mono text-lg font-medium text-paper">{s.reports.total}</p>
+            <p className="text-[11px] text-fog">across all programs</p>
           </div>
           <div className="bg-surface p-4">
-            <p className="text-xs text-ink-faint">Transactions</p>
-            <p className="mt-1 text-lg font-semibold text-ink">{s.transactions.total}</p>
-            <p className="text-xs text-ink-faint">on Sepolia</p>
+            <p className="text-[11px] text-ash">Transactions</p>
+            <p className="mt-1 font-mono text-lg font-medium text-paper">{s.transactions.total}</p>
+            <p className="text-[11px] text-fog">on Sepolia</p>
           </div>
         </CardBody>
       </Card>

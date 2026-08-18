@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Bug, LogOut, ShieldCheck } from "lucide-react";
+import { Bug, LogOut, Menu, ShieldCheck, X } from "lucide-react";
 import { useAuth } from "../../providers/AuthProvider";
 import { cn } from "../../lib/utils";
 import { Button } from "../ui/Button";
@@ -7,53 +8,83 @@ import { ThemeToggle } from "../ui/ThemeToggle";
 
 export function Logo({ compact }: { compact?: boolean }) {
   return (
-    <Link to="/" className="flex items-center gap-2">
-      <span className="flex h-8 w-8 items-center justify-center rounded-md bg-accent/10 text-accent">
-        <Bug className="h-4 w-4" />
+    <Link to="/" className="group flex items-center gap-2.5">
+      <span className="flex h-7 w-7 items-center justify-center rounded-sm border border-graphite bg-surface transition-colors duration-150 group-hover:border-smoke">
+        <Bug className="h-3.5 w-3.5 text-acid-lime" strokeWidth={2.2} />
       </span>
       {!compact && (
-        <span className="text-sm font-semibold tracking-tight text-ink">
-          Bounty<span className="text-accent">Nex</span>
+        <span className="text-[15px] font-medium tracking-tight text-paper transition-colors duration-150">
+          BountyNex
         </span>
       )}
     </Link>
   );
 }
 
+const NAV_LINKS = [
+  { to: "/bounties", label: "Browse Bounties" },
+  { to: "/#how-it-works", label: "How It Works" },
+  { to: "/#security", label: "Security" },
+];
+
 export function PublicNavbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    if (mobileOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-bg/80 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
-        <Logo />
-        <nav className="hidden items-center gap-6 text-sm text-ink-dim md:flex">
-          <NavLink
-            to="/bounties"
-            className={({ isActive }) => cn("transition-colors hover:text-ink", isActive && "text-accent font-medium")}
-          >
-            Browse Bounties
-          </NavLink>
-          <Link to="/#how-it-works" className="transition-colors hover:text-ink">
-            How it works
-          </Link>
-          <Link to="/#security" className="transition-colors hover:text-ink">
-            Security
-          </Link>
-        </nav>
-        <div className="flex items-center gap-2 sm:gap-3">
+    <header className="sticky top-0 z-40 border-b border-graphite bg-bg/85 backdrop-blur-md">
+      <div className="mx-auto flex h-12 max-w-[1200px] items-center justify-between px-4 sm:px-6">
+        <div className="flex items-center gap-8">
+          <Logo />
+          <nav className="hidden items-center gap-6 text-[13px] md:flex">
+            {NAV_LINKS.map((link) =>
+              link.to.startsWith("/#") ? (
+                <a
+                  key={link.to}
+                  href={link.to}
+                  className="text-fog transition-colors duration-150 hover:text-paper"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  className={({ isActive }) =>
+                    cn(
+                      "transition-colors duration-150 hover:text-paper",
+                      isActive ? "text-paper font-medium" : "text-fog",
+                    )
+                  }
+                >
+                  {link.label}
+                </NavLink>
+              ),
+            )}
+          </nav>
+        </div>
+
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <ThemeToggle />
           {isAuthenticated ? (
             <>
-              <Link to={dashboardPath(user!.role)}>
+              <Link to={dashboardPath(user!.role)} className="hidden sm:block">
                 <Button variant="secondary" size="sm">
                   <ShieldCheck className="h-3.5 w-3.5" /> Dashboard
                 </Button>
               </Link>
               <button
                 onClick={() => void logout().then(() => navigate("/"))}
-                className="rounded-md p-1.5 text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                className="flex h-8 w-8 items-center justify-center rounded-sm text-fog transition-colors duration-150 hover:bg-obsidian hover:text-paper"
                 title="Logout"
                 aria-label="Logout"
               >
@@ -67,13 +98,67 @@ export function PublicNavbar() {
                   Log in
                 </Button>
               </Link>
-              <Link to="/register">
+              <Link to="/register" className="hidden sm:block">
                 <Button size="sm">Get started</Button>
               </Link>
             </>
           )}
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle menu"
+            className="flex h-8 w-8 items-center justify-center rounded-sm text-fog transition-colors duration-150 hover:bg-obsidian hover:text-paper md:hidden"
+          >
+            {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </button>
         </div>
       </div>
+
+      {mobileOpen && (
+        <div className="absolute inset-x-0 top-12 z-40 border-b border-graphite bg-surface/95 backdrop-blur-md animate-fade-in md:hidden">
+          <nav className="flex flex-col gap-1 p-3">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                onClick={() => setMobileOpen(false)}
+                className={cn(
+                  "rounded-sm px-3 py-2 text-sm transition-colors duration-150 hover:bg-obsidian",
+                  "text-mist",
+                )}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="mt-2 flex gap-2 border-t border-graphite pt-3">
+              {isAuthenticated ? (
+                <>
+                  <Link to={dashboardPath(user!.role)} className="flex-1" onClick={() => setMobileOpen(false)}>
+                    <Button variant="secondary" size="sm" className="w-full">
+                      <ShieldCheck className="h-3.5 w-3.5" /> Dashboard
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setMobileOpen(false);
+                      void logout().then(() => navigate("/"));
+                    }}
+                  >
+                    <LogOut className="h-3.5 w-3.5" /> Logout
+                  </Button>
+                </>
+              ) : (
+                <Link to="/register" className="flex-1" onClick={() => setMobileOpen(false)}>
+                  <Button size="sm" className="w-full">
+                    Get started
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
@@ -93,17 +178,34 @@ export function dashboardPath(role: string): string {
 
 export function PublicFooter() {
   return (
-    <footer className="border-t border-border bg-surface/50">
-      <div className="mx-auto max-w-5xl px-6 py-8 text-sm text-ink-dim">
-        <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
-          <Logo />
-          <div className="flex flex-wrap items-center justify-center gap-6">
-            <Link to="/bounties" className="transition-colors hover:text-ink">Browse Bounties</Link>
-            <Link to="/register" className="transition-colors hover:text-ink">Join as researcher</Link>
-            <Link to="/register" className="transition-colors hover:text-ink">Launch a program</Link>
+    <footer className="border-t border-graphite">
+      <div className="mx-auto max-w-[1200px] px-6 py-10">
+        <div className="flex flex-col items-center justify-between gap-8 md:flex-row md:items-start">
+          <div className="flex flex-col items-center gap-3 md:items-start">
+            <Logo />
+            <p className="text-xs text-ash">Crowdsourced security, built for the open web.</p>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[13px]">
+            <Link to="/bounties" className="text-fog transition-colors duration-150 hover:text-paper">
+              Browse Bounties
+            </Link>
+            <Link to="/register" className="text-fog transition-colors duration-150 hover:text-paper">
+              Join as researcher
+            </Link>
+            <Link to="/register" className="text-fog transition-colors duration-150 hover:text-paper">
+              Launch a program
+            </Link>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="rounded-sm border border-graphite px-2 py-1 font-mono text-[10px] text-ash">
+              ETH · SEPOLIA
+            </span>
+            <span className="rounded-sm border border-graphite px-2 py-1 font-mono text-[10px] text-ash">
+              TESTNET
+            </span>
           </div>
         </div>
-        <p className="mt-6 text-center text-xs text-ink-faint">
+        <p className="mt-8 border-t border-graphite pt-6 text-center text-xs text-ash md:text-left">
           BountyNex runs on the Ethereum Sepolia testnet. Never use real funds. &copy; {new Date().getFullYear()} BountyNex
         </p>
       </div>

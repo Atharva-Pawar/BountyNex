@@ -4,9 +4,10 @@ import { api } from "../../lib/api";
 import type { BugReport, Pagination, ReportStatus } from "../../types";
 import { formatDate } from "../../lib/utils";
 import { StatusBadge } from "../../components/ui/Badge";
-import { Card, CardBody, CardHeader } from "../../components/ui/Card";
+import { Card, CardBody } from "../../components/ui/Card";
 import { ErrorState, Spinner } from "../../components/ui/State";
 import { PaginationBar } from "../../components/ui/PaginationBar";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 const STATUSES: Array<ReportStatus | "ALL"> = ["ALL", "SUBMITTED", "UNDER_REVIEW", "NEEDS_INFORMATION", "ACCEPTED", "REJECTED", "REWARDED"];
 
@@ -25,10 +26,11 @@ export function AdminReports() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-ink">Reports</h1>
-        <p className="text-sm text-ink-dim">All vulnerability reports across the platform</p>
-      </div>
+      <PageHeader
+        eyebrow="Console"
+        title="Reports"
+        subtitle="All vulnerability reports across the platform"
+      />
 
       <div className="flex flex-wrap gap-2">
         {STATUSES.map((s) => (
@@ -37,8 +39,8 @@ export function AdminReports() {
             onClick={() => { setStatus(s); setPage(1); }}
             className={
               status === s
-                ? "rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent"
-                : "rounded-full border border-border px-3 py-1 text-xs font-medium text-ink-dim hover:border-border-strong hover:text-ink"
+                ? "rounded-sm border border-acid-lime/30 bg-acid-lime/10 px-3 py-1.5 text-[12px] font-medium text-acid-lime transition-colors duration-150"
+                : "rounded-sm border border-graphite px-3 py-1.5 text-[12px] font-medium text-fog transition-colors duration-150 hover:border-smoke hover:text-paper"
             }
           >
             {s === "ALL" ? "All" : s.replace(/_/g, " ")}
@@ -47,8 +49,7 @@ export function AdminReports() {
       </div>
 
       <Card>
-        <CardHeader title="All reports" />
-        <CardBody>
+        <CardBody className="p-0">
           {isLoading ? (
             <Spinner />
           ) : isError ? (
@@ -58,31 +59,33 @@ export function AdminReports() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
                   <thead>
-                    <tr className="border-b border-border text-xs uppercase tracking-wider text-ink-faint">
-                      <th className="pb-3 pr-4 font-medium">Report</th>
-                      <th className="pb-3 pr-4 font-medium">Researcher</th>
-                      <th className="pb-3 pr-4 font-medium">Severity</th>
-                      <th className="pb-3 pr-4 font-medium">Status</th>
-                      <th className="pb-3 font-medium">Submitted</th>
+                    <tr className="border-b border-graphite text-[11px] uppercase tracking-wider text-ash">
+                      <th className="px-5 pb-3 pr-4 pt-3 font-medium">Report</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Researcher</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Severity</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Status</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Submitted</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border">
+                  <tbody className="divide-y divide-graphite">
                     {data?.items.map((r) => (
-                      <tr key={r.id} className="transition-colors hover:bg-surface-2/50">
-                        <td className="py-3 pr-4">
-                          <p className="font-medium text-ink">{r.title}</p>
-                          <p className="text-xs text-ink-faint">{r.bounty?.title}</p>
+                      <tr key={r.id} className="transition-colors duration-150 hover:bg-obsidian/60">
+                        <td className="px-5 py-3.5 pr-4">
+                          <p className="font-medium tracking-tight text-paper">{r.title}</p>
+                          <p className="mt-0.5 font-mono text-[11px] text-ash">{r.bounty?.title}</p>
                         </td>
-                        <td className="py-3 pr-4 text-ink-dim">{r.researcher?.name}</td>
-                        <td className="py-3 pr-4"><StatusBadge status={r.severity} /></td>
-                        <td className="py-3 pr-4"><StatusBadge status={r.status} /></td>
-                        <td className="py-3 text-ink-dim">{formatDate(r.submittedAt)}</td>
+                        <td className="py-3.5 pr-4 text-mist">{r.researcher?.name}</td>
+                        <td className="py-3.5 pr-4"><StatusBadge status={r.severity} /></td>
+                        <td className="py-3.5 pr-4"><StatusBadge status={r.status} /></td>
+                        <td className="py-3.5 pr-4 text-mist">{formatDate(r.submittedAt)}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <PaginationBar pagination={data?.pagination} onPage={setPage} />
+              <div className="border-t border-graphite px-5 py-3">
+                <PaginationBar pagination={data?.pagination} onPage={setPage} />
+              </div>
             </>
           )}
         </CardBody>

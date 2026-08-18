@@ -2,13 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { parseEther, formatEther } from "viem";
-import { Plus, Rocket, AlertCircle } from "lucide-react";
+import { Plus, AlertCircle, Rocket, Coins } from "lucide-react";
 import { api } from "../../lib/api";
 import type { Bounty, Severity } from "../../types";
 import { SEVERITY_ORDER } from "../../lib/utils";
 import { Button } from "../../components/ui/Button";
 import { Card, CardBody, CardHeader } from "../../components/ui/Card";
-import { Field, Input, Select, Textarea } from "../../components/ui/Field";
+import { Field, Input, Textarea } from "../../components/ui/Field";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 const SEVERITIES = SEVERITY_ORDER;
 
@@ -74,17 +75,16 @@ export function CreateBounty() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-ink">Create a bounty program</h1>
-        <p className="text-sm text-ink-dim">
-          Define scope, rules, and severity-based rewards. Fund it on-chain to go live.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="New program"
+        title="Create a bounty program"
+        subtitle="Define scope, rules, and severity-based rewards. Fund it on-chain to go live."
+      />
 
       <Card>
         <CardHeader title="Program details" />
         <CardBody>
-          <form onSubmit={onSubmit} className="space-y-4">
+          <form onSubmit={onSubmit} className="space-y-5">
             <Field label="Title">
               <Input required minLength={5} value={form.title} onChange={set("title")} placeholder="e.g. Q3 Web App Security Program" />
             </Field>
@@ -94,7 +94,7 @@ export function CreateBounty() {
             </Field>
 
             <Field label="Scope">
-              <Textarea required minLength={10} value={form.scope} onChange={set("scope")} placeholder="URLs, endpoints, contracts, and assets in scope..." />
+              <Textarea required minLength={10} value={form.scope} onChange={set("scope")} placeholder="URLs, endpoints, contracts, and assets in scope..." className="font-mono text-[13px]" />
             </Field>
 
             <Field label="Rules">
@@ -105,12 +105,17 @@ export function CreateBounty() {
               <Input required type="datetime-local" value={form.deadline} onChange={set("deadline")} />
             </Field>
 
-            <div className="rounded-lg border border-border bg-surface-2 p-4">
-              <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-ink">Severity rewards</h3>
-                <p className="font-mono text-xs text-accent font-medium">Total {formatEther(totalWei)} ETH</p>
+            <div className="rounded-lg border border-graphite bg-carbon p-5">
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <Coins className="h-4 w-4 text-ash" />
+                  <h3 className="text-sm font-medium text-paper">Severity rewards</h3>
+                </div>
+                <span className="rounded-sm border border-acid-lime/25 bg-acid-lime/10 px-2.5 py-1 font-mono text-[12px] font-medium text-acid-lime">
+                  {formatEther(totalWei)} ETH total
+                </span>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2">
                 {SEVERITIES.map((s) => (
                   <Field key={s} label={s}>
                     <div className="relative">
@@ -123,7 +128,7 @@ export function CreateBounty() {
                         onChange={(e) => setSeverities((prev) => ({ ...prev, [s]: e.target.value }))}
                         className="pr-12"
                       />
-                      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ink-faint font-medium">ETH</span>
+                      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[11px] uppercase tracking-wider text-ash">ETH</span>
                     </div>
                   </Field>
                 ))}
@@ -131,7 +136,7 @@ export function CreateBounty() {
             </div>
 
             {error && (
-              <div className="flex items-start gap-2 rounded-md border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">
+              <div className="flex items-start gap-2 rounded-md border border-coral-red/25 bg-coral-red/10 px-4 py-3 text-sm text-[#ff8d8d]">
                 <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                 {error}
               </div>
@@ -151,10 +156,10 @@ export function CreateBounty() {
         <CardHeader
           title="Next steps after creating"
           subtitle="Your program is created as a draft"
-          action={<Rocket className="h-5 w-5 text-accent" />}
+          action={<Rocket className="h-4 w-4 text-ash" />}
         />
         <CardBody>
-          <ol className="list-decimal space-y-2 pl-5 text-sm text-ink-dim">
+          <ol className="list-decimal space-y-3 pl-5 text-[13px] leading-relaxed text-mist">
             <li>Fund the bounty on-chain with MetaMask (the contract escrows the total reward).</li>
             <li>Once the funding transaction confirms, the bounty is marked funded automatically.</li>
             <li>Activate the program so researchers can submit reports.</li>

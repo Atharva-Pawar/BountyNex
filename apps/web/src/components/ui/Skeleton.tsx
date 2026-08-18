@@ -4,7 +4,7 @@ function SkeletonBase({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "animate-shimmer rounded-md bg-gradient-to-r from-surface-2 via-surface-3 to-surface-2",
+        "animate-shimmer rounded-sm bg-gradient-to-r from-obsidian via-smoke/60 to-obsidian",
         className,
       )}
     />
@@ -23,7 +23,7 @@ export function SkeletonText({ lines = 3 }: { lines?: number }) {
 
 export function SkeletonCard() {
   return (
-    <div className="rounded-lg border border-border bg-surface p-4 space-y-3">
+    <div className="rounded-lg border border-graphite bg-surface p-5 space-y-3">
       <SkeletonBase className="h-4 w-3/4" />
       <SkeletonBase className="h-3 w-full" />
       <SkeletonBase className="h-3 w-2/3" />

@@ -23,46 +23,48 @@ export function BountyFilters({
   const update = (patch: Partial<BountyFiltersState>) => onChange({ ...filters, ...patch });
 
   return (
-    <div className="flex flex-wrap gap-3 rounded-lg border border-border bg-surface p-3">
-      <div className="relative flex-1 min-w-[200px]">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+    <div className="flex flex-col gap-3 border-b border-graphite pb-4 lg:flex-row lg:items-center">
+      <div className="relative flex-1 min-w-[220px]">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-ash" />
         <Input
-          className="pl-9"
-          placeholder="Search bounties..."
+          className="pl-9 font-mono text-[13px]"
+          placeholder="Search vulnerabilities..."
           value={filters.q}
           onChange={(e) => update({ q: e.target.value })}
         />
       </div>
-      <Select value={filters.severity} onChange={(e) => update({ severity: e.target.value })}>
-        <option value="">All severities</option>
-        {SEVERITY_ORDER.map((s) => (
-          <option key={s} value={s}>
-            {s}
-          </option>
-        ))}
-      </Select>
-      <Select value={filters.sort} onChange={(e) => update({ sort: e.target.value })}>
-        <option value="newest">Newest first</option>
-        <option value="reward_high">Highest reward</option>
-        <option value="reward_low">Lowest reward</option>
-        <option value="deadline">Ending soon</option>
-      </Select>
-      {showStatus ? (
-        <Select value={filters.status ?? ""} onChange={(e) => update({ status: e.target.value })}>
-          <option value="">All statuses</option>
-          <option value="ACTIVE">Active</option>
-          <option value="PAUSED">Paused</option>
-          <option value="CLOSED">Closed</option>
-          <option value="DRAFT">Draft</option>
+      <div className="flex flex-wrap items-center gap-2">
+        <Select value={filters.severity} onChange={(e) => update({ severity: e.target.value })}>
+          <option value="">Severity: all</option>
+          {SEVERITY_ORDER.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
         </Select>
-      ) : (
-        <Select value={filters.minReward ?? ""} onChange={(e) => update({ minReward: e.target.value })}>
-          <option value="">Any reward</option>
-          <option value="100000000000000000">{"\u2265"} 0.1 ETH</option>
-          <option value="500000000000000000">{"\u2265"} 0.5 ETH</option>
-          <option value="1000000000000000000">{"\u2265"} 1 ETH</option>
+        {showStatus ? (
+          <Select value={filters.status ?? ""} onChange={(e) => update({ status: e.target.value })}>
+            <option value="">Status: all</option>
+            <option value="ACTIVE">Active</option>
+            <option value="PAUSED">Paused</option>
+            <option value="CLOSED">Closed</option>
+            <option value="DRAFT">Draft</option>
+          </Select>
+        ) : (
+          <Select value={filters.minReward ?? ""} onChange={(e) => update({ minReward: e.target.value })}>
+            <option value="">Reward: any</option>
+            <option value="100000000000000000">{"\u2265"} 0.1 ETH</option>
+            <option value="500000000000000000">{"\u2265"} 0.5 ETH</option>
+            <option value="1000000000000000000">{"\u2265"} 1 ETH</option>
+          </Select>
+        )}
+        <Select value={filters.sort} onChange={(e) => update({ sort: e.target.value })}>
+          <option value="newest">Sort: newest</option>
+          <option value="reward_high">Sort: reward high</option>
+          <option value="reward_low">Sort: reward low</option>
+          <option value="deadline">Sort: ending soon</option>
         </Select>
-      )}
+      </div>
     </div>
   );
 }

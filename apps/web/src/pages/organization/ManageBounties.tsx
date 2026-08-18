@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useAccount, useWriteContract } from "wagmi";
 import { encodeFunctionData } from "viem";
-import { ExternalLink, Play, Rocket, Trash2 } from "lucide-react";
+import { ExternalLink, Play, Plus, Rocket, Trash2 } from "lucide-react";
 import { api } from "../../lib/api";
 import type { Bounty, Pagination } from "../../types";
 import { formatDate, weiToEth } from "../../lib/utils";
@@ -13,11 +13,12 @@ import abi from "../../lib/escrow-abi.json";
 import { useCreateBountyOnChain, useFundBounty } from "../../hooks/useEscrow";
 import { StatusBadge } from "../../components/ui/Badge";
 import { Button } from "../../components/ui/Button";
-import { Card, CardBody, CardHeader } from "../../components/ui/Card";
+import { Card, CardBody } from "../../components/ui/Card";
 import { EmptyState, ErrorState, Spinner } from "../../components/ui/State";
 import { PaginationBar } from "../../components/ui/PaginationBar";
 import { ConfirmDialog } from "../../components/ui/Modal";
 import { TxHashLink } from "../../components/wallet/TxHashLink";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 const ESCROW_ABI = abi as unknown as Parameters<typeof encodeFunctionData>[0]["abi"];
 
@@ -124,52 +125,58 @@ export function ManageBounties() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-ink">My bounties</h1>
-          <p className="text-sm text-ink-dim">Fund, activate, and manage your programs</p>
-        </div>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <PageHeader
+          eyebrow="Workspace"
+          title="My bounties"
+          subtitle="Fund, activate, and manage your programs"
+        />
         <Link to="/organization/create">
-          <Button>Create bounty</Button>
+          <Button>
+            <Plus className="h-4 w-4" /> Create bounty
+          </Button>
         </Link>
       </div>
 
       <Card>
-        <CardHeader title="Bounty programs" />
-        <CardBody>
+        <CardBody className="p-0">
           {isLoading ? (
             <Spinner />
           ) : isError ? (
             <ErrorState message="Unable to load bounties. Please try again." retry={() => void refetch()} />
           ) : (data?.items.length ?? 0) === 0 ? (
-            <EmptyState
-              title="No bounty programs"
-              description="Create your first program to get started."
-              action={
-                <Link to="/organization/create">
-                  <Button size="sm">Create bounty</Button>
-                </Link>
-              }
-            />
+            <div className="p-10">
+              <EmptyState
+                title="No bounty programs"
+                description="Create your first program to get started."
+                action={
+                  <Link to="/organization/create">
+                    <Button size="sm">Create bounty</Button>
+                  </Link>
+                }
+              />
+            </div>
           ) : (
             <>
-              <div className="divide-y divide-border">
+              <div className="divide-y divide-graphite">
                 {data?.items.map((b) => (
-                  <div key={b.id} className="py-4 first:pt-0 last:pb-0">
+                  <div key={b.id} className="px-5 py-4 first:pt-5 last:pb-5">
                     <div className="flex flex-wrap items-start justify-between gap-4">
                       <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <Link to={`/organization/bounties/${b.id}/reports`} className="font-medium text-ink hover:text-accent">
+                        <div className="flex flex-wrap items-center gap-2.5">
+                          <Link to={`/organization/bounties/${b.id}/reports`} className="font-medium tracking-tight text-paper transition-colors duration-150 hover:text-bone">
                             {b.title}
                           </Link>
                           <StatusBadge status={b.status} />
-                          {b.isFunded && <span className="text-xs font-medium text-accent">Funded</span>}
+                          {b.isFunded && (
+                            <span className="font-mono text-[11px] uppercase tracking-wider text-pulse-green">funded</span>
+                          )}
                         </div>
-                        <p className="mt-1 text-xs text-ink-faint">
-                          {b._count?.bugReports ?? 0} reports · Deadline {formatDate(b.deadline)}
-                          {b.onChainId ? ` · On-chain #${b.onChainId}` : " · Not on-chain yet"}
+                        <p className="mt-1.5 font-mono text-[11px] text-ash">
+                          BNX-{b.id.slice(0, 6)} · {b._count?.bugReports ?? 0} reports · deadline {formatDate(b.deadline)}
+                          {b.onChainId ? ` · on-chain #${b.onChainId}` : " · not on-chain yet"}
                         </p>
-                        <p className="mt-1 font-mono text-sm font-medium text-accent">{weiToEth(b.rewardAmountWei)} ETH total</p>
+                        <p className="mt-1.5 font-mono text-sm font-medium text-acid-lime">{weiToEth(b.rewardAmountWei)} ETH total</p>
                       </div>
 
                       <div className="flex flex-wrap items-center gap-2">
@@ -225,7 +232,9 @@ export function ManageBounties() {
                   </div>
                 ))}
               </div>
-              <PaginationBar pagination={data?.pagination} onPage={setPage} />
+              <div className="border-t border-graphite px-5 py-3">
+                <PaginationBar pagination={data?.pagination} onPage={setPage} />
+              </div>
             </>
           )}
         </CardBody>

@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Inbox } from "lucide-react";
+import { Inbox, RefreshCw } from "lucide-react";
 import { api } from "../../lib/api";
 import type { BugReport, ReportStatus } from "../../types";
 import { formatDate, weiToEth } from "../../lib/utils";
 import { StatusBadge } from "../../components/ui/Badge";
-import { Card, CardBody, CardHeader } from "../../components/ui/Card";
+import { Card, CardBody } from "../../components/ui/Card";
 import { EmptyState, ErrorState, Spinner } from "../../components/ui/State";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 const STATUSES: Array<ReportStatus | "ALL"> = ["ALL", "SUBMITTED", "UNDER_REVIEW", "NEEDS_INFORMATION", "ACCEPTED", "REJECTED", "REWARDED"];
 
@@ -29,12 +30,11 @@ export function BountySubmissions({ all = false }: { all?: boolean }) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-ink">Submissions</h1>
-        <p className="text-sm text-ink-dim">
-          {all ? "Reports across all your bounty programs" : "Reports for a single program"}
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Submissions"
+        title={all ? "All submissions" : "Submissions"}
+        subtitle={all ? "Reports across all your bounty programs" : "Reports for a single program"}
+      />
 
       <div className="flex flex-wrap gap-2">
         {STATUSES.map((s) => (
@@ -43,8 +43,8 @@ export function BountySubmissions({ all = false }: { all?: boolean }) {
             onClick={() => setStatus(s)}
             className={
               status === s
-                ? "rounded-md border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-medium text-accent transition-colors"
-                : "rounded-md border border-border px-3 py-1 text-xs font-medium text-ink-dim transition-colors hover:border-border-strong hover:text-ink"
+                ? "rounded-sm border border-acid-lime/30 bg-acid-lime/10 px-3 py-1.5 text-[12px] font-medium text-acid-lime transition-colors duration-150"
+                : "rounded-sm border border-graphite px-3 py-1.5 text-[12px] font-medium text-fog transition-colors duration-150 hover:border-smoke hover:text-paper"
             }
           >
             {s === "ALL" ? "All" : s.replace(/_/g, " ")}
@@ -53,58 +53,62 @@ export function BountySubmissions({ all = false }: { all?: boolean }) {
       </div>
 
       <Card>
-        <CardHeader
-          title="Reports"
-          action={
-            <button onClick={() => void refetch()} className="text-sm font-medium text-accent hover:underline">
-              Refresh
-            </button>
-          }
-        />
-        <CardBody>
+        <div className="flex items-center justify-between border-b border-graphite px-5 py-3.5">
+          <p className="font-mono text-[11px] uppercase tracking-wider text-ash">
+            {items.length} report{items.length === 1 ? "" : "s"}
+          </p>
+          <button onClick={() => void refetch()} className="flex items-center gap-1.5 text-[13px] font-medium text-mist transition-colors duration-150 hover:text-paper">
+            <RefreshCw className="h-3.5 w-3.5" /> Refresh
+          </button>
+        </div>
+        <CardBody className="p-0">
           {isLoading ? (
             <Spinner />
           ) : isError ? (
             <ErrorState message="Unable to load submissions. Please try again." retry={() => void refetch()} />
           ) : items.length === 0 ? (
-            <EmptyState
-              icon={<Inbox className="h-6 w-6" />}
-              title="No submissions in this view"
-              description="Reports from researchers will appear here."
-            />
+            <div className="p-10">
+              <EmptyState
+                icon={<Inbox className="h-5 w-5" />}
+                title="No submissions in this view"
+                description="Reports from researchers will appear here."
+              />
+            </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-border text-xs uppercase tracking-wider text-ink-faint">
-                    <th className="pb-3 pr-4 font-medium">Report</th>
-                    <th className="pb-3 pr-4 font-medium">Researcher</th>
-                    <th className="pb-3 pr-4 font-medium">Severity</th>
-                    <th className="pb-3 pr-4 font-medium">Status</th>
-                    <th className="pb-3 pr-4 font-medium">Submitted</th>
-                    <th className="pb-3 font-medium">Reward</th>
+                  <tr className="border-b border-graphite text-[11px] uppercase tracking-wider text-ash">
+                    <th className="px-5 pb-3 pr-4 pt-3 font-medium">Report</th>
+                    <th className="pb-3 pr-4 pt-3 font-medium">Researcher</th>
+                    <th className="pb-3 pr-4 pt-3 font-medium">Severity</th>
+                    <th className="pb-3 pr-4 pt-3 font-medium">Status</th>
+                    <th className="pb-3 pr-4 pt-3 font-medium">Submitted</th>
+                    <th className="pb-3 pr-4 pt-3 font-medium">Reward</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border">
+                <tbody className="divide-y divide-graphite">
                   {items.map((r) => (
-                    <tr key={r.id} className="transition-colors hover:bg-surface-2/50">
-                      <td className="py-3 pr-4">
-                        <Link to={`/organization/reports/${r.id}`} className="font-medium text-ink hover:text-accent">
+                    <tr key={r.id} className="transition-colors duration-150 hover:bg-obsidian/60">
+                      <td className="px-5 py-3.5 pr-4">
+                        <Link to={`/organization/reports/${r.id}`} className="font-medium tracking-tight text-paper transition-colors duration-150 hover:text-bone">
                           {r.title}
                         </Link>
-                        <p className="text-xs text-ink-faint">{r.bounty?.title}</p>
+                        <p className="mt-0.5 font-mono text-[11px] text-ash">
+                          BR-{r.id.slice(0, 6)} · {r.bounty?.title}
+                        </p>
                       </td>
-                      <td className="py-3 pr-4 text-ink-dim">
+                      <td className="py-3.5 pr-4 text-mist">
                         {r.researcher?.name}
                         {r.researcher?.researcherProfile?.handle && (
-                          <span className="text-xs text-ink-faint"> · @{r.researcher.researcherProfile.handle}</span>
+                          <span className="font-mono text-[11px] text-ash"> · @{r.researcher.researcherProfile.handle}</span>
                         )}
                       </td>
-                      <td className="py-3 pr-4"><StatusBadge status={r.severity} /></td>
-                      <td className="py-3 pr-4"><StatusBadge status={r.status} /></td>
-                      <td className="py-3 pr-4 text-ink-dim">{formatDate(r.submittedAt)}</td>
-                      <td className="py-3 font-mono text-ink-dim">
-                        {r.rewardWei ? `${weiToEth(r.rewardWei)} ETH` : "—"}
+                      <td className="py-3.5 pr-4"><StatusBadge status={r.severity} /></td>
+                      <td className="py-3.5 pr-4"><StatusBadge status={r.status} /></td>
+                      <td className="py-3.5 pr-4 text-mist">{formatDate(r.submittedAt)}</td>
+                      <td className="py-3.5 pr-4 font-mono text-[13px] text-mist">
+                        {r.rewardWei ? `${weiToEth(r.rewardWei)} ETH` : <span className="text-ash">—</span>}
                       </td>
                     </tr>
                   ))}

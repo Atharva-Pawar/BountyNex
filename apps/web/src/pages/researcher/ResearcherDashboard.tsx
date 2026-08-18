@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Award, Bug, Clock, FileText, Plus, ShieldCheck } from "lucide-react";
+import { Award, Bug, Clock, FileSearch, Plus, ShieldCheck, Star } from "lucide-react";
 import { api } from "../../lib/api";
 import type { BugReport } from "../../types";
 import { useAuth } from "../../providers/AuthProvider";
@@ -8,6 +8,8 @@ import { weiToEth } from "../../lib/utils";
 import { StatusBadge } from "../../components/ui/Badge";
 import { Button } from "../../components/ui/Button";
 import { EmptyState, Spinner } from "../../components/ui/State";
+import { PageHeader } from "../../components/ui/PageHeader";
+import { Metric, MetricCell, MetricStrip } from "../../components/ui/Metric";
 
 interface ReportsResponse {
   items: BugReport[];
@@ -31,28 +33,29 @@ export function ResearcherDashboard() {
   const rewardItems = rewards?.items ?? [];
   const paid = rewardItems.filter((r) => r.status === "PAID");
   const totalEarned = paid.reduce((acc, r) => acc + BigInt(r.amountWei), 0n);
-
-  const stats = [
-    { label: "Reports submitted", value: String(reports?.pagination.total ?? 0), icon: <FileText className="h-4 w-4" /> },
-    { label: "Pending review", value: String(items.filter((r) => r.status === "SUBMITTED" || r.status === "UNDER_REVIEW").length), icon: <Clock className="h-4 w-4" /> },
-    { label: "Accepted", value: String(items.filter((r) => r.status === "ACCEPTED" || r.status === "REWARDED").length), icon: <Bug className="h-4 w-4" /> },
-    { label: "Total earned", value: `${weiToEth(totalEarned)} ETH`, icon: <Award className="h-4 w-4" /> },
-  ];
+  const reputation = user?.researcherProfile?.reputationScore ?? 0;
+  const pendingCount = items.filter((r) => r.status === "SUBMITTED" || r.status === "UNDER_REVIEW").length;
+  const acceptedCount = items.filter((r) => r.status === "ACCEPTED" || r.status === "REWARDED").length;
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="space-y-10">
+      {/* ── Identity + quick action ─────────────────────── */}
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-ink">
-            Welcome back, {user?.name?.split(" ")[0]}
+          <p className="mb-1 font-mono text-[11px] uppercase tracking-wider text-ash">Researcher workspace</p>
+          <h1 className="text-2xl font-medium tracking-tight text-paper">
+            {user?.name?.split(" ")[0]}
           </h1>
-          <p className="mt-1 text-sm text-ink-dim">
+          <p className="mt-1 flex items-center gap-2 font-mono text-[13px] text-fog">
             {user?.researcherProfile?.handle ? (
-              <span className="font-mono">@{user.researcherProfile.handle}</span>
+              <>@{user.researcherProfile.handle}</>
             ) : (
-              "Complete your profile to get started"
+              <span className="text-coral-red">complete your profile to start</span>
             )}
+            <span className="inline-flex items-center gap-1 rounded-sm border border-graphite bg-obsidian px-2 py-0.5 font-mono text-[10px] text-fog">
+              <Star className="h-3 w-3 text-acid-lime" />
+              {reputation.toFixed(1)} rep
+            </span>
           </p>
         </div>
         <Link to="/researcher/browse">
@@ -62,35 +65,41 @@ export function ResearcherDashboard() {
         </Link>
       </div>
 
-      {/* Stats - inline, not cards */}
-      <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((s) => (
-          <div key={s.label} className="bg-surface p-4">
-            <div className="flex items-center gap-2 text-ink-dim mb-2">
-              {s.icon}
-              <span className="text-xs">{s.label}</span>
-            </div>
-            <p className="font-mono text-xl font-semibold text-ink">{s.value}</p>
-          </div>
-        ))}
-      </div>
+      {/* ── Metrics ──────────────────────────────────────── */}
+      <MetricStrip>
+        <MetricCell>
+          <Metric label="Reports submitted" value={String(reports?.pagination.total ?? 0)} icon={<FileSearch className="h-3.5 w-3.5" />} />
+        </MetricCell>
+        <MetricCell>
+          <Metric label="Pending review" value={String(pendingCount)} icon={<Clock className="h-3.5 w-3.5" />} />
+        </MetricCell>
+        <MetricCell>
+          <Metric label="Accepted" value={String(acceptedCount)} icon={<Bug className="h-3.5 w-3.5" />} />
+        </MetricCell>
+        <MetricCell>
+          <Metric label="Total earned" value={`${weiToEth(totalEarned)} ETH`} icon={<Award className="h-3.5 w-3.5" />} />
+        </MetricCell>
+      </MetricStrip>
 
-      {/* Recent reports */}
-      <div>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-ink">Recent reports</h2>
-          <Link to="/researcher/reports" className="text-sm font-medium text-accent hover:underline">
-            View all <span aria-hidden="true">&rarr;</span>
+      {/* ── Recent reports ───────────────────────────────── */}
+      <section>
+        <div className="mb-4 flex items-end justify-between">
+          <div>
+            <p className="mb-1 font-mono text-[11px] uppercase tracking-wider text-ash">Activity</p>
+            <h2 className="text-lg font-medium tracking-tight text-paper">Recent reports</h2>
+          </div>
+          <Link to="/researcher/reports" className="text-[13px] font-medium text-mist transition-colors duration-150 hover:text-paper">
+            View all →
           </Link>
         </div>
 
-        <div className="rounded-lg border border-border bg-surface">
+        <div className="rounded-lg border border-graphite bg-surface">
           {reportsLoading ? (
             <Spinner />
           ) : items.length === 0 ? (
             <div className="p-8">
               <EmptyState
-                icon={<ShieldCheck className="h-6 w-6" />}
+                icon={<ShieldCheck className="h-5 w-5" />}
                 title="No reports yet"
                 description="Browse active bounties and submit your first vulnerability report."
                 action={
@@ -101,12 +110,12 @@ export function ResearcherDashboard() {
               />
             </div>
           ) : (
-            <div className="divide-y divide-border">
+            <div className="divide-y divide-graphite">
               {items.map((r) => (
-                <div key={r.id} className="flex items-center justify-between gap-4 px-4 py-3 first:pt-3 last:pb-3">
+                <div key={r.id} className="flex items-center justify-between gap-4 px-5 py-3.5 first:pt-3.5 last:pb-3.5">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-ink">{r.title}</p>
-                    <p className="truncate text-xs text-ink-faint">{r.bounty?.title}</p>
+                    <p className="truncate text-sm font-medium text-paper">{r.title}</p>
+                    <p className="truncate font-mono text-[11px] text-ash">BNX-{r.bounty?.title ?? "—"}</p>
                   </div>
                   <StatusBadge status={r.status} />
                 </div>
@@ -114,7 +123,7 @@ export function ResearcherDashboard() {
             </div>
           )}
         </div>
-      </div>
+      </section>
     </div>
   );
 }

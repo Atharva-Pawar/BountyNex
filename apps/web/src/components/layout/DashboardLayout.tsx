@@ -66,8 +66,8 @@ function WalletStatus() {
     <div className="flex items-center gap-3">
       <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
       {address && (
-        <span className="hidden items-center gap-1.5 rounded-md border border-accent/20 bg-accent/5 px-2 py-1 font-mono text-[10px] text-accent lg:flex">
-          <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+        <span className="hidden items-center gap-1.5 rounded-sm border border-acid-lime/20 bg-acid-lime/5 px-2 py-1 font-mono text-[10px] text-acid-lime lg:flex">
+          <span className="h-1.5 w-1.5 rounded-full bg-acid-lime" />
           Bound
         </span>
       )}
@@ -91,21 +91,32 @@ export function DashboardLayout() {
     <div className="min-h-screen">
       {open && (
         <div
-          className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-30 bg-black/50 lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 w-56 border-r border-border bg-surface lg:translate-x-0 transition-transform duration-200 ease-out",
+          "fixed inset-y-0 left-0 z-40 w-60 border-r border-graphite bg-surface transition-transform duration-200 ease-out lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div className="flex h-14 items-center border-b border-border px-4">
+        <div className="flex h-14 items-center justify-between border-b border-graphite px-4">
           <Logo />
+          <button
+            className="flex h-8 w-8 items-center justify-center rounded-sm text-fog lg:hidden hover:text-paper"
+            onClick={() => setOpen(false)}
+            aria-label="Close menu"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
-        <nav className="space-y-0.5 p-2 overflow-y-auto max-h-[calc(100vh-8rem)]">
+
+        <nav className="space-y-0.5 overflow-y-auto p-2.5 max-h-[calc(100vh-8rem)]">
+          <p className="px-3 pb-1.5 pt-2 font-mono text-[10px] uppercase tracking-wider text-ash">
+            {user.role.toLowerCase()}
+          </p>
           {items.map((item) => (
             <NavLink
               key={item.to}
@@ -114,42 +125,55 @@ export function DashboardLayout() {
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-all duration-150",
+                  "group flex items-center gap-2.5 rounded-sm px-3 py-2 text-[13px] transition-all duration-150",
                   isActive
-                    ? "bg-accent/10 text-accent font-medium"
-                    : "text-ink-dim hover:bg-surface-2 hover:text-ink",
+                    ? "bg-obsidian text-paper font-medium"
+                    : "text-fog hover:bg-obsidian/60 hover:text-paper",
                 )
               }
             >
-              {item.icon}
-              {item.label}
+              {({ isActive }) => (
+                <>
+                  <span
+                    className={cn(
+                      "h-3.5 w-[2px] rounded-full transition-colors duration-150",
+                      isActive ? "bg-acid-lime" : "bg-transparent group-hover:bg-smoke",
+                    )}
+                  />
+                  <span className={cn(isActive ? "text-acid-lime" : "text-ash", "transition-colors duration-150")}>
+                    {item.icon}
+                  </span>
+                  {item.label}
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
-        <div className="absolute inset-x-0 bottom-0 border-t border-border bg-surface p-2">
+
+        <div className="absolute inset-x-0 bottom-0 border-t border-graphite bg-surface p-2.5">
           <button
             onClick={() => void logout().then(() => navigate("/"))}
-            className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm text-ink-dim transition-colors hover:bg-surface-2 hover:text-danger focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className="flex w-full items-center gap-2.5 rounded-sm px-3 py-2 text-[13px] text-fog transition-colors duration-150 hover:bg-obsidian hover:text-coral-red"
           >
             <LogOut className="h-4 w-4" /> Sign out
           </button>
         </div>
       </aside>
 
-      <div className="lg:pl-56">
-        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-bg/80 px-4 backdrop-blur-md sm:px-6">
+      <div className="lg:pl-60">
+        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-graphite bg-bg/85 px-4 backdrop-blur-md sm:px-6">
           <div className="flex items-center gap-3">
             <button
-              className="rounded-md p-1.5 text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink lg:hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+              className="flex h-8 w-8 items-center justify-center rounded-sm text-fog transition-colors hover:bg-obsidian hover:text-paper lg:hidden"
               onClick={() => setOpen(true)}
               aria-label="Open menu"
             >
               <Menu className="h-4 w-4" />
             </button>
             <div className="hidden sm:block">
-              <p className="text-[11px] text-ink-faint uppercase tracking-wider">Signed in as</p>
-              <p className="text-sm font-medium text-ink">
-                {user.name} <span className="text-ink-faint font-normal">· {user.role}</span>
+              <p className="font-mono text-[10px] uppercase tracking-wider text-ash">Signed in as</p>
+              <p className="text-[13px] font-medium text-paper">
+                {user.name} <span className="font-normal text-fog">&middot; {user.role.toLowerCase()}</span>
               </p>
             </div>
           </div>
@@ -158,7 +182,7 @@ export function DashboardLayout() {
             <WalletStatus />
           </div>
         </header>
-        <main className="mx-auto max-w-5xl p-4 sm:p-6">
+        <main className="mx-auto max-w-[1200px] animate-fade-in p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>
       </div>
@@ -168,13 +192,11 @@ export function DashboardLayout() {
 
 function Logo() {
   return (
-    <Link to="/" className="flex items-center gap-2">
-      <span className="flex h-8 w-8 items-center justify-center rounded-md bg-accent/10 text-accent">
-        <Bug className="h-4 w-4" />
+    <Link to="/" className="group flex items-center gap-2.5">
+      <span className="flex h-7 w-7 items-center justify-center rounded-sm border border-graphite bg-bg transition-colors duration-150 group-hover:border-smoke">
+        <Bug className="h-3.5 w-3.5 text-acid-lime" strokeWidth={2.2} />
       </span>
-      <span className="text-sm font-semibold tracking-tight text-ink">
-        Bounty<span className="text-accent">Nex</span>
-      </span>
+      <span className="text-[15px] font-medium tracking-tight text-paper">BountyNex</span>
     </Link>
   );
 }

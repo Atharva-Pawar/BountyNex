@@ -1,14 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Bug, DollarSign, FileText, Wallet2 } from "lucide-react";
+import { Bug, DollarSign, FileText, Plus, Wallet2 } from "lucide-react";
 import { api } from "../../lib/api";
 import type { Bounty, Pagination, Wallet } from "../../types";
 import { useAuth } from "../../providers/AuthProvider";
 import { shortAddress, weiToEth } from "../../lib/utils";
 import { StatusBadge } from "../../components/ui/Badge";
-import { Card, CardBody, CardHeader } from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
 import { EmptyState, Spinner } from "../../components/ui/State";
+import { PageHeader } from "../../components/ui/PageHeader";
+import { Metric, MetricCell, MetricStrip } from "../../components/ui/Metric";
 
 interface BountyListResponse {
   items: Bounty[];
@@ -43,86 +44,100 @@ export function OrgDashboard() {
     .filter((r) => r.status === "PAID")
     .reduce((acc, r) => acc + BigInt(r.amountWei), 0n);
 
-  const stats = [
-    { label: "Active programs", value: String(activeCount), icon: <Bug className="h-4 w-4" /> },
-    { label: "Total submissions", value: String(totalReports), icon: <FileText className="h-4 w-4" /> },
-    { label: "Funded bounties", value: String(fundedCount), icon: <DollarSign className="h-4 w-4" /> },
-    { label: "Rewards paid", value: `${weiToEth(totalPaid)} ETH`, icon: <Wallet2 className="h-4 w-4" /> },
-  ];
-
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="space-y-10">
+      {/* ── Identity + action ───────────────────────────── */}
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-ink">
+          <p className="mb-1 font-mono text-[11px] uppercase tracking-wider text-ash">Organization workspace</p>
+          <h1 className="text-2xl font-medium tracking-tight text-paper">
             {user?.organization?.name ?? user?.name}
           </h1>
-          <p className="text-sm text-ink-dim">
+          <p className="mt-1 font-mono text-[13px] text-fog">
             {walletData?.wallet?.address ? (
-              <span className="font-mono">Wallet {shortAddress(walletData.wallet.address, 5)}</span>
+              <>wallet {shortAddress(walletData.wallet.address, 5)}</>
             ) : (
-              "Connect a wallet to fund bounties"
+              <span className="text-coral-red">connect a wallet to fund bounties</span>
             )}
           </p>
         </div>
         <Link to="/organization/create">
-          <Button>Create bounty</Button>
+          <Button>
+            <Plus className="h-4 w-4" /> Create bounty
+          </Button>
         </Link>
       </div>
 
-      <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((s) => (
-          <div key={s.label} className="bg-surface p-4">
-            <div className="flex items-center gap-2 text-ink-dim mb-2">
-              {s.icon}
-              <span className="text-xs">{s.label}</span>
-            </div>
-            <p className="font-mono text-xl font-semibold text-ink">{s.value}</p>
-          </div>
-        ))}
-      </div>
+      {/* ── Metrics ──────────────────────────────────────── */}
+      <MetricStrip>
+        <MetricCell>
+          <Metric label="Active programs" value={String(activeCount)} icon={<Bug className="h-3.5 w-3.5" />} />
+        </MetricCell>
+        <MetricCell>
+          <Metric label="Total submissions" value={String(totalReports)} icon={<FileText className="h-3.5 w-3.5" />} />
+        </MetricCell>
+        <MetricCell>
+          <Metric label="Funded bounties" value={String(fundedCount)} icon={<DollarSign className="h-3.5 w-3.5" />} />
+        </MetricCell>
+        <MetricCell>
+          <Metric label="Rewards paid" value={`${weiToEth(totalPaid)} ETH`} icon={<Wallet2 className="h-3.5 w-3.5" />} />
+        </MetricCell>
+      </MetricStrip>
 
-      <Card>
-        <CardHeader
-          title="Recent bounty programs"
-          action={<Link to="/organization/bounties" className="text-sm font-medium text-accent hover:underline">Manage all</Link>}
-        />
-        <CardBody>
+      {/* ── Recent programs ──────────────────────────────── */}
+      <section>
+        <div className="mb-4 flex items-end justify-between">
+          <div>
+            <p className="mb-1 font-mono text-[11px] uppercase tracking-wider text-ash">Programs</p>
+            <h2 className="text-lg font-medium tracking-tight text-paper">Recent bounty programs</h2>
+          </div>
+          <Link to="/organization/bounties" className="text-[13px] font-medium text-mist transition-colors duration-150 hover:text-paper">
+            Manage all →
+          </Link>
+        </div>
+
+        <div className="rounded-lg border border-graphite bg-surface">
           {isLoading ? (
             <Spinner />
           ) : myBounties.length === 0 ? (
-            <EmptyState
-              icon={<Bug className="h-6 w-6" />}
-              title="No bounty programs yet"
-              description="Launch your first program to start receiving vulnerability reports."
-              action={
-                <Link to="/organization/create">
-                  <Button size="sm">Create bounty</Button>
-                </Link>
-              }
-            />
+            <div className="p-8">
+              <EmptyState
+                icon={<Bug className="h-5 w-5" />}
+                title="No bounty programs yet"
+                description="Launch your first program to start receiving vulnerability reports."
+                action={
+                  <Link to="/organization/create">
+                    <Button size="sm">Create bounty</Button>
+                  </Link>
+                }
+              />
+            </div>
           ) : (
-            <div className="divide-y divide-border">
+            <div className="divide-y divide-graphite">
               {myBounties.map((b) => (
-                <div key={b.id} className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0">
+                <div key={b.id} className="flex items-center justify-between gap-4 px-5 py-3.5">
                   <div className="min-w-0">
-                    <Link to={`/organization/bounties/${b.id}/reports`} className="truncate text-sm font-medium text-ink hover:text-accent">
+                    <Link
+                      to={`/organization/bounties/${b.id}/reports`}
+                      className="truncate text-sm font-medium text-paper transition-colors duration-150 hover:text-bone"
+                    >
                       {b.title}
                     </Link>
-                    <p className="text-xs text-ink-faint">
-                      {b._count?.bugReports ?? 0} reports &middot; {b.isFunded ? "Funded" : "Not funded"}
+                    <p className="mt-0.5 font-mono text-[11px] text-ash">
+                      BNX-{b.id.slice(0, 6)} · {b._count?.bugReports ?? 0} reports ·{" "}
+                      {b.isFunded ? "funded" : "unfunded"}
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-3">
-                    <span className="font-mono text-sm font-medium text-accent">{weiToEth(b.rewardAmountWei)} ETH</span>
+                    <span className="font-mono text-[13px] font-medium text-paper">{weiToEth(b.rewardAmountWei)} ETH</span>
                     <StatusBadge status={b.status} />
                   </div>
                 </div>
               ))}
             </div>
           )}
-        </CardBody>
-      </Card>
+        </div>
+      </section>
     </div>
   );
 }

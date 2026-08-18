@@ -7,10 +7,11 @@ import type { Pagination } from "../../types";
 import { formatDate, shortAddress } from "../../lib/utils";
 import { StatusBadge } from "../../components/ui/Badge";
 import { Button } from "../../components/ui/Button";
-import { Card, CardBody, CardHeader } from "../../components/ui/Card";
+import { Card, CardBody } from "../../components/ui/Card";
 import { ErrorState, Spinner } from "../../components/ui/State";
 import { PaginationBar } from "../../components/ui/PaginationBar";
 import { Input } from "../../components/ui/Field";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 interface AdminOrg {
   id: string;
@@ -52,59 +53,68 @@ export function AdminOrganizations() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-ink">Organizations</h1>
-        <p className="text-sm text-ink-dim">Verify organizations running bounty programs</p>
-      </div>
+      <PageHeader
+        eyebrow="Console"
+        title="Organizations"
+        subtitle="Verify organizations running bounty programs"
+      />
 
       <div className="relative max-w-xs">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ash" />
         <Input className="pl-9" placeholder="Search organizations..." value={q} onChange={(e) => { setQ(e.target.value); setPage(1); }} />
       </div>
 
       <Card>
-        <CardHeader title="All organizations" />
-        <CardBody>
+        <div className="border-b border-graphite px-5 py-3.5">
+          <p className="font-mono text-[11px] uppercase tracking-wider text-ash">
+            {data?.pagination.total ?? 0} organizations
+          </p>
+        </div>
+        <CardBody className="p-0">
           {isLoading ? (
             <Spinner />
           ) : isError ? (
             <ErrorState message={(error as Error).message} retry={() => void refetch()} />
           ) : (data?.items.length ?? 0) === 0 ? (
-            <div className="py-10 text-center text-sm text-ink-faint">No organizations found.</div>
+            <div className="py-10 text-center text-sm text-fog">No organizations found.</div>
           ) : (
             <>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
                   <thead>
-                    <tr className="border-b border-border text-xs uppercase tracking-wider text-ink-faint">
-                      <th className="pb-3 pr-4 font-medium">Organization</th>
-                      <th className="pb-3 pr-4 font-medium">Contact</th>
-                      <th className="pb-3 pr-4 font-medium">On-chain</th>
-                      <th className="pb-3 pr-4 font-medium">Programs</th>
-                      <th className="pb-3 font-medium">Actions</th>
+                    <tr className="border-b border-graphite text-[11px] uppercase tracking-wider text-ash">
+                      <th className="px-5 pb-3 pr-4 pt-3 font-medium">Organization</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Contact</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">On-chain</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Programs</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Verification</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border">
+                  <tbody className="divide-y divide-graphite">
                     {data?.items.map((org) => (
-                      <tr key={org.id} className="transition-colors hover:bg-surface-2/50">
-                        <td className="py-3 pr-4">
-                          <p className="flex items-center gap-2 font-medium text-ink">
-                            <Building2 className="h-4 w-4 text-accent-2" /> {org.name}
+                      <tr key={org.id} className="transition-colors duration-150 hover:bg-obsidian/60">
+                        <td className="px-5 py-3.5 pr-4">
+                          <p className="flex items-center gap-2 font-medium tracking-tight text-paper">
+                            <Building2 className="h-4 w-4 text-signal-teal" /> {org.name}
                           </p>
-                          {org.website && <a href={org.website} target="_blank" rel="noreferrer" className="text-xs text-accent-2 hover:underline">{org.website}</a>}
+                          {org.website && <a href={org.website} target="_blank" rel="noreferrer" className="text-[12px] text-signal-teal transition-colors hover:text-paper">{org.website}</a>}
                         </td>
-                        <td className="py-3 pr-4">
-                          <p className="text-ink">{org.user.email}</p>
-                          <p className="text-xs text-ink-faint">{org.user.isSuspended ? "Account suspended" : "Account active"}</p>
+                        <td className="py-3.5 pr-4">
+                          <p className="text-mist">{org.user.email}</p>
+                          <p className="mt-0.5 font-mono text-[11px] text-ash">{org.user.isSuspended ? "Account suspended" : "Account active"}</p>
                         </td>
-                        <td className="py-3 pr-4">
-                          <p className="font-mono text-xs text-ink-dim">{shortAddress(org.onChainAddress, 4)}</p>
-                          <p className="text-xs text-ink-faint">Joined {org.createdAt ? formatDate(org.createdAt) : "—"}</p>
+                        <td className="py-3.5 pr-4">
+                          <p className="font-mono text-[12px] text-mist">{shortAddress(org.onChainAddress, 4)}</p>
+                          <p className="mt-0.5 font-mono text-[11px] text-ash">{org.createdAt ? formatDate(org.createdAt) : "—"}</p>
                         </td>
-                        <td className="py-3 pr-4 text-ink-dim">
+                        <td className="py-3.5 pr-4 font-mono text-[13px] text-mist">
                           {org._count.bounties} bounties · {org._count.rewards} rewards
                         </td>
-                        <td className="py-3">
+                        <td className="py-3.5 pr-4">
+                          <StatusBadge status={org.isVerified ? "ACCEPTED" : "PENDING"} />
+                        </td>
+                        <td className="py-3.5 pr-4">
                           <Button
                             variant={org.isVerified ? "secondary" : "primary"}
                             size="sm"
@@ -119,7 +129,9 @@ export function AdminOrganizations() {
                   </tbody>
                 </table>
               </div>
-              <PaginationBar pagination={data?.pagination} onPage={setPage} />
+              <div className="border-t border-graphite px-5 py-3">
+                <PaginationBar pagination={data?.pagination} onPage={setPage} />
+              </div>
             </>
           )}
         </CardBody>

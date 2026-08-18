@@ -7,10 +7,12 @@ import type { BlockchainTransaction, Pagination } from "../types";
 import { formatDateTime, statusStyle, weiToEth } from "../lib/utils";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
-import { Card, CardBody, CardHeader } from "../components/ui/Card";
+import { Card, CardBody } from "../components/ui/Card";
 import { EmptyState, ErrorState, Spinner } from "../components/ui/State";
 import { PaginationBar } from "../components/ui/PaginationBar";
 import { TxHashLink } from "../components/wallet/TxHashLink";
+import { PageHeader } from "../components/ui/PageHeader";
+import { Metric, MetricCell, MetricStrip } from "../components/ui/Metric";
 
 interface TxResponse {
   items: BlockchainTransaction[];
@@ -20,8 +22,8 @@ interface TxResponse {
 function StatusWithIcon({ status }: { status: string }) {
   return (
     <span className="inline-flex items-center gap-1.5">
-      {status === "CONFIRMED" && <CheckCircle2 className="h-3.5 w-3.5 text-accent" />}
-      {status === "FAILED" && <XCircle className="h-3.5 w-3.5 text-danger" />}
+      {status === "CONFIRMED" && <CheckCircle2 className="h-3.5 w-3.5 text-pulse-green" />}
+      {status === "FAILED" && <XCircle className="h-3.5 w-3.5 text-coral-red" />}
       {status === "PENDING" && <Clock className="h-3.5 w-3.5 text-warn" />}
       <Badge className={statusStyle(status)}>{status}</Badge>
     </span>
@@ -36,6 +38,9 @@ export function TransactionsPage({ scope }: { scope: "researcher" | "organizatio
     queryKey: ["transactions", scope, page],
     queryFn: async () => (await api.get(`/api/transactions?page=${page}&limit=15`)) as TxResponse,
   });
+
+  const items = data?.items ?? [];
+  const confirmed = items.filter((t) => t.status === "CONFIRMED").length;
 
   async function verify(hash: string) {
     setVerifying(hash);
@@ -52,56 +57,70 @@ export function TransactionsPage({ scope }: { scope: "researcher" | "organizatio
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-ink">Blockchain transactions</h1>
-          <p className="text-sm text-ink-dim">Ethereum Sepolia &middot; verified on-chain</p>
-        </div>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <PageHeader
+          eyebrow="On-chain"
+          title="Blockchain transactions"
+          subtitle="Ethereum Sepolia · verified on-chain"
+        />
         <Button variant="secondary" size="sm" onClick={() => void refetch()}>
           <RefreshCw className="h-4 w-4" /> Refresh
         </Button>
       </div>
 
+      <MetricStrip>
+        <MetricCell>
+          <Metric label="Total tracked" value={String(items.length)} />
+        </MetricCell>
+        <MetricCell>
+          <Metric label="Confirmed" value={String(confirmed)} />
+        </MetricCell>
+        <MetricCell>
+          <Metric label="Pending" value={String(items.filter((t) => t.status === "PENDING").length)} />
+        </MetricCell>
+      </MetricStrip>
+
       <Card>
-        <CardHeader title="Transaction history" />
-        <CardBody>
+        <CardBody className="p-0">
           {isLoading ? (
             <Spinner />
           ) : isError ? (
             <ErrorState message="Unable to load transactions. Please try again." retry={() => void refetch()} />
-          ) : (data?.items.length ?? 0) === 0 ? (
-            <EmptyState
-              icon={<BadgeDollarSign className="h-6 w-6" />}
-              title="No transactions yet"
-              description="On-chain activity linked to your account appears here."
-            />
+          ) : items.length === 0 ? (
+            <div className="p-10">
+              <EmptyState
+                icon={<BadgeDollarSign className="h-5 w-5" />}
+                title="No transactions yet"
+                description="On-chain activity linked to your account appears here."
+              />
+            </div>
           ) : (
             <>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
                   <thead>
-                    <tr className="border-b border-border text-xs uppercase tracking-wider text-ink-faint">
-                      <th className="pb-3 pr-4 font-medium">Tx Hash</th>
-                      <th className="pb-3 pr-4 font-medium">Type</th>
-                      <th className="pb-3 pr-4 font-medium">Status</th>
-                      <th className="pb-3 pr-4 font-medium">Amount</th>
-                      <th className="pb-3 pr-4 font-medium">Block</th>
-                      <th className="pb-3 pr-4 font-medium">When</th>
-                      <th className="pb-3 font-medium">Verify</th>
+                    <tr className="border-b border-graphite text-[11px] uppercase tracking-wider text-ash">
+                      <th className="px-5 pb-3 pr-4 pt-3 font-medium">Tx Hash</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Type</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Status</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Amount</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Block</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">When</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Verify</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border">
-                    {data?.items.map((tx) => (
-                      <tr key={tx.id} className="transition-colors hover:bg-surface-2/50">
-                        <td className="py-3 pr-4"><TxHashLink hash={tx.txHash} /></td>
-                        <td className="py-3 pr-4 text-ink">{tx.type.replace(/_/g, " ")}</td>
-                        <td className="py-3 pr-4"><StatusWithIcon status={tx.status} /></td>
-                        <td className="py-3 pr-4 font-mono text-ink-dim">
+                  <tbody className="divide-y divide-graphite">
+                    {items.map((tx) => (
+                      <tr key={tx.id} className="transition-colors duration-150 hover:bg-obsidian/60">
+                        <td className="px-5 py-3.5 pr-4"><TxHashLink hash={tx.txHash} /></td>
+                        <td className="py-3.5 pr-4 text-mist">{tx.type.replace(/_/g, " ")}</td>
+                        <td className="py-3.5 pr-4"><StatusWithIcon status={tx.status} /></td>
+                        <td className="py-3.5 pr-4 font-mono text-[13px] text-paper">
                           {tx.amountWei ? `${weiToEth(tx.amountWei)} ETH` : "—"}
                         </td>
-                        <td className="py-3 pr-4 font-mono text-ink-dim">{tx.blockNumber ?? "—"}</td>
-                        <td className="py-3 pr-4 text-ink-dim">{formatDateTime(tx.createdAt)}</td>
-                        <td className="py-3">
+                        <td className="py-3.5 pr-4 font-mono text-[12px] text-mist">{tx.blockNumber ?? "—"}</td>
+                        <td className="py-3.5 pr-4 text-mist">{formatDateTime(tx.createdAt)}</td>
+                        <td className="py-3.5 pr-4">
                           <Button variant="ghost" size="sm" loading={verifying === tx.txHash} onClick={() => void verify(tx.txHash)}>
                             Verify
                           </Button>
@@ -111,7 +130,9 @@ export function TransactionsPage({ scope }: { scope: "researcher" | "organizatio
                   </tbody>
                 </table>
               </div>
-              <PaginationBar pagination={data?.pagination} onPage={setPage} />
+              <div className="border-t border-graphite px-5 py-3">
+                <PaginationBar pagination={data?.pagination} onPage={setPage} />
+              </div>
             </>
           )}
         </CardBody>

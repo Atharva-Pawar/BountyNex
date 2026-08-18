@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { Send, ShieldAlert } from "lucide-react";
+import { Send, ShieldAlert, X } from "lucide-react";
 import { api, uploadFile } from "../../lib/api";
 import type { Bounty, BugReport } from "../../types";
 import { SEVERITY_ORDER, weiToEth } from "../../lib/utils";
 import { Button } from "../../components/ui/Button";
 import { Card, CardBody, CardHeader } from "../../components/ui/Card";
 import { Field, Input, Select, Textarea } from "../../components/ui/Field";
+import { Badge } from "../../components/ui/Badge";
 import { ErrorState, Spinner } from "../../components/ui/State";
 import { useAuth } from "../../providers/AuthProvider";
 
@@ -68,25 +69,39 @@ export function SubmitReport() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-ink">Submit a report</h1>
-        <p className="text-sm text-ink-dim">
-          for <span className="font-medium text-accent">{bounty.title}</span> ·{" "}
-          <span className="font-mono">{weiToEth(bounty.rewardAmountWei)} ETH</span>
+        <p className="mb-1 font-mono text-[11px] uppercase tracking-wider text-ash">New report</p>
+        <h1 className="text-2xl font-medium tracking-tight text-paper">Submit a report</h1>
+        <p className="mt-1 text-sm text-mist">
+          for{" "}
+          <Link className="font-medium text-bone underline decoration-graphite underline-offset-4 hover:text-paper" to={`/bounties/${bounty.id}`}>
+            {bounty.title}
+          </Link>{" "}
+          · <span className="font-mono text-[13px] text-acid-lime">{weiToEth(bounty.rewardAmountWei)} ETH</span>
+          {bounty.organization && (
+            <>
+              <span className="mx-1.5 text-ash">·</span>
+              <Link className="font-medium text-bone underline decoration-graphite underline-offset-4 hover:text-paper" to={`/organization/${bounty.organizationId}`}>
+                {bounty.organization.name}
+              </Link>
+            </>
+          )}
         </p>
       </div>
 
       {!user?.isVerified && (
-        <div className="mb-6 flex items-start gap-3 rounded-lg border border-warn/20 bg-warn/5 px-4 py-3 text-sm text-warn">
-          <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0" />
-          Your account is not yet verified. Reports can still be submitted, but verification
-          builds trust with organizations.
+        <div className="mb-6 flex items-start gap-3 rounded-lg border border-graphite bg-carbon px-4 py-3.5">
+          <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-warn" />
+          <p className="text-[13px] leading-relaxed text-mist">
+            Your account is not yet verified. Reports can still be submitted, but verification
+            builds trust with organizations.
+          </p>
         </div>
       )}
 
       <Card>
         <CardHeader title="Vulnerability details" subtitle="Provide a thorough, reproducible report" />
         <CardBody>
-          <form onSubmit={onSubmit} className="space-y-4">
+          <form onSubmit={onSubmit} className="space-y-5">
             <Field label="Title">
               <Input required minLength={5} value={form.title} onChange={set("title")} placeholder="e.g. Stored XSS in profile bio" />
             </Field>
@@ -117,28 +132,46 @@ export function SubmitReport() {
             </Field>
 
             <Field label="Evidence files (optional)" hint="Screenshots, logs, or PoC files. Max 15 MB each.">
-              <input
-                type="file"
-                multiple
-                onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
-                className="w-full text-sm text-ink-dim file:mr-3 file:rounded-md file:border-0 file:bg-surface-2 file:px-4 file:py-2 file:text-sm file:font-medium file:text-accent file:cursor-pointer hover:file:bg-accent/10"
-              />
-              {files.length > 0 && (
-                <p className="text-xs text-ink-faint mt-1">{files.length} file(s) attached</p>
-              )}
+              <div className="flex flex-wrap gap-2">
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-sm border border-dashed border-graphite bg-carbon px-3 py-2 text-[13px] text-mist transition-colors duration-150 hover:border-fog hover:text-paper">
+                  <input
+                    type="file"
+                    multiple
+                    onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
+                    className="sr-only"
+                  />
+                  <span className="text-[13px]">+ Attach files</span>
+                </label>
+                {files.map((f, i) => (
+                  <span
+                    key={`${f.name}-${i}`}
+                    className="inline-flex items-center gap-2 rounded-sm border border-graphite bg-obsidian px-2.5 py-2 font-mono text-[12px] text-mist"
+                  >
+                    {f.name}
+                    <button type="button" onClick={() => setFiles((prev) => prev.filter((_, idx) => idx !== i))} className="text-ash transition-colors hover:text-coral-red">
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </span>
+                ))}
+              </div>
             </Field>
 
             {error && (
-              <div className="rounded-md border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">
+              <div className="rounded-md border border-coral-red/25 bg-coral-red/10 px-4 py-3 text-sm text-[#ff8d8d]">
                 {error}
               </div>
             )}
 
-            <div className="flex justify-end gap-3 pt-2">
-              <Button type="button" variant="secondary" onClick={() => navigate(-1)}>Cancel</Button>
-              <Button type="submit" loading={submitting}>
-                <Send className="h-4 w-4" /> Submit report
-              </Button>
+            <div className="flex items-center justify-between gap-3 pt-2">
+              <Badge className="font-mono normal-case text-fog border-graphite">
+                {files.length} file{files.length === 1 ? "" : "s"} attached
+              </Badge>
+              <div className="flex justify-end gap-3">
+                <Button type="button" variant="secondary" onClick={() => navigate(-1)}>Cancel</Button>
+                <Button type="submit" loading={submitting}>
+                  <Send className="h-4 w-4" /> Submit report
+                </Button>
+              </div>
             </div>
           </form>
         </CardBody>

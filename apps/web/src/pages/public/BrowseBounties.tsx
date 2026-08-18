@@ -1,24 +1,92 @@
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Search } from "lucide-react";
+import { Crosshair, ShieldCheck } from "lucide-react";
 import { api } from "../../lib/api";
-import type { Bounty, BountySeverity } from "../../types";
-import { cn, daysLeft, severityColor, weiToEth } from "../../lib/utils";
+import type { Bounty } from "../../types";
+import {
+  cn,
+  daysLeft,
+  severityColor,
+  timeAgo,
+  weiToEth,
+} from "../../lib/utils";
 import { Button } from "../../components/ui/Button";
 import { StatusBadge } from "../../components/ui/Badge";
 import { Spinner, EmptyState } from "../../components/ui/State";
+import { PageHeader } from "../../components/ui/PageHeader";
+import {
+  BountyFilters,
+  type BountyFiltersState,
+} from "../../components/bounty/BountyFilters";
 
 export function BrowseBounties() {
+  const [filters, setFilters] = useState<BountyFiltersState>({
+    q: "",
+    severity: "",
+    sort: "newest",
+    status: undefined,
+    minReward: undefined,
+  });
+
   const { data, isLoading, isError, refetch } = useQuery<{ items: Bounty[] }>({
     queryKey: ["bounties-browse"],
     queryFn: async () => (await api.get("/api/bounties?limit=50")) as { items: Bounty[] },
   });
 
-  const bounties = data?.items ?? [];
+  const bounties = useMemo(() => {
+    const items = data?.items ?? [];
+
+    const q = filters.q.trim().toLowerCase();
+    const filtered = items.filter((b) => {
+      if (q && !`${b.title} ${b.description} ${b.organization?.name ?? ""}`.toLowerCase().includes(q)) {
+        return false;
+      }
+      if (filters.severity && !b.severities.some((s) => s.level === filters.severity)) {
+        return false;
+      }
+      if (filters.minReward) {
+        try {
+          if (BigInt(b.rewardAmountWei) < BigInt(filters.minReward)) return false;
+        } catch {
+          /* ignore malformed reward */
+        }
+      }
+      return true;
+    });
+
+    const sorted = [...filtered];
+    switch (filters.sort) {
+      case "reward_high":
+        sorted.sort((a, b) => {
+          try {
+            return Number(BigInt(b.rewardAmountWei) - BigInt(a.rewardAmountWei));
+          } catch {
+            return 0;
+          }
+        });
+        break;
+      case "reward_low":
+        sorted.sort((a, b) => {
+          try {
+            return Number(BigInt(a.rewardAmountWei) - BigInt(b.rewardAmountWei));
+          } catch {
+            return 0;
+          }
+        });
+        break;
+      case "deadline":
+        sorted.sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime());
+        break;
+      default:
+        sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+    return sorted;
+  }, [data, filters]);
 
   if (isLoading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="min-h-[60vh]">
         <Spinner label="Loading bounties..." />
       </div>
     );
@@ -27,99 +95,97 @@ export function BrowseBounties() {
   if (isError) {
     return (
       <div className="py-12 text-center">
-        <p className="mb-4 text-ink-dim">Could not load bounties.</p>
+        <p className="mb-4 text-fog">Could not load bounties.</p>
         <Button onClick={() => refetch()}>Retry</Button>
       </div>
     );
   }
 
-  if (bounties.length === 0) {
-    return (
-      <div className="py-16">
-        <EmptyState
-          icon={<Search className="h-6 w-6" />}
-          title="No bounties found"
-          description="There are currently no active bounty programs."
-        />
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight text-ink">Bounties</h1>
-        <p className="text-sm text-ink-dim">{bounties.length} active programs</p>
-      </div>
+    <div className="mx-auto max-w-[1200px] px-6 py-10">
+      <PageHeader
+        eyebrow="Marketplace"
+        title="Bounty programs"
+        subtitle={`${bounties.length} programs matching your criteria`}
+      />
 
-      {/* List view */}
-      <div className="divide-y divide-border rounded-lg border border-border bg-surface">
-        {bounties.map((b, i) => (
-          <Link
-            key={b.id}
-            to={`/bounties/${b.id}`}
-            className="group block px-4 py-4 first:pt-4 last:pb-4 hover:bg-surface-2/50"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs text-ink-faint">
-                    #{String(i + 1).padStart(2, "0")}
-                  </span>
-                  <h3 className="font-medium text-ink group-hover:text-accent">{b.title}</h3>
-                </div>
-                <p className="mt-1.5 max-w-2xl text-sm text-ink-dim line-clamp-2">
-                  {b.description}
-                </p>
-                <div className="mt-3 flex flex-wrap items-center gap-3">
-                  {b.severities && b.severities.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
-                      {b.severities.slice(0, 3).map((s) => (
-                        <SeverityPill key={s.level} severity={s} />
-                      ))}
-                      {b.severities.length > 3 && (
-                        <span className="inline-flex items-center rounded-md border border-border bg-surface-2 px-1.5 py-0.5 text-[10px] text-ink-faint">
-                          +{b.severities.length - 3}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                  <span className="text-xs text-ink-faint">
-                    Pool:{" "}
-                    <span className="font-mono font-medium text-ink">
-                      {weiToEth(b.rewardAmountWei)} ETH
-                    </span>
-                  </span>
-                  <span className="text-xs text-ink-faint">
-                    Scope: {b.scope} endpoints
-                  </span>
-                  <span className="flex items-center gap-1 text-xs text-ink-faint">
-                    <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M12 8v4l2 2" />
-                    </svg>
-                    {daysLeft(b.deadline)}d left
-                  </span>
-                </div>
-              </div>
-              <StatusBadge status={b.status} />
-            </div>
-          </Link>
-        ))}
-      </div>
+      <BountyFilters filters={filters} onChange={setFilters} />
+
+      {bounties.length === 0 ? (
+        <div className="mt-6">
+          <EmptyState
+            icon={<Crosshair className="h-5 w-5" />}
+            title="No bounties found"
+            description="Adjust your filters or check back later for new programs."
+          />
+        </div>
+      ) : (
+        <div className="divide-y divide-graphite">
+          {bounties.map((b) => (
+            <BountyRow key={b.id} bounty={b} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-function SeverityPill({ severity }: { severity: BountySeverity }) {
+function BountyRow({ bounty: b }: { bounty: Bounty }) {
   return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1 rounded-md border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[10px]",
-      )}
+    <Link
+      to={`/bounties/${b.id}`}
+      className="group grid gap-3 py-5 transition-colors duration-150 sm:grid-cols-[1fr_auto] sm:items-start"
     >
-      <span className={cn("font-medium", severityColor(severity.level))}>{severity.level.slice(0, 3)}</span>
-      <span className="text-ink-faint">{weiToEth(severity.rewardWei)} ETH</span>
-    </span>
+      <div className="min-w-0">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-mono text-[10px] uppercase text-ash">BNX-{b.id.slice(0, 6)}</span>
+          <h3 className="text-[15px] font-medium text-paper transition-colors duration-150 group-hover:text-bone">
+            {b.title}
+          </h3>
+          {b.severities && b.severities.length > 0 && (
+            <span
+              className={cn(
+                "rounded px-1.5 py-0.5 font-mono text-[10px] font-medium capitalize",
+                severityColor(b.severities[0].level),
+                "bg-obsidian",
+              )}
+            >
+              {b.severities[0].level.toLowerCase()}
+            </span>
+          )}
+        </div>
+
+        <p className="mt-1.5 line-clamp-1 text-[13px] text-fog">{b.description}</p>
+
+        <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1.5 font-mono text-[11px] text-ash">
+          <span className="inline-flex items-center gap-1">
+            <ShieldCheck
+              className={cn("h-3 w-3", b.organization?.isVerified ? "text-pulse-green" : "text-ash")}
+            />
+            {b.organization?.name ?? "Organization"}
+          </span>
+          <span>{b.scope ? `${b.scope}` : "public scope"}</span>
+          <span>sepolia</span>
+          <span>{timeAgo(b.createdAt)}</span>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end lg:flex-row lg:gap-6">
+        <div className="text-right">
+          <p className="font-mono text-[15px] font-medium text-paper">
+            {weiToEth(b.rewardAmountWei)} <span className="text-[10px] text-ash">ETH</span>
+          </p>
+          <p className={cn("font-mono text-[10px]", daysLeft(b.deadline) === 0 ? "text-coral-red" : "text-ash")}>
+            {daysLeft(b.deadline) === 0 ? "expired" : `${daysLeft(b.deadline)}d left`}
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <StatusBadge status={b.status} />
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-sm border border-graphite text-fog opacity-0 transition-all duration-150 group-hover:opacity-100 group-hover:border-smoke group-hover:text-acid-lime">
+            <Crosshair className="h-3.5 w-3.5" />
+          </span>
+        </div>
+      </div>
+    </Link>
   );
 }

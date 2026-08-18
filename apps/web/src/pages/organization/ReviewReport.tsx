@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { ArrowLeft, CheckCircle2, Send, XCircle } from "lucide-react";
@@ -13,6 +13,7 @@ import { Card, CardBody, CardHeader } from "../../components/ui/Card";
 import { ErrorState, Spinner } from "../../components/ui/State";
 import { Field, Textarea } from "../../components/ui/Field";
 import { ReportDetail } from "../researcher/ReportDetail";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 export function ReviewReport() {
   const { id } = useParams<{ id: string }>();
@@ -92,21 +93,23 @@ export function ReviewReport() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4">
-        <button onClick={() => window.history.back()} className="flex items-center gap-2 text-sm text-ink-dim transition-colors hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded-md px-2 py-1">
-          <ArrowLeft className="h-4 w-4" /> Back
-        </button>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <Link to={report.bounty ? `/organization/bounties/${report.bounty.id}/reports` : "/organization/reports"} className="flex items-center gap-2 rounded-sm px-1 py-1 text-[13px] text-fog transition-colors duration-150 hover:text-paper">
+          <ArrowLeft className="h-4 w-4" /> Back to submissions
+        </Link>
         <div className="flex items-center gap-2">
           <StatusBadge status={report.severity} />
           <StatusBadge status={report.status} />
         </div>
       </div>
 
+      <PageHeader
+        eyebrow={`BR-${report.id.slice(0, 6)}`}
+        title={report.title}
+        subtitle={`by ${report.researcher?.name ?? "Researcher"} · ${report.bounty?.title}`}
+      />
+
       <Card>
-        <CardHeader
-          title={report.title}
-          subtitle={`by ${report.researcher?.name ?? "Researcher"} · ${report.bounty?.title}`}
-        />
         <CardBody>
           <ReportDetail report={report} />
         </CardBody>
@@ -150,10 +153,10 @@ export function ReviewReport() {
             )}
 
             {isAccepted && (
-              <div className="rounded-lg border border-accent/20 bg-accent/5 p-4">
-                <div className="mb-3 flex items-center justify-between">
-                  <p className="text-sm font-medium text-ink">Reward assigned</p>
-                  <p className="font-mono font-semibold text-accent">{weiToEth(report.rewardWei)} ETH</p>
+              <div className="rounded-lg border border-graphite bg-carbon p-5">
+                <div className="mb-4 flex items-center justify-between">
+                  <p className="text-sm font-medium text-paper">Reward assigned</p>
+                  <p className="font-mono font-semibold text-acid-lime">{weiToEth(report.rewardWei)} ETH</p>
                 </div>
                 <Button size="lg" loading={releasing || (acting && action === "RELEASE")} onClick={() => void releaseReward()}>
                   <Send className="h-4 w-4" /> Release reward on-chain

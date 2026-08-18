@@ -7,10 +7,11 @@ import type { Pagination, Role } from "../../types";
 import { formatDate } from "../../lib/utils";
 import { StatusBadge } from "../../components/ui/Badge";
 import { Button } from "../../components/ui/Button";
-import { Card, CardBody, CardHeader } from "../../components/ui/Card";
+import { Card, CardBody } from "../../components/ui/Card";
 import { ErrorState, Spinner } from "../../components/ui/State";
 import { PaginationBar } from "../../components/ui/PaginationBar";
 import { Input } from "../../components/ui/Field";
+import { PageHeader } from "../../components/ui/PageHeader";
 
 interface AdminUser {
   id: string;
@@ -57,14 +58,15 @@ export function AdminUsers() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-ink">Users</h1>
-        <p className="text-sm text-ink-dim">Manage platform accounts</p>
-      </div>
+      <PageHeader
+        eyebrow="Console"
+        title="Users"
+        subtitle="Manage platform accounts"
+      />
 
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ash" />
           <Input className="pl-9" placeholder="Search name or email..." value={q} onChange={(e) => { setQ(e.target.value); setPage(1); }} />
         </div>
         <div className="flex flex-wrap gap-2">
@@ -74,8 +76,8 @@ export function AdminUsers() {
               onClick={() => { setRole(r); setPage(1); }}
               className={
                 role === r
-                  ? "rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent"
-                  : "rounded-full border border-border px-3 py-1 text-xs font-medium text-ink-dim hover:border-border-strong hover:text-ink"
+                  ? "rounded-sm border border-acid-lime/30 bg-acid-lime/10 px-3 py-1.5 text-[12px] font-medium text-acid-lime transition-colors duration-150"
+                  : "rounded-sm border border-graphite px-3 py-1.5 text-[12px] font-medium text-fog transition-colors duration-150 hover:border-smoke hover:text-paper"
               }
             >
               {r}
@@ -85,8 +87,12 @@ export function AdminUsers() {
       </div>
 
       <Card>
-        <CardHeader title="All users" />
-        <CardBody>
+        <div className="flex items-center justify-between border-b border-graphite px-5 py-3.5">
+          <p className="font-mono text-[11px] uppercase tracking-wider text-ash">
+            {data?.pagination.total ?? 0} accounts
+          </p>
+        </div>
+        <CardBody className="p-0">
           {isLoading ? (
             <Spinner />
           ) : isError ? (
@@ -96,30 +102,30 @@ export function AdminUsers() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
                   <thead>
-                    <tr className="border-b border-border text-xs uppercase tracking-wider text-ink-faint">
-                      <th className="pb-3 pr-4 font-medium">User</th>
-                      <th className="pb-3 pr-4 font-medium">Role</th>
-                      <th className="pb-3 pr-4 font-medium">Status</th>
-                      <th className="pb-3 pr-4 font-medium">Joined</th>
-                      <th className="pb-3 font-medium">Actions</th>
+                    <tr className="border-b border-graphite text-[11px] uppercase tracking-wider text-ash">
+                      <th className="px-5 pb-3 pr-4 pt-3 font-medium">User</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Role</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Status</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Joined</th>
+                      <th className="pb-3 pr-4 pt-3 font-medium">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border">
+                  <tbody className="divide-y divide-graphite">
                     {data?.items.map((u) => (
-                      <tr key={u.id} className="transition-colors hover:bg-surface-2/50">
-                        <td className="py-3 pr-4">
-                          <p className="font-medium text-ink">{u.name}</p>
-                          <p className="text-xs text-ink-faint">{u.email}</p>
+                      <tr key={u.id} className="transition-colors duration-150 hover:bg-obsidian/60">
+                        <td className="px-5 py-3.5 pr-4">
+                          <p className="font-medium tracking-tight text-paper">{u.name}</p>
+                          <p className="mt-0.5 font-mono text-[11px] text-ash">{u.email}</p>
                         </td>
-                        <td className="py-3 pr-4"><StatusBadge status={u.role} /></td>
-                        <td className="py-3 pr-4">
+                        <td className="py-3.5 pr-4"><StatusBadge status={u.role} /></td>
+                        <td className="py-3.5 pr-4">
                           <div className="flex items-center gap-2">
                             <StatusBadge status={u.isSuspended ? "REJECTED" : "ACTIVE"} />
-                            {u.organization && <span className="text-xs text-ink-faint">{u.organization.isVerified ? "Org verified" : "Org unverified"}</span>}
+                            {u.organization && <span className="text-[11px] text-ash">{u.organization.isVerified ? "Org verified" : "Org unverified"}</span>}
                           </div>
                         </td>
-                        <td className="py-3 pr-4 text-ink-dim">{formatDate(u.createdAt)}</td>
-                        <td className="py-3">
+                        <td className="py-3.5 pr-4 text-mist">{formatDate(u.createdAt)}</td>
+                        <td className="py-3.5 pr-4">
                           <Button
                             variant={u.isSuspended ? "secondary" : "danger"}
                             size="sm"
@@ -134,7 +140,9 @@ export function AdminUsers() {
                   </tbody>
                 </table>
               </div>
-              <PaginationBar pagination={data?.pagination} onPage={setPage} />
+              <div className="border-t border-graphite px-5 py-3">
+                <PaginationBar pagination={data?.pagination} onPage={setPage} />
+              </div>
             </>
           )}
         </CardBody>
