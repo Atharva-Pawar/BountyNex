@@ -10,6 +10,7 @@ import { Button } from "../../components/ui/Button";
 import { Card, CardBody, CardHeader } from "../../components/ui/Card";
 import { Field, Input, Textarea } from "../../components/ui/Field";
 import { AvatarUpload } from "../../components/profile/AvatarUpload";
+import { DangerZone } from "../../components/profile/DangerZone";
 import { WalletPanel } from "../../components/wallet/WalletPanel";
 import { MetricStrip, MetricCell, Metric } from "../../components/ui/Metric";
 
@@ -149,6 +150,8 @@ export function ResearcherProfile() {
           </div>
         </div>
       </div>
+
+      <DangerZone />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { api, registerOrganization, registerResearcher, truncateAll } from "./helpers.js";
+import { prisma } from "../src/lib/prisma.js";
 
 describe("Authentication", () => {
   beforeEach(async () => {
@@ -153,6 +154,111 @@ describe("Authentication", () => {
         role: "ADMIN",
       });
       expect(res.status).toBe(400);
+    });
+  });
+
+  describe("DELETE /api/auth/account", () => {
+    it("requires authentication", async () => {
+      const res = await api.delete("/api/auth/account");
+      expect(res.status).toBe(401);
+    });
+
+    it("permanently deletes the account and clears the auth cookie", async () => {
+      const reg = await registerResearcher({ email: "gone@example.com", researcherHandle: "gone_sec" });
+      const cookie = reg.headers["set-cookie"]?.[0];
+
+      const res = await api.delete("/api/auth/account").set("Cookie", cookie!);
+      expect(res.status).toBe(200);
+      expect(res.headers["set-cookie"]?.[0] ?? "").toContain("bntnx_token=;");
+
+      const login = await api
+        .post("/api/auth/login")
+        .send({ email: "gone@example.com", password: "Password123!" });
+      expect(login.status).toBe(401);
+    });
+
+    it("removes the user and its researcher profile rows", async () => {
+      const reg = await registerResearcher({ email: "rows@example.com", researcherHandle: "rows_sec" });
+      const cookie = reg.headers["set-cookie"]?.[0];
+      const userId = reg.body.data.user.id;
+
+      const res = await api.delete("/api/auth/account").set("Cookie", cookie!);
+      expect(res.status).toBe(200);
+
+      expect(await prisma.user.findUnique({ where: { id: userId } })).toBeNull();
+      expect(await prisma.researcherProfile.findUnique({ where: { userId } })).toBeNull();
+    });
+
+    it("deletes the researcher's own reports and rewards but leaves the organization intact", async () => {
+      const researcher = await registerResearcher({ email: "rep@example.com", researcherHandle: "rep_sec" });
+      const researcherId = researcher.body.data.user.id;
+      const cookie = researcher.headers["set-cookie"]?.[0];
+
+      const org = await registerOrganization({ email: "rep-org@example.com", orgName: "Rep Org" });
+      const orgUserId = org.body.data.user.id;
+      const orgRow = await prisma.organization.findUnique({ where: { userId: orgUserId } });
+
+      const bounty = await prisma.bounty.create({
+        data: {
+          title: "Cascade test bounty",
+          description: "desc",
+          scope: "scope",
+          rules: "rules",
+          rewardAmountWei: BigInt(100),
+          deadline: new Date(Date.now() + 86_400_000),
+          status: "ACTIVE",
+          organizationId: orgRow!.id,
+        },
+      });
+
+      const report = await prisma.bugReport.create({
+        data: {
+          title: "Researcher's report",
+          description: "desc",
+          severity: "HIGH",
+          affectedComponent: "comp",
+          stepsToReproduce: "steps",
+          bountyId: bounty.id,
+          researcherId,
+          status: "SUBMITTED",
+        },
+      });
+
+      await prisma.reward.create({
+        data: {
+          reportId: report.id,
+          bountyId: bounty.id,
+          researcherId,
+          organizationId: orgRow!.id,
+          status: "PENDING",
+          amountWei: BigInt(50),
+        },
+      });
+
+      const res = await api.delete("/api/auth/account").set("Cookie", cookie!);
+      expect(res.status).toBe(200);
+
+      expect(await prisma.user.findUnique({ where: { id: researcherId } })).toBeNull();
+      expect(await prisma.bugReport.findUnique({ where: { id: report.id } })).toBeNull();
+      expect(await prisma.reward.count({ where: { researcherId } })).toBe(0);
+      expect(await prisma.bounty.findUnique({ where: { id: bounty.id } })).not.toBeNull();
+      expect(await prisma.user.findUnique({ where: { id: orgUserId } })).not.toBeNull();
+    });
+
+    it("only affects the authenticated user's account", async () => {
+      const keeper = await registerResearcher({ email: "keeper@example.com", researcherHandle: "keeper_sec" });
+      const deleter = await registerOrganization({ email: "deleter@example.com", orgName: "Deleter Org" });
+
+      const res = await api
+        .delete("/api/auth/account")
+        .set("Cookie", deleter.headers["set-cookie"]?.[0]!);
+      expect(res.status).toBe(200);
+
+      const login = await api
+        .post("/api/auth/login")
+        .send({ email: "keeper@example.com", password: "Password123!" });
+      expect(login.status).toBe(200);
+      expect(login.body.data.user.email).toBe("keeper@example.com");
     });
   });
 });

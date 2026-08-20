@@ -77,6 +77,23 @@ export async function login(email: string, password: string): Promise<{ user: Us
   return { user, token };
 }
 
+export async function deleteAccount(userId: string): Promise<void> {
+  await prisma.$transaction(async (tx) => {
+    // `bug_reports.researcher_id` and `rewards.*_id` are RESTRICT, so the user's
+    // own submissions must be removed before the user row. Deleting a report
+    // cascades to its evidence (CASCADE) and reward (CASCADE) at the database
+    // level, which clears the RESTRICT references without network round-trips.
+    await tx.bugReport.deleteMany({ where: { researcherId: userId } });
+
+    // Everything else owned by the account cascades from `users.id`: the
+    // wallet, researcher profile, organization (and the organization's full
+    // bounty tree), and any admin actions. `blockchain_transactions` reference
+    // bounties/reports with SET NULL, so their immutable on-chain records are
+    // preserved with the FK cleared.
+    await tx.user.delete({ where: { id: userId } });
+  });
+}
+
 export function toPublicUser(user: User) {
   return {
     id: user.id,

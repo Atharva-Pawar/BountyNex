@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
 import { sendData } from "../middleware/error.js";
-import { login, register, toPublicUser } from "../services/auth.service.js";
+import { login, register, deleteAccount, toPublicUser } from "../services/auth.service.js";
 import type { RegisterInput } from "../types/auth.js";
 import { clearAuthCookie, setAuthCookie } from "../utils/cookies.js";
 import { asyncHandler } from "../utils/http.js";
@@ -24,6 +24,12 @@ export const logoutHandler = (_req: Request, res: Response) => {
   clearAuthCookie(res);
   sendData(res, { message: "Logged out" });
 };
+
+export const deleteAccountHandler = asyncHandler(async (req: Request, res: Response) => {
+  await deleteAccount(req.user!.id);
+  clearAuthCookie(res);
+  sendData(res, { message: "Account deleted" });
+});
 
 export const meHandler = asyncHandler(async (req: Request, res: Response) => {
   const user = await prisma.user.findUnique({
