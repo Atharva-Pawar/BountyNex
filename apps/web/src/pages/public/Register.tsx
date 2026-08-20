@@ -5,6 +5,7 @@ import { Building2, UserRound, ArrowRight } from "lucide-react";
 import { useAuth } from "../../providers/AuthProvider";
 import { Button } from "../../components/ui/Button";
 import { Field, Input } from "../../components/ui/Field";
+import { PasswordInput } from "../../components/ui/PasswordInput";
 import { Logo } from "../../components/layout/PublicLayout";
 import { cn } from "../../lib/utils";
 
@@ -98,7 +99,7 @@ export function Register() {
             <Input type="email" required value={form.email} onChange={set("email")} placeholder="you@example.com" />
           </Field>
           <Field label="Password" hint="At least 8 characters">
-            <Input type="password" required minLength={8} value={form.password} onChange={set("password")} placeholder="••••••••" />
+            <PasswordInput required minLength={8} value={form.password} onChange={set("password")} placeholder="••••••••" />
           </Field>
 
           {type === "RESEARCHER" && (

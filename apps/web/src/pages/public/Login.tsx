@@ -5,6 +5,7 @@ import { Fingerprint, Mail, Lock, ArrowRight } from "lucide-react";
 import { useAuth } from "../../providers/AuthProvider";
 import { Button } from "../../components/ui/Button";
 import { Field, Input } from "../../components/ui/Field";
+import { PasswordInput } from "../../components/ui/PasswordInput";
 import { Logo } from "../../components/layout/PublicLayout";
 
 export function Login() {
@@ -62,9 +63,8 @@ export function Login() {
           <Field label="Password">
             <div className="relative">
               <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ash" />
-              <Input
+              <PasswordInput
                 className="pl-9"
-                type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
