@@ -21,9 +21,9 @@ export function PasswordInput({ className, ...props }: InputProps) {
         className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-sm p-1.5 text-ash transition-colors duration-150 hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid-lime/30"
       >
         {isHidden ? (
-          <Eye className="pointer-events-none h-4 w-4" aria-hidden />
-        ) : (
           <EyeOff className="pointer-events-none h-4 w-4" aria-hidden />
+        ) : (
+          <Eye className="pointer-events-none h-4 w-4" aria-hidden />
         )}
       </button>
     </div>
