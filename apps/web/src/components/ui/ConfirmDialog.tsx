@@ -31,6 +31,7 @@ export function ConfirmDialog({
   cancelLabel = "Cancel",
   variant = "default",
   loading = false,
+  confirmDisabled = false,
   onConfirm,
   onCancel,
 }: {
@@ -41,6 +42,7 @@ export function ConfirmDialog({
   cancelLabel?: string;
   variant?: Variant;
   loading?: boolean;
+  confirmDisabled?: boolean;
   onConfirm: () => void;
   onCancel?: () => void;
 }) {
@@ -159,9 +161,9 @@ export function ConfirmDialog({
         </div>
 
         <div className="px-5 py-5">
-          <p id="confirm-dialog-description" className="text-sm leading-relaxed text-mist">
+          <div id="confirm-dialog-description" className="text-sm leading-relaxed text-mist">
             {description}
-          </p>
+          </div>
         </div>
 
         <div className="flex flex-col-reverse justify-end gap-2 border-t border-graphite px-5 py-3.5 sm:flex-row">
@@ -178,7 +180,7 @@ export function ConfirmDialog({
             <Button
               type="button"
               loading={loading}
-              disabled={loading}
+              disabled={loading || confirmDisabled}
               onClick={() => !loading && onConfirm()}
               className="border-warn/50 bg-transparent text-warn hover:border-warn hover:bg-warn/10"
             >
@@ -189,7 +191,7 @@ export function ConfirmDialog({
               type="button"
               variant={variant === "danger" ? "danger" : "primary"}
               loading={loading}
-              disabled={loading}
+              disabled={loading || confirmDisabled}
               onClick={() => !loading && onConfirm()}
             >
               {confirmLabel}
